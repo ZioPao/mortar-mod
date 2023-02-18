@@ -7,14 +7,17 @@ local SetSpotter = function(_, player)
     Mortar.spotter = player
 
     -- TODO Manage cases where the spotter dies
+    -- TODO Manage case when the player stopped using the mortar (should unset the spotter)
 end
 
 
+--- Check if the found player is acceptable as a spotter
+---@param spotter IsoPlayer
 local CheckSpotterForWalkieTalkie = function(spotter)
 
     local accepted_item = "Radio.WalkieTalkie"
 
-
+    -- TODO Should check even the belt?
     local primary_hand_item = spotter:getPrimaryHandItem()
     local secondary_hand_item = spotter:getSecondaryHandItem()
 
@@ -85,7 +88,6 @@ local CreateMortarContextMenu = function(player, context, world_objects, _)
     spotter_table = {}        -- Reset
 
     for _, v in pairs(world_objects) do
-        -- TODO Check if v is a mortar
         if instanceof(v, "IsoObject") then      -- TODO This should check if it's the mortar
 
             if mortar_menu == nil then
@@ -104,6 +106,7 @@ local CreateMortarContextMenu = function(player, context, world_objects, _)
             -- 2) Reload mortar?
             -- 3) Something else
 
+            break       -- Stop searching for a mortar after one is found
         end
     end
 end

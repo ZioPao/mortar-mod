@@ -125,12 +125,14 @@ SendCommandToServer(tostring("/teleportto \"".. teleportto[1]..','..teleportto[2
 -- sendClientCommand(pl, 'object', 'addExplosionOnSquare', args)
 -- sendClientCommand(pl, 'object', 'addFireOnSquare', args)
 function Mortar.keys(key)
+
+    -- TODO This will trigger errors on the menu. Move this on OnGameStart
     local pl = getPlayer()
     local dist = pl:getModData()['mortarDistance'] or 8
     if not pl then
         return
     end
-    if (key == 83) then -- num del
+    if (key == 83) then -- NUMPAD .
         -- Mortar.init()
         Mortar.fire(10, dist)
         return key
