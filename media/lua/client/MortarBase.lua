@@ -19,7 +19,9 @@ https://ko-fi.com/glytch3r
 Discord: Glytch3r#2892
 
 ----------------------------------------------------------------------------------------------------------------------------
---]] Mortar = {}
+--]]
+
+Mortar = {}
 
 Mortar.directions = {
     ["N"] = {0, -1},
@@ -57,16 +59,6 @@ function Mortar.roll(chance)
     if roll <= chance then
         return true
     end
-end
-
-function testBoom(pl, bommX, bommY, bommZ, Xtype)
-    local args = {
-        x = bommX,
-        y = bommY,
-        z = bommZ
-    }
-    sendClientCommand(pl, 'object', Xtype, args)
-    -- getSoundManager():PlayWorldSound("explode",  trajectory, 0, Mortar.distMax*2, 1.0, false);
 end
 function Mortar.groundZero(bommX, bommY, bommZ, radius)
     local cell = getCell()
@@ -118,6 +110,7 @@ function Mortar.fire(rad, dist)
     -- sendClientCommand(pl, 'object', 'addFireOnSquare', args)
     -- getSoundManager():PlayWorldSound("explode",  trajectory, 0, Mortar.distMax*2, 1.0, false);
 end
+
 
 --[[ 
 --local Xtype = 'addFireOnSquare'
