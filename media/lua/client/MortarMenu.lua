@@ -40,7 +40,7 @@ local CheckSpotterForWalkieTalkie = function(spotter)
 end
 
 
-local SearchForSpotter = function(mortar_menu, world_obj)
+local SearchForSpotter = function(operator, mortar_menu, world_obj)
     -- TODO Search the cell for a player with something on him like a radio
     print("Mortar: Searching spotter")
     for x = world_obj:getSquare():getX() - 1, world_obj:getSquare():getX() + 1 do
@@ -53,16 +53,20 @@ local SearchForSpotter = function(mortar_menu, world_obj)
 
                     if instanceof(obj, "IsoPlayer") then
 
-                        if spotter_table[obj:getUsername()] == nil then
-                            spotter_table[obj:getUsername()] = true
+                        if obj:getUsername() ~= operator:getUsername() then
+                            if spotter_table[obj:getUsername()] == nil then
+                                spotter_table[obj:getUsername()] = true
 
-                            print("Checking player for spotter")
-                            local walkietalkie_check = CheckSpotterForWalkieTalkie(obj)
-                            if walkietalkie_check then
-                                mortar_menu:addOption(getText("UI_ContextMenu_Spotter") .. obj:getUsername(), _, SetSpotter, obj)
+                                print("Checking player for spotter")
+                                local walkietalkie_check = CheckSpotterForWalkieTalkie(obj)
+                                if walkietalkie_check then
+                                    mortar_menu:addOption(getText("UI_ContextMenu_Spotter") .. obj:getUsername(), _, SetSpotter, obj)
+                                end
+
                             end
-
                         end
+
+
                     end
                 end
             end
@@ -75,7 +79,7 @@ end
 
 local CreateMortarContextMenu = function(player, context, world_objects, _)
 
-    --local player_obj = getSpecificPlayer(player)
+    local player_obj = getSpecificPlayer(player)
     local mortar_menu
     local root_menu
     spotter_table = {}        -- Reset
@@ -90,7 +94,7 @@ local CreateMortarContextMenu = function(player, context, world_objects, _)
             end
 
             context:addSubMenu(root_menu, mortar_menu)
-            SearchForSpotter(mortar_menu, v)
+            SearchForSpotter(player_obj, mortar_menu, v)
 
 
 
