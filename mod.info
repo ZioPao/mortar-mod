@@ -1,4 +1,6 @@
-name=Mortar Mod
-id=mortar
-description=Mortar mod description
+name=Mortar
+id=Mortar
+description=Mortar
 poster=poster.png
+tiledef=mortar 2701
+pack=mortar
