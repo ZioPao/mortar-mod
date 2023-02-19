@@ -19,8 +19,9 @@ https://ko-fi.com/glytch3r
 Discord: Glytch3r#2892
 
 ----------------------------------------------------------------------------------------------------------------------------
---]] Mortar = {}
+--]]
 
+Mortar = {}
 Mortar.directions = {
     ["N"] = {0, -1},
     ["NE"] = {math.sqrt(2) / 2, -math.sqrt(2) / 2},
@@ -35,6 +36,8 @@ Mortar.distMin = 4
 Mortar.distMax = 12
 Mortar.distSteps = 2
 Mortar.rad = 5
+
+
 function Mortar.init()
     -- TODO This triggers an error in the menu, we should start it at the start of the game
     local pl = getPlayer()
@@ -52,22 +55,11 @@ function Mortar.debris(square)
     end
     ISInventoryPage.renderDirty = true;
 end
-
 function Mortar.roll(chance)
     local roll = ZombRand(1, 101);
     if roll <= chance then
         return true
     end
-end
-
-function testBoom(pl, bommX, bommY, bommZ, Xtype)
-    local args = {
-        x = bommX,
-        y = bommY,
-        z = bommZ
-    }
-    sendClientCommand(pl, 'object', Xtype, args)
-    -- getSoundManager():PlayWorldSound("explode",  trajectory, 0, Mortar.distMax*2, 1.0, false);
 end
 function Mortar.groundZero(bommX, bommY, bommZ, radius)
     local cell = getCell()
@@ -102,41 +94,37 @@ end
 function Mortar.fire(rad, dist)
     local pl = getPlayer()
 
-    -- TODO Mostly for test, we should need a spotter in any case
     if Mortar.spotter == nil then
-        Mortar.spotter = pl
+        pl:Say("I don't have a spotter right now")
+        return
     end
 
+    if Mortar.CheckSpotterForWalkieTalkie(Mortar.spotter) then
+        local nx = Mortar.directions[tostring(Mortar.spotter:getDir())][1];
+        local ny = Mortar.directions[tostring(Mortar.spotter:getDir())][2]
+        local bommX = math.floor(pl:getX() + (nx * dist))
+        local bommY = math.floor(pl:getY() + (ny * dist))
+        local bommZ = pl:getZ()
+        -- TODO add a checker and setter for z trajectory based on the highest floor available
+        local trajectory = getCell():getGridSquare(bommX, bommY, bommZ)
+        local Xtype = 'addExplosionOnSquare'
+        local finalRad = ZombRand(3, rad)
+        -- Mortar.groundZero(bommX,bommY,bommZ,rad,Xtype)
+        Mortar.groundZero(bommX, bommY, bommZ, finalRad)
+        -- local args = { x = bommX, y = bommY, z = bommZ }
+        -- sendClientCommand(pl, 'object', 'addExplosionOnSquare', args)
+        -- sendClientCommand(pl, 'object', 'addFireOnSquare', args)
+        -- getSoundManager():PlayWorldSound("explode",  trajectory, 0, Mortar.distMax*2, 1.0, false);
 
-    local nx = Mortar.directions[tostring(Mortar.spotter:getDir())][1];
-    local ny = Mortar.directions[tostring(Mortar.spotter:getDir())][2]
-    local bommX = math.floor(pl:getX() + (nx * dist))
-    local bommY = math.floor(pl:getY() + (ny * dist))
-    local bommZ = pl:getZ()
-    -- TODO add a checker and setter for z trajectory based on the highest floor available
-    local trajectory = getCell():getGridSquare(bommX, bommY, bommZ)
-    local Xtype = 'addExplosionOnSquare'
-    local finalRad = ZombRand(3, rad)
-    -- Mortar.groundZero(bommX,bommY,bommZ,rad,Xtype)
-    Mortar.groundZero(bommX, bommY, bommZ, finalRad)
-    -- local args = { x = bommX, y = bommY, z = bommZ }
-    -- sendClientCommand(pl, 'object', 'addExplosionOnSquare', args)
-    -- sendClientCommand(pl, 'object', 'addFireOnSquare', args)
-    -- getSoundManager():PlayWorldSound("explode",  trajectory, 0, Mortar.distMax*2, 1.0, false);
+
+    else
+        pl:Say("My old spotter does not have a Walkie Talkie anymore")
+        Mortar.spotter = nil
+    end
+
 end
 
---[[
---local Xtype = 'addFireOnSquare'
-local Xtype = 'addExplosionOnSquare'
-local pl = getPlayer()
-testBoom(pl, 11964,6912,0,Xtype)
---local teleportto = {12329,6755,0}
-local teleportto={11964,6912,0}
-SendCommandToServer(tostring("/teleportto \"".. teleportto[1]..','..teleportto[2]..','..teleportto[3]  .."\" " .. " \""))
- ]]
 
--- sendClientCommand(pl, 'object', 'addExplosionOnSquare', args)
--- sendClientCommand(pl, 'object', 'addFireOnSquare', args)
 function Mortar.keys(key)
     local pl = getPlayer()
     local dist = pl:getModData()['mortarDistance'] or 8
@@ -194,28 +182,9 @@ function Mortar.keys(key)
     print(getPlayer():getSquare():getY()) ]]
 
 end
-Events.OnKeyPressed.Remove(Mortar.keys);
-Events.OnKeyPressed.Add(Mortar.keys);
 
---[[
-function ISWorldObjectContextMenu.getSquaresInRadius(worldX, worldY, worldZ, radius, doneSquares, squares)
-	local minX = math.floor(worldX - radius)
-	local maxX = math.ceil(worldX + radius)
-	local minY = math.floor(worldY - radius)
-	local maxY = math.ceil(worldY + radius)
-	for y = minY,maxY do
-		for x = minX,maxX do
-			local square = getCell():getGridSquare(x, y, worldZ)
-			if square and not doneSquares[square] then
-				doneSquares[square] = true
-				table.insert(squares, square)
-			end
-		end
-	end
-end
+Events.OnGameStart(function()
+    Events.OnKeyPressed.Remove(Mortar.keys)
+    Events.OnKeyPressed.Add(Mortar.keys)
+end)
 
-local x,y,z = getPlayer():getX(), getPlayer():getY(), getPlayer():getZ() 
-getGameTime():getModData()['MortarHit'] ='wew'
-print(getGameTime():getModData()['MortarHit'])
-getGameTime():getModData()[
-]]

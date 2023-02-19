@@ -11,36 +11,6 @@ local SetSpotter = function(_, player)
 end
 
 
---- Check if the found player is acceptable as a spotter
----@param spotter IsoPlayer
-local CheckSpotterForWalkieTalkie = function(spotter)
-
-    local accepted_item = "Radio.WalkieTalkie"
-
-    -- TODO Should check even the belt?
-    local primary_hand_item = spotter:getPrimaryHandItem()
-    local secondary_hand_item = spotter:getSecondaryHandItem()
-
-
-    if primary_hand_item then
-        local primary_item_type = primary_hand_item:getFullType()
-
-        if string.find(primary_item_type,accepted_item) then
-            return true
-        end
-
-    elseif secondary_hand_item then
-        local secondary_item_type = secondary_hand_item:getFullType()
-
-        if string.find(secondary_item_type, accepted_item) then
-            return true
-        end
-    end
-
-    return false
-
-
-end
 
 
 local SearchForSpotter = function(operator, mortar_menu, world_obj)
@@ -61,7 +31,7 @@ local SearchForSpotter = function(operator, mortar_menu, world_obj)
                                 spotter_table[obj:getUsername()] = true
 
                                 print("Checking player for spotter")
-                                local walkietalkie_check = CheckSpotterForWalkieTalkie(obj)
+                                local walkietalkie_check = Mortar.CheckSpotterForWalkieTalkie(obj)
                                 if walkietalkie_check then
                                     mortar_menu:addOption(getText("UI_ContextMenu_Spotter") .. obj:getUsername(), _, SetSpotter, obj)
                                 end
