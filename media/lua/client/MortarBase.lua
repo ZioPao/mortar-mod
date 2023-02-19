@@ -43,7 +43,7 @@ Mortar.directions = {
 Mortar.distMin = 4
 Mortar.distMax = 12
 Mortar.distSteps = 2
-Mortar.rad = 5
+Mortar.rad = SandboxVars.Mortar.Radius or 8
 
 
 
@@ -56,7 +56,7 @@ function Mortar.init()
 
     local pl = getPlayer()
     if not pl:getModData()['mortarDistance'] then
-        pl:getModData()['mortarDistance'] = 8
+        pl:getModData()['mortarDistance'] = SandboxVars.Mortar.Radius or 8
     end
 
 
@@ -65,7 +65,8 @@ Events.OnGameStart.Add(Mortar.init)
 
 
 Mortar.SpawnDebris = function(square)
-    local dug = IsoObject.new(square, "mortar_" .. ZombRand(64), "", false)
+    -- the tile starts at 0 and ends 64 -8 (8  mortar tiles)
+    local dug = IsoObject.new(square, "mortar_" .. ZombRand(63)-8, "", false) 
     square:AddTileObject(dug)
     if isClient() then
         dug:transmitCompleteItemToServer()
@@ -93,7 +94,7 @@ Mortar.GenGroundZero = function(bommX, bommY, bommZ, radius)
                 if sq:Is(IsoFlagType.burning) then 
                     sq:getModData()['mortarHit'] = true
 
-                    -- TODO OnTIck is overkill imo
+                    -- TODO OnTIck is overkill imo -- i dont know what to do
                     Events.OnTick.Add(function() 
                         if sq:getModData()['mortarHit'] and not sq:Is(IsoFlagType.burning)  then 
                             sq:getModData()['mortarHit'] = nil
@@ -153,7 +154,7 @@ Mortar.StartFiring = function(_, rad, dist)
     local pl = getPlayer()
     print("Mortar: Trying to fire")
     -- SP or when there's no need for a spotter
-    if not isServer() and not isClient() or not SandboxVars.Mortar.NecessarySpotter then
+    if not isServer() and not isClient() or not SandboxVars.Mortar.NecessarySpotter then -- i change the default to false
         print("SP or no Necessary Spotter")
         Mortar.spotter = pl
         Mortar.ExecuteFire(pl, rad, dist)
@@ -163,7 +164,7 @@ Mortar.StartFiring = function(_, rad, dist)
             return
         end
         if Mortar.CheckSpotterForWalkieTalkie(Mortar.spotter) then
-            -- TODO Add a check for visibility
+            -- TODO Add a check for visibility -- probably a sandbox will do
             Mortar.ExecuteFire(pl, rad, dist)
         else
             pl:Say("My spotter has no Walkie Talkie on their hand")
