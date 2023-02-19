@@ -18,8 +18,11 @@ https://www.glytch3r.com
 https://ko-fi.com/glytch3r
 Discord: Glytch3r#2892
 
+Join Glytch3r Mods Discord Server:
+https://discord.gg/2skchrKrDv 
 ----------------------------------------------------------------------------------------------------------------------------
 --]]
+
 
 MortarKill = {}
 
@@ -30,7 +33,7 @@ function MortarKill.killzed(zed)
 		local object = square:getObjects():get(i-1)
 		if instanceof(object, "IsoFire") and not object:isPermanent() and square:getModData()['mortarHit']  then
 			if instanceof(zombie, "IsoZombie") then
-				zed:Kill(zed); break		
+				zed:Kill(zed); break
 			end
 		end
 	end

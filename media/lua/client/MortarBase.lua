@@ -18,8 +18,11 @@ https://www.glytch3r.com
 https://ko-fi.com/glytch3r
 Discord: Glytch3r#2892
 
+Join Glytch3r Mods Discord Server:
+https://discord.gg/2skchrKrDv 
 ----------------------------------------------------------------------------------------------------------------------------
 --]]
+
 
 Mortar = {}
 Mortar.directions = {
@@ -51,10 +54,6 @@ function Mortar.init()
     if not pl:getModData()['mortarDistance'] then
         pl:getModData()['mortarDistance'] = 8
     end
-
-
-
-
 
 
 end
