@@ -50,13 +50,17 @@ function MortarRotation.getMortar()
                 local objects = sq:getObjects()
                 for i = 0, objects:size() - 1 do
                     local obj = objects:get(i)
-                    local sprite = obj:getSprite():getName()
-                    if sprite ~= nil then
-                        print(sprite)
-                        if luautils.stringStarts(sprite, "mortar_weapon_") then
-                            return obj
+                    local sprite = obj:getSprite()
+                    if sprite then
+                        local sprite_name = sprite:getName()
+                        if sprite_name ~= nil then
+                            if luautils.stringStarts(sprite, "mortar_weapon_") then
+                                print(sprite)
+                                return obj
+                            end
                         end
                     end
+
                 end
 
             end
@@ -73,11 +77,16 @@ end
 
 function MortarRotation.setMortar()
     local mortar = MortarRotation.getMortar()
-    print("Searching mortar")
+    --print("Searching mortar")
     if not mortar then
-        return
+        mortar = MortarRotation.current_mortar
+
+        if MortarRotation.current_mortar == nil then
+            return
+        end
     end
 
+    MortarRotation.current_mortar = mortar
     print("Found mortar")
 
     local dir = tostring(getPlayer():getDir())

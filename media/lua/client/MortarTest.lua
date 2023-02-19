@@ -41,10 +41,10 @@ function SpawnMortarItem()
 
 end
 
---Events.OnGameStart.Add(function()
---    Events.OnPlayerMove.Add(MortarRotation.setMortar)
---
---end)
+Events.OnGameStart.Add(function()
+    Events.OnPlayerMove.Add(MortarRotation.setMortar)
+
+end)
 
 --[[
 --local Xtype = 'addFireOnSquare'
