@@ -25,6 +25,7 @@ https://discord.gg/2skchrKrDv
 
 MortarRotation = {}
 
+-- TODO something here is wrong, check it again
 MortarRotation.tileobj = {
     ["N"] = "mortar_56",
     ["NE"] = "mortar_57",

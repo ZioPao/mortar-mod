@@ -11,6 +11,8 @@ function testBoom(pl, bommX, bommY, bommZ, Xtype)
     -- getSoundManager():PlayWorldSound("explode",  trajectory, 0, Mortar.distMax*2, 1.0, false);
 end
 
+-- 7243
+-- 7339
 
 function SpawnMortarItem()
 
@@ -28,7 +30,7 @@ function SpawnMortarItem()
 
 
 
-    createTile(sprite, sq)
+    createTile(sprite, sq)          -- TODO Can't access the tile from here, fuck sake.
 
 
     --mortar:getSprite():setName(sprite)
@@ -41,10 +43,10 @@ function SpawnMortarItem()
 
 end
 
-Events.OnGameStart.Add(function()
-    Events.OnPlayerMove.Add(MortarRotation.setMortar)
-
-end)
+--Events.OnGameStart.Add(function()
+--    Events.OnPlayerMove.Add(MortarRotation.setMortar)
+--
+--end)
 
 --[[
 --local Xtype = 'addFireOnSquare'
@@ -83,3 +85,35 @@ getGameTime():getModData()['MortarHit'] ='wew'
 print(getGameTime():getModData()['MortarHit'])
 getGameTime():getModData()[
 ]]
+
+
+
+--for x = world_obj:getSquare():getX() - 1, world_obj:getSquare():getX() + 1 do
+--    for y = world_obj:getSquare():getY() - 1, world_obj:getSquare():getY() + 1 do
+--        local sq = getCell():getGridSquare(x,y,world_obj:getSquare():getZ())
+--
+--        if sq then
+--            for i = 0, sq:getMovingObjects():size() - 1 do
+--                local obj = sq:getMovingObjects():get(i)
+--
+--                if instanceof(obj, "IsoPlayer") then
+--
+--                    if obj:getUsername() ~= operator:getUsername() then
+--                        if spotter_table[obj:getUsername()] == nil then
+--                            spotter_table[obj:getUsername()] = true
+--
+--                            print("Checking player for spotter")
+--                            local walkietalkie_check = Mortar.CheckPlayerForWalkieTalkie(obj)
+--                            if walkietalkie_check then
+--                                mortar_menu:addOption(getText("UI_ContextMenu_Spotter") .. obj:getUsername(), _, SetSpotter, obj)
+--                            end
+--
+--                        end
+--                    end
+--
+--
+--                end
+--            end
+--        end
+--    end
+--end

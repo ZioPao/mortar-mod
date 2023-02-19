@@ -9,7 +9,7 @@ local HandleMortarKeybinds = function(key)
     end
     if (key == 83) then -- numpad .
         -- Mortar.init()
-        Mortar.StartFiring(_,10, dist)
+        Mortar.StartFiring(_,25, 95)
         return key
     end
     if (key == 211) then -- DEL

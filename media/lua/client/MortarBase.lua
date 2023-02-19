@@ -137,10 +137,14 @@ Mortar.GenGroundZero = function(bommX, bommY, bommZ, radius)
     end
 end
 Mortar.ExecuteFire = function(operator, rad, dist)
-    local nx = Mortar.directions[tostring(Mortar.spotter:getDir())][1];
+
+    local nx = Mortar.directions[tostring(Mortar.spotter:getDir())][1]
     local ny = Mortar.directions[tostring(Mortar.spotter:getDir())][2]
-    local bommX = math.floor(operator:getX() + (nx * dist))
-    local bommY = math.floor(operator:getY() + (ny * dist))
+
+    -- Since we want to "simulate" this stuff and we can't really start from the operator with a system
+    -- like this, we'll have to use the spotter as a base...
+    local bommX = math.floor(Mortar.spotter:getX() + (nx * dist))
+    local bommY = math.floor(Mortar.spotter:getY() + (ny * dist))
     local bommZ = operator:getZ()
     -- TODO add a checker and setter for z trajectory based on the highest floor available
     local trajectory = getCell():getGridSquare(bommX, bommY, bommZ)
@@ -163,7 +167,7 @@ Mortar.StartFiring = function(_, rad, dist)
             pl:Say("I don't have a spotter right now")
             return
         end
-        if Mortar.CheckSpotterForWalkieTalkie(Mortar.spotter) then
+        if Mortar.CheckPlayerForWalkieTalkie(Mortar.spotter) then
             -- TODO Add a check for visibility -- probably a sandbox will do
             Mortar.ExecuteFire(pl, rad, dist)
         else
