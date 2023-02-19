@@ -71,7 +71,7 @@ Mortar.SpawnDebris = function(square)
     if isClient() then
         dug:transmitCompleteItemToServer()
     end
-    ISInventoryPage.renderDirty = true
+    --ISInventoryPage.renderDirty = true
 end
 Mortar.roll = function(chance)
     local roll = ZombRand(1, 101);
@@ -79,10 +79,22 @@ Mortar.roll = function(chance)
         return true
     end
 end
-Mortar.GenGroundZero = function(bommX, bommY, bommZ, radius)
-    local cell = getCell()
-    local playerObj = getSpecificPlayer(0)
-    playerObj:startMuzzleFlash()
+Mortar.GenGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
+    local cell = getWorld():getCell()      -- We need to get the correct cell, not this one
+    operator:startMuzzleFlash()
+
+    print("_____________________________")
+    print(bommX)
+    print(radius)
+
+    print(bommY)
+    print(radius)
+
+    print(bommZ)
+    print(radius)
+
+
+
     for x = bommX - radius, bommX + radius + 1 do
         for y = bommY - radius, bommY + radius + 1 do
             if IsoUtils.DistanceTo(bommX, bommY, x + 0.5, y + 0.5) <= radius then
@@ -108,7 +120,7 @@ Mortar.GenGroundZero = function(bommX, bommY, bommZ, radius)
                         y = y,
                         z = bommZ
                     }
-                    sendClientCommand(playerObj, 'object', Xtype, args)
+                    sendClientCommand(spotter, 'object', Xtype, args)
                 end
                 chance = 40
                 if Mortar.roll(chance) then
@@ -136,43 +148,52 @@ Mortar.GenGroundZero = function(bommX, bommY, bommZ, radius)
         end
     end
 end
-Mortar.ExecuteFire = function(operator, rad, dist)
+Mortar.ExecuteFire = function(operator, spotter, rad, dist)
 
-    local nx = Mortar.directions[tostring(Mortar.spotter:getDir())][1]
-    local ny = Mortar.directions[tostring(Mortar.spotter:getDir())][2]
+    local nx = Mortar.directions[tostring(spotter:getDir())][1]
+    local ny = Mortar.directions[tostring(spotter:getDir())][2]
 
     -- Since we want to "simulate" this stuff and we can't really start from the operator with a system
     -- like this, we'll have to use the spotter as a base...
-    local bommX = math.floor(Mortar.spotter:getX() + (nx * dist))
-    local bommY = math.floor(Mortar.spotter:getY() + (ny * dist))
+    local bommX = math.floor(spotter:getX() + (nx * dist))
+    local bommY = math.floor(spotter:getY() + (ny * dist))
     local bommZ = operator:getZ()
     -- TODO add a checker and setter for z trajectory based on the highest floor available
     local trajectory = getCell():getGridSquare(bommX, bommY, bommZ)
     local Xtype = 'addExplosionOnSquare'
     local finalRad = ZombRand(3, rad)
-    Mortar.GenGroundZero(bommX, bommY, bommZ, finalRad)
+
+    print(bommX)
+    print(bommY)
+    print(bommZ)
+    print(finalRad)
+
+
+    Mortar.GenGroundZero(operator, spotter, bommX, bommY, bommZ, finalRad)
 end
 
 
-Mortar.StartFiring = function(_, rad, dist)
-    local pl = getPlayer()
+Mortar.StartFiring = function(operator, spotter, rad, dist)
     print("Mortar: Trying to fire")
     -- SP or when there's no need for a spotter
     if not isServer() and not isClient() or not SandboxVars.Mortar.NecessarySpotter then -- i change the default to false
         print("SP or no Necessary Spotter")
         Mortar.spotter = pl
-        Mortar.ExecuteFire(pl, rad, dist)
+        Mortar.ExecuteFire(operator, spotter, rad, dist)
     else
-        if Mortar.spotter == nil then
-            pl:Say("I don't have a spotter right now")
+        if spotter == nil then
+            print("No spotter")
+            operator:Say("I don't have a spotter right now")
             return
         end
-        if Mortar.CheckPlayerForWalkieTalkie(Mortar.spotter) then
+
+        print("Checking again for walkie talkie")
+        if Mortar.CheckPlayerForWalkieTalkie(spotter) then
             -- TODO Add a check for visibility -- probably a sandbox will do
-            Mortar.ExecuteFire(pl, rad, dist)
+            Mortar.ExecuteFire(operator, spotter, rad, dist)
         else
-            pl:Say("My spotter has no Walkie Talkie on their hand")
-            Mortar.spotter = nil
+            print("No walkie talkie on spotter")
+            operator:Say("My spotter has no Walkie Talkie on their hand")
         end
 
     end

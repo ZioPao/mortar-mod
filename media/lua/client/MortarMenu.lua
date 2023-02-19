@@ -9,10 +9,6 @@ local SetSpotter = function(_, player)
     -- TODO Manage cases where the spotter dies
     -- TODO Manage case when the player stopped using the mortar (should unset the spotter)
 end
-
-
-
-
 local SearchForSpotter = function(operator, mortar_menu, world_obj)
     -- TODO This is limited by the cell. Won't work.
     print("Mortar: Searching spotter")
@@ -35,7 +31,21 @@ local SearchForSpotter = function(operator, mortar_menu, world_obj)
     end
 end
 
+local SendStartFiringToServer = function(_)
 
+
+
+    if Mortar.spotter ~= nil then
+        local op_id = getPlayer():getOnlineID()
+        local spotter_id = Mortar.spotter:getOnlineID()
+        sendClientCommand(getPlayer(), "Mortar", "AcceptMortarShot", {operator = op_id, spotter = spotter_id})
+
+
+    else
+        print("Can't send command, no spotter")
+    end
+
+end
 
 
 local CreateMortarContextMenu = function(player, context, world_objects, _)
@@ -60,7 +70,7 @@ local CreateMortarContextMenu = function(player, context, world_objects, _)
 
                     context:addSubMenu(root_menu, mortar_menu)
 
-                    shoot_option = mortar_menu:addOption(getText("UI_ContextMenu_ShootMortar"), nil, Mortar.StartFiring, 8, dist )      -- TODO Set the sandboxvars
+                    shoot_option = mortar_menu:addOption(getText("UI_ContextMenu_ShootMortar"), nil, SendStartFiringToServer)      -- TODO Set the sandboxvars
 
                     -- TODO Set distance
                     -- Distance should be handled by the spotter... Can't do it automatically, it wouldn't make any sense and it would be forever broken

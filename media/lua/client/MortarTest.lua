@@ -16,6 +16,8 @@ end
 
 function SpawnMortarItem()
 
+    -- THIS IS NOT SYNCED IN MP!!!!!!!!
+
 
     --pl_inv:AddItem()
     local pl = getPlayer()
