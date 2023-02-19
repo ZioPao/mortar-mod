@@ -19,9 +19,7 @@ https://ko-fi.com/glytch3r
 Discord: Glytch3r#2892
 
 ----------------------------------------------------------------------------------------------------------------------------
---]]
-
-Mortar = {}
+--]] Mortar = {}
 
 Mortar.directions = {
     ["N"] = {0, -1},
@@ -38,6 +36,7 @@ Mortar.distMax = 12
 Mortar.distSteps = 2
 Mortar.rad = 5
 function Mortar.init()
+    -- TODO This triggers an error in the menu, we should start it at the start of the game
     local pl = getPlayer()
     if not pl:getModData()['mortarDistance'] then
         pl:getModData()['mortarDistance'] = 8
@@ -46,7 +45,7 @@ end
 Events.OnGameStart.Add(Mortar.init)
 
 function Mortar.debris(square)
-    local dug = IsoObject.new(square, "floors_burnt_01_" .. ZombRand(1, 3), "", false)
+    local dug = IsoObject.new(square, "mortar_" .. ZombRand(64), "", false)
     square:AddTileObject(dug)
     if isClient() then
         dug:transmitCompleteItemToServer();
@@ -60,6 +59,16 @@ function Mortar.roll(chance)
         return true
     end
 end
+
+function testBoom(pl, bommX, bommY, bommZ, Xtype)
+    local args = {
+        x = bommX,
+        y = bommY,
+        z = bommZ
+    }
+    sendClientCommand(pl, 'object', Xtype, args)
+    -- getSoundManager():PlayWorldSound("explode",  trajectory, 0, Mortar.distMax*2, 1.0, false);
+end
 function Mortar.groundZero(bommX, bommY, bommZ, radius)
     local cell = getCell()
     local playerObj = getSpecificPlayer(0)
@@ -68,11 +77,9 @@ function Mortar.groundZero(bommX, bommY, bommZ, radius)
         for y = bommY - radius, bommY + radius + 1 do
             if IsoUtils.DistanceTo(bommX, bommY, x + 0.5, y + 0.5) <= radius then
                 local sq = cell:getGridSquare(x, y, bommZ)
-
+                local Xtype = 'addFireOnSquare'
                 if Mortar.roll(20) then
                     Xtype = 'addSmokeOnSquare'
-                else
-                    local Xtype = 'addFireOnSquare'
                 end
                 if Mortar.roll(60) then
                     local args = {
@@ -94,8 +101,15 @@ end
 
 function Mortar.fire(rad, dist)
     local pl = getPlayer()
-    local nx = Mortar.directions[tostring(pl:getDir())][1];
-    local ny = Mortar.directions[tostring(pl:getDir())][2]
+
+    -- TODO Mostly for test, we should need a spotter in any case
+    if Mortar.spotter == nil then
+        Mortar.spotter = pl
+    end
+
+
+    local nx = Mortar.directions[tostring(Mortar.spotter:getDir())][1];
+    local ny = Mortar.directions[tostring(Mortar.spotter:getDir())][2]
     local bommX = math.floor(pl:getX() + (nx * dist))
     local bommY = math.floor(pl:getY() + (ny * dist))
     local bommZ = pl:getZ()
@@ -111,11 +125,10 @@ function Mortar.fire(rad, dist)
     -- getSoundManager():PlayWorldSound("explode",  trajectory, 0, Mortar.distMax*2, 1.0, false);
 end
 
-
---[[ 
+--[[
 --local Xtype = 'addFireOnSquare'
 local Xtype = 'addExplosionOnSquare'
-local pl = getPlayer() 
+local pl = getPlayer()
 testBoom(pl, 11964,6912,0,Xtype)
 --local teleportto = {12329,6755,0}
 local teleportto={11964,6912,0}
@@ -125,14 +138,12 @@ SendCommandToServer(tostring("/teleportto \"".. teleportto[1]..','..teleportto[2
 -- sendClientCommand(pl, 'object', 'addExplosionOnSquare', args)
 -- sendClientCommand(pl, 'object', 'addFireOnSquare', args)
 function Mortar.keys(key)
-
-    -- TODO This will trigger errors on the menu. Move this on OnGameStart
     local pl = getPlayer()
     local dist = pl:getModData()['mortarDistance'] or 8
     if not pl then
         return
     end
-    if (key == 83) then -- NUMPAD .
+    if (key == 83) then -- num del
         -- Mortar.init()
         Mortar.fire(10, dist)
         return key
@@ -140,7 +151,7 @@ function Mortar.keys(key)
     if (key == 211) then -- DEL
         local teleportto = {12329, 6755, 0}
         SendCommandToServer(tostring(
-            "/teleportto \"" .. teleportto[1] .. ',' .. teleportto[2] .. ',' .. teleportto[3] .. "\" " .. " \""))
+                "/teleportto \"" .. teleportto[1] .. ',' .. teleportto[2] .. ',' .. teleportto[3] .. "\" " .. " \""))
         return key
     end
 
@@ -186,7 +197,7 @@ end
 Events.OnKeyPressed.Remove(Mortar.keys);
 Events.OnKeyPressed.Add(Mortar.keys);
 
---[[ 
+--[[
 function ISWorldObjectContextMenu.getSquaresInRadius(worldX, worldY, worldZ, radius, doneSquares, squares)
 	local minX = math.floor(worldX - radius)
 	local maxX = math.ceil(worldX + radius)
