@@ -1,0 +1,10 @@
+VERSION = 1,
+
+option Mortar.NecessarySpotter
+{
+    type = boolean,
+    default = true,
+
+    page = Mortar,
+    translation = Mortar_NecessarySpotter,
+}

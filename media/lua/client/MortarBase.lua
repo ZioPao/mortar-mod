@@ -38,12 +38,25 @@ Mortar.distSteps = 2
 Mortar.rad = 5
 
 
+
+
+
+
 function Mortar.init()
-    -- TODO This triggers an error in the menu, we should start it at the start of the game
+
+    print("Mortar: Initializing")
+
+
     local pl = getPlayer()
     if not pl:getModData()['mortarDistance'] then
         pl:getModData()['mortarDistance'] = 8
     end
+
+
+
+
+
+
 end
 Events.OnGameStart.Add(Mortar.init)
 
@@ -91,100 +104,43 @@ function Mortar.groundZero(bommX, bommY, bommZ, radius)
     end
 end
 
-function Mortar.fire(rad, dist)
+
+Mortar.ExecuteFire = function(operator, rad, dist)
+    local nx = Mortar.directions[tostring(Mortar.spotter:getDir())][1];
+    local ny = Mortar.directions[tostring(Mortar.spotter:getDir())][2]
+    local bommX = math.floor(operator:getX() + (nx * dist))
+    local bommY = math.floor(operator:getY() + (ny * dist))
+    local bommZ = operator:getZ()
+    -- TODO add a checker and setter for z trajectory based on the highest floor available
+    local trajectory = getCell():getGridSquare(bommX, bommY, bommZ)
+    local Xtype = 'addExplosionOnSquare'
+    local finalRad = ZombRand(3, rad)
+    Mortar.groundZero(bommX, bommY, bommZ, finalRad)
+end
+
+
+Mortar.StartFiring = function(rad, dist)
     local pl = getPlayer()
-
-    if Mortar.spotter == nil then
-        pl:Say("I don't have a spotter right now")
-        return
-    end
-
-    if Mortar.CheckSpotterForWalkieTalkie(Mortar.spotter) then
-        local nx = Mortar.directions[tostring(Mortar.spotter:getDir())][1];
-        local ny = Mortar.directions[tostring(Mortar.spotter:getDir())][2]
-        local bommX = math.floor(pl:getX() + (nx * dist))
-        local bommY = math.floor(pl:getY() + (ny * dist))
-        local bommZ = pl:getZ()
-        -- TODO add a checker and setter for z trajectory based on the highest floor available
-        local trajectory = getCell():getGridSquare(bommX, bommY, bommZ)
-        local Xtype = 'addExplosionOnSquare'
-        local finalRad = ZombRand(3, rad)
-        -- Mortar.groundZero(bommX,bommY,bommZ,rad,Xtype)
-        Mortar.groundZero(bommX, bommY, bommZ, finalRad)
-        -- local args = { x = bommX, y = bommY, z = bommZ }
-        -- sendClientCommand(pl, 'object', 'addExplosionOnSquare', args)
-        -- sendClientCommand(pl, 'object', 'addFireOnSquare', args)
-        -- getSoundManager():PlayWorldSound("explode",  trajectory, 0, Mortar.distMax*2, 1.0, false);
-
-
+    print("Mortar: Trying to fire")
+    -- SP or when there's no need for a spotter
+    if not isServer() and not isClient() or not SandboxVars.Mortar.NecessarySpotter then
+        print("SP or no Necessary Spotter")
+        Mortar.spotter = pl
+        Mortar.ExecuteFire(pl, rad, dist)
     else
-        pl:Say("My old spotter does not have a Walkie Talkie anymore")
-        Mortar.spotter = nil
+        if Mortar.spotter == nil then
+            pl:Say("I don't have a spotter right now")
+            return
+        end
+        if Mortar.CheckSpotterForWalkieTalkie(Mortar.spotter) then
+            -- TODO Add a check for visibility
+            Mortar.ExecuteFire(pl, rad, dist)
+        else
+            pl:Say("My spotter has no Walkie Talkie on their hand")
+            Mortar.spotter = nil
+        end
+
     end
+
 
 end
-
-
-function Mortar.keys(key)
-    local pl = getPlayer()
-    local dist = pl:getModData()['mortarDistance'] or 8
-    if not pl then
-        return
-    end
-    if (key == 83) then -- num del
-        -- Mortar.init()
-        Mortar.fire(10, dist)
-        return key
-    end
-    if (key == 211) then -- DEL
-        local teleportto = {12329, 6755, 0}
-        SendCommandToServer(tostring(
-                "/teleportto \"" .. teleportto[1] .. ',' .. teleportto[2] .. ',' .. teleportto[3] .. "\" " .. " \""))
-        return key
-    end
-
-    if (key == 79) then -- num1
-        -- reduce distance
-        local pl = getPlayer()
-        local dist = pl:getModData()['mortarDistance']
-        if dist > Mortar.distMin then
-            dist = dist - Mortar.distSteps
-        end
-        pl:Say(tostring(dist));
-        print(dist)
-        return key
-    end
-
-    if (key == 80) then -- num2
-        local pl = getPlayer()
-        local dist = pl:getModData()['mortarDistance']
-        if dist < Mortar.distMax then
-            dist = dist - Mortar.distSteps
-        end
-        pl:Say(tostring(dist));
-        print(dist)
-        return key
-    end
-
-    if (key == 81) then -- num3
-        pl:Say(tostring(dist))
-        print('-------------')
-        print('dist: ' .. dist)
-        print('distMin: ' .. Mortar.distMin)
-        print('distMax: ' .. Mortar.distMax)
-        print('distSteps: ' .. Mortar.distSteps)
-        print('-------------')
-        return key
-    end
-    --[[     print(getPlayer():getSquare():getAdjacentSquare(getPlayer():getDir()):getX())
-    print(getPlayer():getSquare():getAdjacentSquare(getPlayer():getDir()):getY())
-    print(getPlayer():getSquare():getX())
-    print(getPlayer():getSquare():getY()) ]]
-
-end
-
-Events.OnGameStart(function()
-    Events.OnKeyPressed.Remove(Mortar.keys)
-    Events.OnKeyPressed.Add(Mortar.keys)
-end)
-
