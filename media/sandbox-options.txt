@@ -3,8 +3,18 @@ VERSION = 1,
 option Mortar.NecessarySpotter
 {
     type = boolean,
-    default = true,
+    default = false,
 
     page = Mortar,
     translation = Mortar_NecessarySpotter,
+}
+
+
+option Mortar.Radius
+{
+    type = integer,
+    default = 8,
+
+    page = Mortar,
+    translation = Mortar_Radius,
 }

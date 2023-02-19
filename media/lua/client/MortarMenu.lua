@@ -60,6 +60,7 @@ local CreateMortarContextMenu = function(player, context, world_objects, _)
 
     -- TODO won't work on old spawned mortars
     for _, v in pairs(world_objects) do
+
         local sprite = v:getSpriteName()
         if sprite ~= nil then
             print(sprite_name)

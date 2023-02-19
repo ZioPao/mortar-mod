@@ -2,4 +2,5 @@ Sandbox_EN = {
     Sandbox_Mortar = "Mortar Mod",
 
     Sandbox_Mortar_NecessarySpotter = "Spotter necessary to operate the mortar",
+    Sandbox_Mortar_Radius = "Maximum blast radius",
 }
