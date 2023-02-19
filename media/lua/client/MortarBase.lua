@@ -59,21 +59,22 @@ function Mortar.init()
 end
 Events.OnGameStart.Add(Mortar.init)
 
-function Mortar.debris(square)
+
+Mortar.SpawnDebris = function(square)
     local dug = IsoObject.new(square, "mortar_" .. ZombRand(64), "", false)
     square:AddTileObject(dug)
     if isClient() then
-        dug:transmitCompleteItemToServer();
+        dug:transmitCompleteItemToServer()
     end
-    ISInventoryPage.renderDirty = true;
+    ISInventoryPage.renderDirty = true
 end
-function Mortar.roll(chance)
+Mortar.roll = function(chance)
     local roll = ZombRand(1, 101);
     if roll <= chance then
         return true
     end
 end
-function Mortar.groundZero(bommX, bommY, bommZ, radius)
+Mortar.GenGroundZero = function(bommX, bommY, bommZ, radius)
     local cell = getCell()
     local playerObj = getSpecificPlayer(0)
     playerObj:startMuzzleFlash()
@@ -86,12 +87,15 @@ function Mortar.groundZero(bommX, bommY, bommZ, radius)
                     Xtype = 'addSmokeOnSquare'
                 end
                 if sq:Is(IsoFlagType.burning) then 
-                    sq:getModData()['mortarHit'] = true 
+                    sq:getModData()['mortarHit'] = true
+
+                    -- TODO OnTIck is overkill imo
                     Events.OnTick.Add(function() 
                         if sq:getModData()['mortarHit'] and not sq:Is(IsoFlagType.burning)  then 
                             sq:getModData()['mortarHit'] = nil
                         end
-                    end) 
+                    end)
+
                 end
                 if Mortar.roll(60) then
                     local args = {
@@ -103,13 +107,30 @@ function Mortar.groundZero(bommX, bommY, bommZ, radius)
                 end
                 chance = 40
                 if Mortar.roll(chance) then
-                    Mortar.debris(sq)
+                    Mortar.SpawnDebris(sq)
                 end
+
+                -- Kill whatever thing is in the square
+                local entities = sq:getMovingObjects()
+
+                if entities then
+                    for i = entities:size(), 1, -1 do
+                        local entity = entities:get(i - 1)
+                        if instanceof(entity, "IsoZombie") or instanceof(entity, "IsoPlayer") then
+                            if not entity:isGodMod() then
+                                entity:Kill(entity)
+                            end
+                        end
+                    end
+                end
+
+
+
+
             end
         end
     end
 end
-
 Mortar.ExecuteFire = function(operator, rad, dist)
     local nx = Mortar.directions[tostring(Mortar.spotter:getDir())][1];
     local ny = Mortar.directions[tostring(Mortar.spotter:getDir())][2]
@@ -120,7 +141,7 @@ Mortar.ExecuteFire = function(operator, rad, dist)
     local trajectory = getCell():getGridSquare(bommX, bommY, bommZ)
     local Xtype = 'addExplosionOnSquare'
     local finalRad = ZombRand(3, rad)
-    Mortar.groundZero(bommX, bommY, bommZ, finalRad)
+    Mortar.GenGroundZero(bommX, bommY, bommZ, finalRad)
 end
 
 
