@@ -10,6 +10,42 @@ function testBoom(pl, bommX, bommY, bommZ, Xtype)
     sendClientCommand(pl, 'object', Xtype, args)
     -- getSoundManager():PlayWorldSound("explode",  trajectory, 0, Mortar.distMax*2, 1.0, false);
 end
+
+
+function SpawnMortarItem()
+
+
+    --pl_inv:AddItem()
+    local pl = getPlayer()
+    local dir = tostring(pl:getDir())
+
+    local sprite = MortarRotation.tileobj[dir]
+    print("Mortar: " .. sprite)
+    local pos_X = pl:getX()
+    local pos_Y = pl:getY()
+    local pos_Z = pl:getZ()
+    local sq = getCell():getGridSquare(pos_X, pos_Y, pos_Z)
+
+
+
+    createTile(sprite, sq)
+
+
+    --mortar:getSprite():setName(sprite)
+    --mortar:setSprite(sprite)
+    --mortar:transmitUpdatedSpriteToServer()
+    --mortar:transmitUpdatedSpriteToClients()
+    --mortar:transmitCompleteItemToServer()
+
+
+
+end
+
+--Events.OnGameStart.Add(function()
+--    Events.OnPlayerMove.Add(MortarRotation.setMortar)
+--
+--end)
+
 --[[
 --local Xtype = 'addFireOnSquare'
 local Xtype = 'addExplosionOnSquare'

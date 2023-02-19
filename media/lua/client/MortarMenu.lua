@@ -56,28 +56,48 @@ local CreateMortarContextMenu = function(player, context, world_objects, _)
     local mortar_menu
     local root_menu
     spotter_table = {}        -- Reset
+    local dist = player_obj:getModData()['mortarDistance'] or 8
 
+    -- TODO won't work on old spawned mortars
     for _, v in pairs(world_objects) do
-        if instanceof(v, "IsoObject") then      -- TODO This should check if it's the mortar
+        local sprite = v:getSpriteName()
+        if sprite ~= nil then
+            print(sprite_name)
+            if v and luautils.stringStarts(sprite, "mortar_weapon_") then
 
-            if mortar_menu == nil then
-                mortar_menu = context:getNew(context)
-                root_menu = context:addOption(getText("UI_ContextMenu_OperateMortar"), world_objects, nil)
+                if mortar_menu == nil then
+                    mortar_menu = context:getNew(context)
+                    root_menu = context:addOption(getText("UI_ContextMenu_OperateMortar"), world_objects, nil)
+
+                    context:addSubMenu(root_menu, mortar_menu)
+
+                    shoot_option = mortar_menu:addOption(getText("UI_ContextMenu_ShootMortar"), nil, Mortar.StartFiring, 10, dist )
+
+                    -- TODO Set distance
+
+
+                    -- TODO Set Range
+
+                    disassemble_option = mortar_menu:addOption(getText("UI_ContextMenu_DisassembleMortar"), world_objects, Mortar.Disassemble)
+
+                end
+
+                if SandboxVars.Mortar.NecessarySpotter then
+                    SearchForSpotter(player_obj, mortar_menu, v)
+                end
+
+                -- TODO add the options such as
+                -- 1) Set spotter
+                -- 2) Reload mortar?
+                -- 3) Something else
+
+                break       -- Stop searching for a mortar after one is found
+
             end
 
-            context:addSubMenu(root_menu, mortar_menu)
-            SearchForSpotter(player_obj, mortar_menu, v)
-
-
-
-
-            -- TODO add the options such as
-            -- 1) Set spotter
-            -- 2) Reload mortar?
-            -- 3) Something else
-
-            break       -- Stop searching for a mortar after one is found
         end
+
+
     end
 end
 Events.OnFillWorldObjectContextMenu.Add(CreateMortarContextMenu)

@@ -23,6 +23,11 @@ https://discord.gg/2skchrKrDv
 ----------------------------------------------------------------------------------------------------------------------------
 --]]
 
+-- TODO Add Mortar spawning logic
+-- TODO Add recipes?
+-- TODO Add check for higher z
+
+
 
 Mortar = {}
 Mortar.directions = {
@@ -39,7 +44,6 @@ Mortar.distMin = 4
 Mortar.distMax = 12
 Mortar.distSteps = 2
 Mortar.rad = 5
-
 
 
 
@@ -145,7 +149,7 @@ Mortar.ExecuteFire = function(operator, rad, dist)
 end
 
 
-Mortar.StartFiring = function(rad, dist)
+Mortar.StartFiring = function(_, rad, dist)
     local pl = getPlayer()
     print("Mortar: Trying to fire")
     -- SP or when there's no need for a spotter
@@ -168,5 +172,13 @@ Mortar.StartFiring = function(rad, dist)
 
     end
 
+
+end
+
+-----------------------------------------------------------
+
+
+-- Disassemble and returns the item to the player inventory
+Mortar.Disassemble = function()
 
 end
