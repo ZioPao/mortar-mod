@@ -45,9 +45,11 @@ function MortarRotation.isMortar(spr)
         end
     end
     return false
-
-
 end
+
+
+
+
 
 function MortarRotation.getMortar()
     local square = getPlayer():getSquare()
