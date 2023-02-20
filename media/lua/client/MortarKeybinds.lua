@@ -1,8 +1,8 @@
 
 mortarSounds = {
-['mortarSFX1'] = true,
-['mortarSFX2'] = true,
-['mortarSFX3'] = true,
+['MortarBlast1'] = true,
+['MortarBlast2'] = true,
+['MortarBlast3'] = true,
 }
 
 
