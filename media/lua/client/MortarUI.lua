@@ -40,7 +40,7 @@ function MortarUI.OnOpenPanel()
     end
 
     if MortarUI.instance == nil then
-        MortarUI.instance = MortarUI:new(100, 100, 1000, 600, "Mortar UI")
+        MortarUI.instance = MortarUI:new(100, 100, 500, 500, "Mortar UI")
         MortarUI.instance:initialise()
         MortarUI.instance:instantiate()
     end
@@ -70,7 +70,7 @@ function MortarUI:createChildren()
     self:addChild(shoot_btn)
 
 
-    local exit_btn = ISButton:new(20, 20, 80, 25, "EXIT", self, self.close)
+    local exit_btn = ISButton:new(0, 100, 80, 25, "EXIT", self, self.close)
     exit_btn:initialise()
     self:addChild(exit_btn)
 
