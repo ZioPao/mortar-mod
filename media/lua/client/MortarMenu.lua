@@ -50,7 +50,7 @@ end
 
 
 -- Operate the mortar menu
-local CreateOperateMortarContextMenu = function(player, context, world_objects)
+local CreateOperateMortarContextMenu = function(_, context, world_objects)
 
     local root_menu
     local mortar_menu
@@ -63,15 +63,8 @@ local CreateOperateMortarContextMenu = function(player, context, world_objects)
 
         -- TODO Add 1.5 as a sandboxvars
 
-        local player_obj
+        local player_obj= getPlayer()
 
-        if not isClient() and not isServer() then
-            player_obj = getPlayer()
-        else
-
-            player_obj = getPlayerByOnlineID(player)      -- TODO This doesn't work in SP, but it should in mp
-
-        end
         local pl_x = player_obj:getX()
         local pl_y = player_obj:getY()
         local obj_x = v:getX()
@@ -94,7 +87,7 @@ local CreateOperateMortarContextMenu = function(player, context, world_objects)
                 root_menu = context:addOption(getText("UI_ContextMenu_StopOperatingMortar"), world_objects, function() MortarUI:close() end)
             else
                 -- TODO I think it's the opposite, check it out
-                root_menu = context:addOption(getText("UI_ContextMenu_OperateMortar"), world_objects, function() Mortar.SetBomber(player) end)
+                root_menu = context:addOption(getText("UI_ContextMenu_OperateMortar"), world_objects, function() Mortar.SetBomber(getPlayer():getOnlineID()) end)
 
             end
 

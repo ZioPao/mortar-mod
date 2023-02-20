@@ -146,6 +146,11 @@ Mortar.GenGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
 end
 Mortar.ExecuteFire = function(operator, spotter, rad, dist)
 
+
+
+
+
+
     local nx = Mortar.directions[tostring(spotter:getDir())][1]
     local ny = Mortar.directions[tostring(spotter:getDir())][2]
 
@@ -164,8 +169,16 @@ Mortar.ExecuteFire = function(operator, spotter, rad, dist)
     print(bommZ)
     print(finalRad)
 
+    -- TODO This could break if the spotter moves away from the cell. So let's consider that
+    if Mortar.direct_coordinates ~= nil then
+        local test = Mortar.direct_coordinates
+        Mortar.GenGroundZero(operator, spotter, Mortar.direct_coordinates[1], Mortar.direct_coordinates[2], 0, finalRad)
+        Mortar.direct_coordinates = nil     -- Reset them?
+    else
+        Mortar.GenGroundZero(operator, spotter, bommX, bommY, bommZ, finalRad)
 
-    Mortar.GenGroundZero(operator, spotter, bommX, bommY, bommZ, finalRad)
+    end
+
 end
 
 
@@ -210,6 +223,7 @@ Mortar.CheckBomberDistanceFromMortar = function()
 
 
     if Mortar.bomber == nil then
+        print("Mortar: Can't find bomber anymore, exiting update")
         Events.OnTick.Remove(Mortar.CheckBomberDistanceFromMortar)
     end
 
@@ -246,7 +260,7 @@ Mortar.SetBomber = function(player)
     Mortar.bomber = pl
     MortarUI.OnOpenPanel()
 
-
+    print("Mortar: added bomber, starting loop")
     Events.OnTick.Add(Mortar.CheckBomberDistanceFromMortar)
 
 

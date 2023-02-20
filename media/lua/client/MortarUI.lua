@@ -35,9 +35,6 @@ end
 
 
 function MortarUI.OnOpenPanel()
-    if isClient() then
-        return
-    end
 
     if MortarUI.instance == nil then
         MortarUI.instance = MortarUI:new(100, 100, 250, 250, "Mortar UI")

@@ -6,5 +6,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="zdoc-lua" level="project" />
+    <orderEntry type="library" name="zomboid" level="project" />
   </component>
 </module>
