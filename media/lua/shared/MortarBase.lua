@@ -140,10 +140,6 @@ Mortar.GenGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
                         end
                     end
                 end
-
-
-
-
             end
         end
     end

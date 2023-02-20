@@ -1,0 +1,39 @@
+module Mortar  imports { Base }	
+{  
+sound MortarBlast1 {  category = Improvised, clip { file = media/sound/mortarSFX1.ogg,  }  } 
+sound MortarBlast2 {  category = Improvised, clip { file = media/sound/mortarSFX2.ogg,  }  } 
+sound MortarBlast3 {  category = Improvised, clip { file = media/sound/mortarSFX3.ogg,  }  } 
+
+    item round
+    {
+        Weight	=	0.1,
+        Type	=	Normal,
+		DisplayCategory = Explosives,
+        DisplayName	=	Mortar Ammo,
+        Icon	=	mortarammo_ico,
+		
+    }
+	
+    item binoculars
+    {
+        Weight	=	0.1,
+        Type	=	Normal,
+		DisplayCategory = Cartography,
+        DisplayName	=	Binoculars,
+        Icon	=	binoculars_ico,
+		WorldStaticModel = Binoculars,
+    }
+	
+	item weapon
+	{
+		DisplayCategory = Furniture,
+		Type			= Moveable,
+		Icon			= mortar_ico,
+		Weight		  	= 2.0,
+		DisplayName		= Mortar,
+		WorldObjectSprite	= mortar_56,
+	}
+	
+}
+
+
