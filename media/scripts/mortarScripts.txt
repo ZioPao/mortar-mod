@@ -1,5 +1,6 @@
-module Mortar  imports { Base }	
-{  
+
+module Base {
+
 sound MortarBlast1 {  category = Improvised, clip { file = media/sound/mortarSFX1.ogg,  }  } 
 sound MortarBlast2 {  category = Improvised, clip { file = media/sound/mortarSFX2.ogg,  }  } 
 sound MortarBlast3 {  category = Improvised, clip { file = media/sound/mortarSFX3.ogg,  }  } 
@@ -21,7 +22,12 @@ sound MortarBlast3 {  category = Improvised, clip { file = media/sound/mortarSFX
 	}
 	
 
-    item round
+}
+module Mortar { 
+imports { Base }
+	
+
+    item MortarRound
     {
         Weight	=	0.1,
         Type	=	Normal,
@@ -31,7 +37,7 @@ sound MortarBlast3 {  category = Improvised, clip { file = media/sound/mortarSFX
 		
     }
 	
-    item binoculars
+    item MortarBinoculars
     {
         Weight	=	0.1,
         Type	=	Normal,
@@ -41,7 +47,7 @@ sound MortarBlast3 {  category = Improvised, clip { file = media/sound/mortarSFX
 		WorldStaticModel = Binoculars_world,
     }
 	
-	item weapon
+	item MortarWeapon
 	{
 		DisplayCategory = Furniture,
 		Type			= Moveable,
