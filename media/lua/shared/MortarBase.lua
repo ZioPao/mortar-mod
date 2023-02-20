@@ -146,6 +146,11 @@ Mortar.GenGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
 end
 Mortar.ExecuteFire = function(operator, spotter, rad, dist)
 
+
+
+
+
+
     local nx = Mortar.directions[tostring(spotter:getDir())][1]
     local ny = Mortar.directions[tostring(spotter:getDir())][2]
 
@@ -164,8 +169,16 @@ Mortar.ExecuteFire = function(operator, spotter, rad, dist)
     print(bommZ)
     print(finalRad)
 
+    -- TODO This could break if the spotter moves away from the cell. So let's consider that
+    if Mortar.direct_coordinates ~= nil then
+        local test = Mortar.direct_coordinates
+        Mortar.GenGroundZero(operator, spotter, Mortar.direct_coordinates[1], Mortar.direct_coordinates[2], 0, finalRad)
+        Mortar.direct_coordinates = nil     -- Reset them?
+    else
+        Mortar.GenGroundZero(operator, spotter, bommX, bommY, bommZ, finalRad)
 
-    Mortar.GenGroundZero(operator, spotter, bommX, bommY, bommZ, finalRad)
+    end
+
 end
 
 
@@ -206,6 +219,34 @@ Mortar.Disassemble = function()
 end
 
 
+Mortar.CheckBomberDistanceFromMortar = function()
+
+
+    if Mortar.bomber == nil then
+        print("Mortar: Can't find bomber anymore, exiting update")
+        Events.OnTick.Remove(Mortar.CheckBomberDistanceFromMortar)
+    end
+
+    -- TODO We're not considering height, should be fine though.
+    local pl_x = Mortar.bomber:getX()
+    local pl_y = Mortar.bomber:getY()
+
+    local mort_x = Mortar.current_mortar:getX()
+    local mort_y = Mortar.current_mortar:getY()
+
+    local max_distance_from_mortar = 1.5
+
+    if MortarGetDistance2D(pl_x, pl_y, mort_x, mort_y) > max_distance_from_mortar then
+        MortarUI.close()        -- This also unset the bomber, kinda janky
+        Events.OnTick.Remove(Mortar.CheckBomberDistanceFromMortar)
+
+    end
+
+
+
+end
+
+
 Mortar.SetBomber = function(player)
 
     local pl = getPlayerByOnlineID(player)
@@ -218,7 +259,12 @@ Mortar.SetBomber = function(player)
 
     Mortar.bomber = pl
     MortarUI.OnOpenPanel()
-    pl:setIgnoreMovement(true)      -- TODO this limits even aiming. Too strict
+
+    print("Mortar: added bomber, starting loop")
+    Events.OnTick.Add(Mortar.CheckBomberDistanceFromMortar)
+
+
+    --pl:setIgnoreMovement(true)      -- TODO this limits even aiming. Too strict
 
     -- TODO Should update player rotation based on the position of the spotter
 end
@@ -229,7 +275,11 @@ Mortar.GetBomber = function()
 end
 
 Mortar.UnsetBomber = function()
-    Mortar.bomber:setIgnoreMovement(false)
     Mortar.bomber = nil
 
+end
+
+
+Mortar.SetCurrentMortar = function(obj)
+    Mortar.current_mortar = obj
 end

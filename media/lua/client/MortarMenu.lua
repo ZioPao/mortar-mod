@@ -50,7 +50,7 @@ end
 
 
 -- Operate the mortar menu
-local CreateOperateMortarContextMenu = function(player, context, world_objects)
+local CreateOperateMortarContextMenu = function(_, context, world_objects)
 
     local root_menu
     local mortar_menu
@@ -61,8 +61,25 @@ local CreateOperateMortarContextMenu = function(player, context, world_objects)
 
         print(MortarRotation.isMortar(v:getSprite():getName()))
 
+        -- TODO Add 1.5 as a sandboxvars
 
-        if v:getSprite() and MortarRotation.isMortar(v:getSprite():getName()) then
+        local player_obj= getPlayer()
+
+        local pl_x = player_obj:getX()
+        local pl_y = player_obj:getY()
+        local obj_x = v:getX()
+        local obj_y = v:getY()
+
+
+
+        local distance_check = MortarGetDistance2D(pl_x, pl_y, obj_x, obj_y) < 1.5
+
+
+        if v:getSprite() and MortarRotation.isMortar(v:getSprite():getName()) and distance_check  then
+
+            Mortar.SetCurrentMortar(v)
+
+
             mortar_menu = context:getNew(context)
 
 
@@ -70,7 +87,7 @@ local CreateOperateMortarContextMenu = function(player, context, world_objects)
                 root_menu = context:addOption(getText("UI_ContextMenu_StopOperatingMortar"), world_objects, function() MortarUI:close() end)
             else
                 -- TODO I think it's the opposite, check it out
-                root_menu = context:addOption(getText("UI_ContextMenu_OperateMortar"), world_objects, function() Mortar.SetBomber(player) end)
+                root_menu = context:addOption(getText("UI_ContextMenu_OperateMortar"), world_objects, function() Mortar.SetBomber(getPlayer():getOnlineID()) end)
 
             end
 
