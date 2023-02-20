@@ -206,6 +206,33 @@ Mortar.Disassemble = function()
 end
 
 
+Mortar.CheckBomberDistanceFromMortar = function()
+
+
+    if Mortar.bomber == nil then
+        Events.OnTick.Remove(Mortar.CheckBomberDistanceFromMortar)
+    end
+
+    -- TODO We're not considering height, should be fine though.
+    local pl_x = Mortar.bomber:getX()
+    local pl_y = Mortar.bomber:getY()
+
+    local mort_x = Mortar.current_mortar:getX()
+    local mort_y = Mortar.current_mortar:getY()
+
+    local max_distance_from_mortar = 1.5
+
+    if MortarGetDistance2D(pl_x, pl_y, mort_x, mort_y) > max_distance_from_mortar then
+        MortarUI.close()        -- This also unset the bomber, kinda janky
+        Events.OnTick.Remove(Mortar.CheckBomberDistanceFromMortar)
+
+    end
+
+
+
+end
+
+
 Mortar.SetBomber = function(player)
 
     local pl = getPlayerByOnlineID(player)
@@ -218,7 +245,12 @@ Mortar.SetBomber = function(player)
 
     Mortar.bomber = pl
     MortarUI.OnOpenPanel()
-    pl:setIgnoreMovement(true)      -- TODO this limits even aiming. Too strict
+
+
+    Events.OnTick.Add(Mortar.CheckBomberDistanceFromMortar)
+
+
+    --pl:setIgnoreMovement(true)      -- TODO this limits even aiming. Too strict
 
     -- TODO Should update player rotation based on the position of the spotter
 end
@@ -229,7 +261,11 @@ Mortar.GetBomber = function()
 end
 
 Mortar.UnsetBomber = function()
-    Mortar.bomber:setIgnoreMovement(false)
     Mortar.bomber = nil
 
+end
+
+
+Mortar.SetCurrentMortar = function(obj)
+    Mortar.current_mortar = obj
 end

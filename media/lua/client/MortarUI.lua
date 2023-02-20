@@ -40,7 +40,7 @@ function MortarUI.OnOpenPanel()
     end
 
     if MortarUI.instance == nil then
-        MortarUI.instance = MortarUI:new(100, 100, 500, 500, "Mortar UI")
+        MortarUI.instance = MortarUI:new(100, 100, 250, 250, "Mortar UI")
         MortarUI.instance:initialise()
         MortarUI.instance:instantiate()
     end
@@ -65,12 +65,12 @@ end
 function MortarUI:createChildren()
     ISPanel.createChildren(self)
 
-    local shoot_btn = ISButton:new(0, 0, 80, 25, "SHOOT", self, SendStartFiringToServer)
+    local shoot_btn = ISButton:new(100, 50, 80, 25, "SHOOT", self, SendStartFiringToServer)
     shoot_btn:initialise()
     self:addChild(shoot_btn)
 
 
-    local exit_btn = ISButton:new(0, 100, 80, 25, "EXIT", self, self.close)
+    local exit_btn = ISButton:new(100, 100, 80, 25, "EXIT", self, self.close)
     exit_btn:initialise()
     self:addChild(exit_btn)
 
@@ -79,8 +79,8 @@ end
 
 function MortarUI:close()
     Mortar.UnsetBomber()
-    self:setVisible(false)
-    self:removeFromUIManager()
+    MortarUI.instance:setVisible(false)
+    MortarUI.instance:removeFromUIManager()
 
     MortarUI.instance = nil     -- Removes the reference
 end

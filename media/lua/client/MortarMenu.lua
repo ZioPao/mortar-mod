@@ -61,8 +61,32 @@ local CreateOperateMortarContextMenu = function(player, context, world_objects)
 
         print(MortarRotation.isMortar(v:getSprite():getName()))
 
+        -- TODO Add 1.5 as a sandboxvars
 
-        if v:getSprite() and MortarRotation.isMortar(v:getSprite():getName()) then
+        local player_obj
+
+        if not isClient() and not isServer() then
+            player_obj = getPlayer()
+        else
+
+            player_obj = getPlayerByOnlineID(player)      -- TODO This doesn't work in SP, but it should in mp
+
+        end
+        local pl_x = player_obj:getX()
+        local pl_y = player_obj:getY()
+        local obj_x = v:getX()
+        local obj_y = v:getY()
+
+
+
+        local distance_check = MortarGetDistance2D(pl_x, pl_y, obj_x, obj_y) < 1.5
+
+
+        if v:getSprite() and MortarRotation.isMortar(v:getSprite():getName()) and distance_check  then
+
+            Mortar.SetCurrentMortar(v)
+
+
             mortar_menu = context:getNew(context)
 
 
