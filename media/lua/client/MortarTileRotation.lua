@@ -99,6 +99,7 @@ function MortarRotation.setMortar()
         end
 
         getPlayerLoot(0):refreshBackpacks()
+        ISInventoryPage.dirtyUI();
     end
 end
 

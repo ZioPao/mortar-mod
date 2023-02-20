@@ -18,8 +18,8 @@ ClientCommands.AcceptMortarShot = function(player, args)
     -- Let's run it here directly
     sendServerCommand(spotter, "Mortar", "ReceiveMortarShot", {operator = operator_id, spotter = spotter_id})
 
-
-
+    -- TODO make em face the direction
+    --operator:faceLocation(x, y)   
 
 end
 

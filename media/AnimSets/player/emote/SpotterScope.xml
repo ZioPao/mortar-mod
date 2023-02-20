@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<animNode x_extends="looped.xml">
+	<m_Name>SpotterScope</m_Name>
+	<m_AnimName>SpotterScope</m_AnimName>
+	<m_Conditions>
+		<m_StringValue>SpotterScope</m_StringValue>
+	</m_Conditions>
+<!-- 
+	<m_SpeedScale>0.48</m_SpeedScale>
+	<m_BlendTime>0.20</m_BlendTime>
+ -->
+
+</animNode>
