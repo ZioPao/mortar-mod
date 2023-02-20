@@ -4,6 +4,23 @@ sound MortarBlast1 {  category = Improvised, clip { file = media/sound/mortarSFX
 sound MortarBlast2 {  category = Improvised, clip { file = media/sound/mortarSFX2.ogg,  }  } 
 sound MortarBlast3 {  category = Improvised, clip { file = media/sound/mortarSFX3.ogg,  }  } 
 
+
+	model Binoculars_static
+    {
+        mesh = WorldItems/binoculars,
+        texture = WorldItems/binoculars_tex,
+    }
+
+	/*    WORLD    */
+
+	model Binoculars_world
+	{
+		mesh = WorldItems/binoculars,
+		texture = WorldItems/binoculars_tex,
+		scale = 0.005,
+	}
+	
+
     item round
     {
         Weight	=	0.1,
@@ -21,7 +38,7 @@ sound MortarBlast3 {  category = Improvised, clip { file = media/sound/mortarSFX
 		DisplayCategory = Cartography,
         DisplayName	=	Binoculars,
         Icon	=	binoculars_ico,
-		WorldStaticModel = Binoculars,
+		WorldStaticModel = Binoculars_world,
     }
 	
 	item weapon

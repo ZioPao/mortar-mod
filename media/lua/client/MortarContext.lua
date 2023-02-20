@@ -4,12 +4,8 @@ MortarUse = {}
 
 function MortarUse.setBomber(player)
 --TODO for the animation and the movement prevent thing
-
-    -- TODO Move this into MortarMenu
-
-    -- TODO Maybe open a separate UI to manage it?
---player:setIgnoreMovement(true)
---probably a timed action would be better
+--player:setIgnoreMovement(true) 
+--probably a timed action would be better 
 --player:getInventory():Remove("Mortar.round")
 end
 
