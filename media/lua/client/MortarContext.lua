@@ -6,7 +6,10 @@ function MortarUse.setBomber(player)
 --TODO for the animation and the movement prevent thing
 --player:setIgnoreMovement(true) 
 --probably a timed action would be better 
---player:getInventory():Remove("Mortar.round")
+--player:getInventory():Remove("Mortar.round") --or maybe --player:getInventory():DoRemoveItem("Mortar.round")
+
+
+
 end
 
 

@@ -7,9 +7,12 @@ mortarSounds = {
 
 
 -- TODO send the randomized audio
-function setBoom(square) 
+function setBoom(square, player) 
 getSoundManager():PlayWorldSound(tostring(mortarSounds.mortarSFX..ZombRand(1,4)), square, 0, 5, 5, false);  
+getWorldMarkers():addPlayerHomingPoint(player, square:getX(), square:getY(), "arrow_triangle", 0.0,0.0,1.0, 0.6, true, 0.5);
 --addSound(getPlayer(), getPlayer():getX(), getPlayer():getY(), getPlayer():getZ(), 5, 1)
+--TutorialTests.addMarker(square, size)
+--TutorialTests.RemoveMarkers 
 end;
 
 
