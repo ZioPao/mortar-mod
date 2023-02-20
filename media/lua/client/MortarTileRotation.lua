@@ -67,8 +67,6 @@ function MortarRotation.getMortar()
     end
 
 
-
-
     return nil
 end
 

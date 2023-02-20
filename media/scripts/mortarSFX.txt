@@ -1,5 +1,20 @@
-module Base
+module Mortar  imports { Base }	
 {  
-/* sound MortarBoom {  category = Improvised, clip { file = media/sound/DRBless.ogg,  }  } */
+sound MortarBoom1 {  category = Improvised, clip { file = media/sound/mortarSFX1.ogg,  }  } 
+sound MortarBoom1 {  category = Improvised, clip { file = media/sound/mortarSFX2.ogg,  }  } 
+sound MortarBoom1 {  category = Improvised, clip { file = media/sound/mortarSFX3.ogg,  }  } 
+
+    item round
+    {
+        Weight	=	1,
+        Type	=	Normal,
+		DisplayCategory = survivalist,
+        DisplayName	=	Mortar Ammo,
+        Icon	=	mortar_ico,
+		WorldStaticModel = Binoculars,
+    }
+	
 
 }
+
+

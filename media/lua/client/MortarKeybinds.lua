@@ -1,4 +1,20 @@
 
+mortarSounds = {
+['mortarSFX1'] = true,
+['mortarSFX2'] = true,
+['mortarSFX3'] = true,
+}
+
+
+-- TODO send the randomized audio
+function setBoom(square) 
+getSoundManager():PlayWorldSound(tostring(mortarSounds.mortarSFX..ZombRand(1,4)), square, 0, 5, 5, false);  
+--addSound(getPlayer(), getPlayer():getX(), getPlayer():getY(), getPlayer():getZ(), 5, 1)
+end;
+
+
+
+
 -- TODO Use dhert stuff as a base for this kind of things
 
 local HandleMortarKeybinds = function(key)
