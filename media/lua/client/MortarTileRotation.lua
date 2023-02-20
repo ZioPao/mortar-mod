@@ -38,7 +38,15 @@ MortarRotation.tileobj = {
 }
 
 function MortarRotation.isMortar(spr)
-    return MortarRotation.tileobj[spr] ~= nil
+    -- TODO This is wrong, you're checking the key with spr. We need to search for value
+    for _, v in pairs(MortarRotation.tileobj) do
+        if v == spr then
+            return true
+        end
+    end
+    return false
+
+
 end
 
 function MortarRotation.getMortar()

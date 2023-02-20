@@ -204,3 +204,32 @@ end
 Mortar.Disassemble = function()
 
 end
+
+
+Mortar.SetBomber = function(player)
+
+    local pl = getPlayerByOnlineID(player)
+
+    -- TODO Mostly for test, delete this when releasing this
+    if pl == nil then
+        pl = getPlayer()
+    end
+
+
+    Mortar.bomber = pl
+    MortarUI.OnOpenPanel()
+    pl:setIgnoreMovement(true)      -- TODO this limits even aiming. Too strict
+
+    -- TODO Should update player rotation based on the position of the spotter
+end
+
+
+Mortar.GetBomber = function()
+    return Mortar.bomber
+end
+
+Mortar.UnsetBomber = function()
+    Mortar.bomber:setIgnoreMovement(false)
+    Mortar.bomber = nil
+
+end

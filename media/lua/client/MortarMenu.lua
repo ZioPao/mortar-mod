@@ -1,6 +1,13 @@
 
 local spotter_table = {}
 
+local PredicateMortarShell = function(item)
+    if item:isBroken() then return false end
+    return item:hasTag("Mortar.round") or item:getFullType() == "Mortar.round"
+end
+
+
+
 local SetSpotter = function(_, player)
     print("Mortar: Setting spotter")
 
@@ -15,6 +22,12 @@ local SearchForSpotter = function(operator, mortar_menu, world_obj)
 
     -- We need to get a list of the players within a certain distance.
     --
+
+    --if not isClient() and not isServer()
+    --
+    --end
+    --
+
 
     local players = getOnlinePlayers()
     local acceptable_spotters = {}
@@ -31,21 +44,67 @@ local SearchForSpotter = function(operator, mortar_menu, world_obj)
     end
 end
 
-local SendStartFiringToServer = function(_)
 
 
-
-    if Mortar.spotter ~= nil then
-        local op_id = getPlayer():getOnlineID()
-        local spotter_id = Mortar.spotter:getOnlineID()
-        sendClientCommand(getPlayer(), "Mortar", "AcceptMortarShot", {operator = op_id, spotter = spotter_id})
+---------------------------------------------------------------------------
 
 
-    else
-        print("Can't send command, no spotter")
+-- Operate the mortar menu
+local CreateOperateMortarContextMenu = function(player, context, world_objects)
+
+    local root_menu
+    local mortar_menu
+
+    for _, v in pairs(world_objects) do
+        local square = v:getSquare()
+        print(v:getSprite():getName())
+
+        print(MortarRotation.isMortar(v:getSprite():getName()))
+
+
+        if v:getSprite() and MortarRotation.isMortar(v:getSprite():getName()) then
+            mortar_menu = context:getNew(context)
+
+
+            if Mortar.GetBomber(player) then
+                root_menu = context:addOption(getText("UI_ContextMenu_StopOperatingMortar"), world_objects, function() MortarUI:close() end)
+            else
+                -- TODO I think it's the opposite, check it out
+                root_menu = context:addOption(getText("UI_ContextMenu_OperateMortar"), world_objects, function() Mortar.SetBomber(player) end)
+
+            end
+
+
+            context:addSubMenu(root_menu, mortar_menu)
+
+
+            -- TODO Set it so we can't access it if sp
+            if isClient() then
+                if SandboxVars.Mortar.NecessarySpotter  then
+                    SearchForSpotter(player_obj, mortar_menu, v)
+                end
+            end
+
+            break
+
+        end
+
     end
 
 end
+
+Events.OnFillWorldObjectContextMenu.Add(CreateOperateMortarContextMenu)
+
+
+
+
+
+
+
+
+
+
+
 
 
 local CreateMortarContextMenu = function(player, context, world_objects, _)
@@ -62,7 +121,7 @@ local CreateMortarContextMenu = function(player, context, world_objects, _)
         local sprite = v:getSprite()
         if sprite ~= nil then
             local sprite_name = sprite:getName()
-            if v and luautils.stringStarts(sprite_name, "mortar_") then
+            if v:getSprite() and MortarRotation.isMortar(v:getSprite():getName()) then
 
                 if mortar_menu == nil then
                     mortar_menu = context:getNew(context)
@@ -71,7 +130,9 @@ local CreateMortarContextMenu = function(player, context, world_objects, _)
                     context:addSubMenu(root_menu, mortar_menu)
 
                     shoot_option = mortar_menu:addOption(getText("UI_ContextMenu_ShootMortar"), nil, SendStartFiringToServer)      -- TODO Set the sandboxvars
-
+                    if not player:getInventory():containsEvalRecurse(PredicateMortarShell) then
+                        self:addTooltip(option, getText("Tooltip_RequireMortarShell"))
+                    end
                     -- TODO Set distance
                     -- Distance should be handled by the spotter... Can't do it automatically, it wouldn't make any sense and it would be forever broken
 
@@ -97,4 +158,3 @@ local CreateMortarContextMenu = function(player, context, world_objects, _)
 
     end
 end
-Events.OnFillWorldObjectContextMenu.Add(CreateMortarContextMenu)

@@ -1,5 +1,6 @@
 UI_EN = {
 	UI_ContextMenu_OperateMortar = "Operate Mortar",
+	UI_ContextMenu_StopOperatingMortar = "Stop operating mortar"
 	UI_ContextMenu_Spotter = "Set spotter - ",
 	UI_ContextMenu_ShootMortar = "Shoot",
 	UI_ContextMenu_DisassembleMortar = "Disassemble",
