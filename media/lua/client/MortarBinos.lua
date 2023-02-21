@@ -24,7 +24,7 @@ local function HandleBinocularsClick(obj, x,y)
 
 
     -- After the removal in case of errors
-    sendClientCommand(getPlayer(), "Mortar", "SendDirectCoordinates", {bomber_id = Mortar.bomber:getOnlineID(), x = obj_x, y = obj_y})
+    sendClientCommand(getPlayer(), "Mortar", "sendDirectCoordinates", {bomber_id = Mortar.bomber:getOnlineID(), x = obj_x, y = obj_y})
 
 end
 

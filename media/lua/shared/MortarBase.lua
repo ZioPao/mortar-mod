@@ -52,10 +52,10 @@ Mortar.rad = SandboxVars.Mortar.Radius or 8
 
 --- Set the current bomber and notify the spotter
 --- @param player IsoPlayer
-Mortar.setBomber = function(player)
+Mortar.setBomber = function(player_id)
 
     -- TODO We shouldn't even get in here without a spotter.
-    local pl = getPlayerByOnlineID(player)
+    local pl = getPlayerByOnlineID(player_id)
 
     -- TODO Mostly for test, delete this when releasing this
     if pl == nil then
@@ -67,9 +67,12 @@ Mortar.setBomber = function(player)
     MortarUI.onOpenPanel()
 
 
+    local temp_spotter = Mortar.spotter
+    print(Mortar.spotter)
+    
 
     -- Send a command to the spotter so we he can send us back their coordinates
-    sendClientCommand(pl, "Mortar", "NotifySpotter", {bomber_id = player, spotter_id = Mortar.spotter:getOnlineID()})
+    sendClientCommand(pl, "Mortar", "notifySpotter", {bomber_id = player_id, spotter_id = Mortar.spotter:getOnlineID()})
 
 
 

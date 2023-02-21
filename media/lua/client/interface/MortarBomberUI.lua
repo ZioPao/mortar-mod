@@ -36,7 +36,7 @@ local sendStartFiringToServer = function(_)
     if Mortar.spotter ~= nil then
         local op_id = getPlayer():getOnlineID()
         local spotter_id = Mortar.spotter:getOnlineID()
-        sendClientCommand(getPlayer(), "Mortar", "AcceptMortarShot", {operator = op_id, spotter = spotter_id})
+        sendClientCommand(getPlayer(), "Mortar", "acceptMortarShot", {operator = op_id, spotter = spotter_id})
 
 
     else

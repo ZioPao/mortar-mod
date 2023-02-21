@@ -41,6 +41,7 @@ end
 ------------------------------------------------
 
 local onClientCommand = function(module, command, player_obj, args)
+    print("Mortar: Received command " .. command)
     if module == "Mortar" and ClientCommands[command] then
         ClientCommands[command](player_obj, args)
     end
