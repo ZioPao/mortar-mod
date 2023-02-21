@@ -18,7 +18,7 @@ ClientCommands.acceptMortarShot = function(player, args)
     -- TODO Run here check for walkie talkie
 
     -- Let's run it here directly
-    sendServerCommand(spotter, "Mortar", "ReceiveMortarShot", {operator = operator_id, spotter = spotter_id})
+    sendServerCommand(spotter, "Mortar", "receiveMortarShot", {operator = operator_id, spotter = spotter_id})
 
     -- TODO make em face the direction
     --operator:faceLocation(x, y)   
@@ -27,14 +27,14 @@ end
 ClientCommands.notifySpotter = function(player, args)
     print("Mortar: Notifying spotter!")
     local spotter = getPlayerByOnlineID(args.spotter_id)
-    sendServerCommand(spotter, "Mortar", "ReceiveOperatorForSpotter", {bomber_id = args.bomber_id})
+    sendServerCommand(spotter, "Mortar", "receiveOperatorForSpotter", {bomber_id = args.bomber_id})
 
 
 
 end
 ClientCommands.sendDirectCoordinates = function(player, args)
     local bomber = getPlayerByOnlineID(args.bomber_id)
-    sendServerCommand(bomber, "Mortar", "SetDirectCoordinates", {x = args.x, y = args.y})
+    sendServerCommand(bomber, "Mortar", "setDirectCoordinates", {x = args.x, y = args.y})
 
 end
 
