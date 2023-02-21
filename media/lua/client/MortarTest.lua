@@ -22,7 +22,6 @@ end
 
 
 
-
 function testBoom(pl, bommX, bommY, bommZ, Xtype)
     local args = {
         x = bommX,
