@@ -20,8 +20,6 @@ option Mortar.OperatorRange
     translation = Mortar_OperatorRange
 }
 
-
-
 option Mortar.Radius
 {
     type = integer,
@@ -31,4 +29,15 @@ option Mortar.Radius
 
     page = Mortar,
     translation = Mortar_Radius,
+}
+
+option Mortar.Distance
+{
+    type = integer,
+    min = 5,
+    max = 180,
+    default = 100,
+
+    page = Mortar,
+    translation = Mortar_Distance,
 }

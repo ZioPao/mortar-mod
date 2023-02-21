@@ -23,10 +23,11 @@ https://discord.gg/2skchrKrDv
 ----------------------------------------------------------------------------------------------------------------------------
 --]]
 
--- TODO Add Mortar spawning logic
--- TODO Add recipes?
--- TODO Add check for higher z
+-- TODO Add Mortar spawning logic -- no need for this cuz we have distrib. they will just loot and place
+-- TODO Add recipes? -- what do you mean?
+-- Add check for higher z --done
 
+require "MortarCheckAxisZ"
 
 -- Init Mortar table
 --------------------------------------------------------------
@@ -118,7 +119,7 @@ Mortar.spawnDebris = function(square)
     if isClient() then
         dug:transmitCompleteItemToServer()
     end
-    --ISInventoryPage.renderDirty = true
+    ISInventoryPage.renderDirty = true
 end
 
 
@@ -144,7 +145,7 @@ Mortar.genGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
                 if sq:Is(IsoFlagType.burning) then 
                     sq:getModData()['mortarHit'] = true
 
-                    -- TODO OnTIck is overkill imo -- i dont know what to do
+                    -- TODO OnTIck is overkill imo -- i dont know what to do and this might not event work
                     Events.OnTick.Add(function() 
                         if sq:getModData()['mortarHit'] and not sq:Is(IsoFlagType.burning)  then 
                             sq:getModData()['mortarHit'] = nil
@@ -198,7 +199,9 @@ Mortar.executeFire = function(operator, spotter, rad, dist)
     -- like this, we'll have to use the spotter as a base...
     local bommX = math.floor(spotter:getX() + (nx * dist))
     local bommY = math.floor(spotter:getY() + (ny * dist))
-    local bommZ = operator:getZ()
+    local bommZ = MortarGetHighestZ(bommX,bommY)  --operator:getZ()
+   
+   
     -- TODO add a checker and setter for z trajectory based on the highest floor available
     local trajectory = getCell():getGridSquare(bommX, bommY, bommZ)
     local Xtype = 'addExplosionOnSquare'
@@ -269,9 +272,23 @@ Mortar.setSpotter = function(_, player)
     Mortar.spotter = player
 
 
-    -- TODO Manage cases where the spotter dies
-    -- TODO Manage case when the player stopped using the mortar (should unset the spotter)
+  
+
 end
+
+      -- TODO Will this work????
+Events.OnPlayerDeath.Add(function()   
+    if  Mortar.spotter then 
+        Mortar.unsetBomber()
+        --or maybe 
+        -- Mortar.spotter = nil 
+    end 
+end) 
+
+
+
+
+
 
 ---Check if the spotter has a working radio
 ---@param player any

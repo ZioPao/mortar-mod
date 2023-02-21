@@ -12,6 +12,7 @@ MortarUI = ISPanel:derive("MortarUI")
 MortarUI.instance = nil
 
 
+
 -- TODO SET SO THE SHOOT BUTTON IS GREYED OUT IF THERE ARE NO ROUNDS IN PLAYER'S INVENTORY
 local predicateMortarShell = function(item)
     if item:isBroken() then return false end
@@ -21,7 +22,8 @@ end
 
 local sendStartFiringToServer = function(_)
 
-    --- TODO ONLY FOR DEBUG, DELETE ME
+    --- TODO ONLY FOR DEBUG, DELETE ME -- this might help incase we forget it
+    if isDebugEnabled() then return; end 
     ---------------------------
     if not isServer() and not isClient() then
         Mortar.spotter = getPlayer()

@@ -25,6 +25,7 @@ local function HandleBinocularsClick(obj, x,y)
 
 
     -- After the removal in case of errors
+    -- TODO make sure to make the bomber ti face the direction of the target 	getPlayer():setDir(x,y)
     sendClientCommand(getPlayer(), "Mortar", "sendDirectCoordinates", {bomber_id = Mortar.bomber:getOnlineID(), x = obj_x, y = obj_y})
 
 end

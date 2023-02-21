@@ -32,7 +32,8 @@ https://discord.gg/2skchrKrDv
 
 MortarRotation = {}
 
--- TODO something here is wrong, check it again
+-- TODO this is not wrong 
+--TODO use this --    print(MortarRotation.tileobj[tostring(getPlayer():getDir())])
 MortarRotation.tileobj = {
     ["N"] = "mortar_56",
     ["NE"] = "mortar_57",
@@ -44,10 +45,12 @@ MortarRotation.tileobj = {
     ["NW"] = "mortar_63"
 }
 
-function MortarRotation.isMortar(spr)
-    -- TODO This is wrong, you're checking the key with spr. We need to search for value
+
+function MortarRotation.isMortar(spr) 
+-- maybe this is the correct one
+    -- TODO This is wrong, you're checking the key with spr. We need to search for valu
     for _, v in pairs(MortarRotation.tileobj) do
-        if v == spr then
+        if v == spr:getName() then
             return true
         end
     end
@@ -56,8 +59,7 @@ end
 
 
 
-
-
+-- TODO replace this with the contextmenu thing make it add a moddata perhaps      then...
 function MortarRotation.getMortar()
     local square = getPlayer():getSquare()
 
@@ -71,7 +73,7 @@ function MortarRotation.getMortar()
                     local sprite = obj:getSprite():getName()
                     if sprite ~= nil then
                         print(sprite)
-                        if luautils.stringStarts(sprite, "mortar") then
+                        if luautils.stringStarts(sprite, "mortar_") then
                             return obj
                         end
                     end
@@ -88,7 +90,7 @@ function MortarRotation.getMortar()
 end
 
 function MortarRotation.setMortar()
-    local mortar = MortarRotation.getMortar()
+    local mortar = MortarRotation.getMortar()  -- TODO  replace this with a checker of the said moddata above
     print("Searching mortar")
     if not mortar then
         return
@@ -97,7 +99,8 @@ function MortarRotation.setMortar()
     print("Found mortar")
 
     local dir = tostring(getPlayer():getDir())
-    local newSprite = MortarRotation.tileobj[dir]
+    local newSprite = MortarRotation.tileobj[tostring(getPlayer():getDir())] --MortarRotation.tileobj[dir]
+
 
     if newSprite then
         if isDebugEnabled() then

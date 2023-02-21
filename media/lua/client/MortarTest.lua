@@ -1,21 +1,23 @@
 
 
 -- TODO Remake logic of context stuff
+-- right click use turret
+
+-- checks if turret 
+-- by referencing MortarRotation.tileobj
+-- MortarRotation.tileobj[getPlayer():getDir()]
+
+
+-- press fire button 
+-- requires spotter if sandbox is set to require
+-- 
+
 
 function TestStuff2()
 
     -- Operate mortar and Set Spotter are separate menus
 
 end
-
-
-
-
-
-
-
-
-
 
 
 
