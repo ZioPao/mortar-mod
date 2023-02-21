@@ -118,15 +118,6 @@ Mortar.spawnDebris = function(square)
     --ISInventoryPage.renderDirty = true
 end
 
---- TODO This should be in common functions instead of here
----@param chance any
----@return boolean
-Mortar.roll = function(chance)
-    local roll = ZombRand(1, 101);
-    if roll <= chance then
-        return true
-    end
-end
 
 --- Generate explosion and\or debris in the zone
 ---@param operator IsoPlayer
@@ -144,7 +135,7 @@ Mortar.genGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
             if IsoUtils.DistanceTo(bommX, bommY, x + 0.5, y + 0.5) <= radius then
                 local sq = cell:getGridSquare(x, y, bommZ)
                 local Xtype = 'addFireOnSquare'
-                if Mortar.roll(20) then
+                if MortarCommonFunctions.roll(20) then
                     Xtype = 'addSmokeOnSquare'
                 end
                 if sq:Is(IsoFlagType.burning) then 
@@ -158,7 +149,7 @@ Mortar.genGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
                     end)
 
                 end
-                if Mortar.roll(60) then
+                if MortarCommonFunctions.roll(60) then
                     local args = {
                         x = x,
                         y = y,
@@ -168,7 +159,7 @@ Mortar.genGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
                 end
 
                 local chance = 40
-                if Mortar.roll(chance) then
+                if MortarCommonFunctions.roll(chance) then
                     Mortar.spawnDebris(sq)
                 end
 
@@ -293,7 +284,7 @@ Mortar.checkBomberDistanceFromMortar = function()
 
     local max_distance_from_mortar = 1.5
 
-    if MortarGetDistance2D(pl_x, pl_y, mort_x, mort_y) > Mortar.distSteps then
+    if MortarCommonFunctions.getDistance2D(pl_x, pl_y, mort_x, mort_y) > Mortar.distSteps then
         MortarUI.close()        -- This also unset the bomber, kinda janky
         Events.OnTick.Remove(Mortar.checkBomberDistanceFromMortar)
 
