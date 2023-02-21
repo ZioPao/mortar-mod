@@ -24,8 +24,9 @@ ServerCommands.receiveMortarShot = function(args)
 
 
     Mortar.startFiring(operator, spotter, rad, dist)
-
-
+    spotter:playEmote("_SpotterScope3")
+     
+    --spotter:playEmote("_SpotterScope4") --or use this
 end
 
 ServerCommands.receiveOperatorForSpotter = function(args)

@@ -10,6 +10,7 @@ sound MortarBlast3 {  category = Improvised, clip { file = media/sound/mortarSFX
     {
         mesh = WorldItems/binoculars,
         texture = WorldItems/binoculars_tex,
+        scale = 0.0045,
     }
 
 	/*    WORLD    */
@@ -34,7 +35,7 @@ imports { Base }
 		DisplayCategory = Explosives,
         DisplayName	=	Mortar Ammo,
         Icon	=	mortarammo_ico,
-		
+		BasketBall
     }
 	
     item MortarBinoculars
@@ -56,7 +57,31 @@ imports { Base }
 		DisplayName		= Mortar,
 		WorldObjectSprite	= mortar_56,
 	}
-	
+	recipe staticBinocular
+    {
+       MortarBinoculars,
+
+       NoBrokenItems:true,
+       Result:MortarBinoculars,
+       Category:Electrical,
+       AnimNode:staticBinocular,
+       Prop1:MortarRound,
+       Prop2:MortarBinoculars,
+       Sound:Dismantle,
+		Time:555555.0,
+    }
+	recipe MortarRound
+    {
+       MortarRound,
+
+       NoBrokenItems:true,
+       Result:MortarRound,
+       Category:Electrical,
+       Prop1:MortarRound,
+       Prop2:MortarBinoculars,
+       Sound:Dismantle,
+       Time:555555.0,
+    }
 }
 
 
