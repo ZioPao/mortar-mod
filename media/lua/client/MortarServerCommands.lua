@@ -11,7 +11,11 @@ ServerCommands.receiveMortarShot = function(args)
     local spotter = getPlayerByOnlineID(args.spotter)
     if operator == nil or spotter == nil then
         print("Mortar: operator or spotter are null, can't start firing")
-        -- TODO Add a way to let the player know about this
+        -- TODO Add a way to let the player know about this 
+        -- TODO i can also write something with halo if this doesnt work
+        operator:Say(tostring('I need a spotter')) 
+        spotter:Say(tostring('I need a bomber')) 
+        
         return
     end
 

@@ -3,6 +3,7 @@
 --===================================--
 
 -- TODO Use GLobal Object thing as a base
+require "MortarCheckAxisZ"
 
 local function HandleBinocularsClick(obj, x,y)
 
