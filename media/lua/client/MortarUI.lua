@@ -17,7 +17,7 @@ local SendStartFiringToServer = function(_)
         print(" SP DEBUG THING")
         local rad = 8
         local dist = 30
-        Mortar.StartFiring(getPlayer(), getPlayer(), rad, dist)
+        Mortar.startFiring(getPlayer(), getPlayer(), rad, dist)
         return
     end
     ---------------------------
@@ -97,7 +97,7 @@ function MortarUI:createChildren()
 
 end
 function MortarUI:close()
-    Mortar.UnsetBomber()
+    Mortar.unsetBomber()
     Events.OnTick.Remove(MortarUI.UpdateCoordinatesLabel)       -- Disable the update for coordinates
     MortarUI.instance:setVisible(false)
     MortarUI.instance:removeFromUIManager()

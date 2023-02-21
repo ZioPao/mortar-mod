@@ -79,15 +79,15 @@ local CreateOperateMortarContextMenu = function(_, context, world_objects)
 
         if v:getSprite() and MortarRotation.isMortar(v:getSprite():getName()) and distance_check  then
 
-            Mortar.SetCurrentMortar(v)
+            Mortar.setCurrentMortar(v)
             root_menu = context:getNew(context)
 
 
-            if Mortar.GetBomber(player) then
+            if Mortar.getBomber(player) then
                 mortar_menu = context:addOption(getText("UI_ContextMenu_StopOperatingMortar"), world_objects, function() MortarUI:close() end)
             else
                 -- TODO I think it's the opposite, check it out
-                mortar_menu = context:addOption(getText("UI_ContextMenu_OperateMortar"), world_objects, function() Mortar.SetBomber(getPlayer():getOnlineID()) end)
+                mortar_menu = context:addOption(getText("UI_ContextMenu_OperateMortar"), world_objects, function() Mortar.setBomber(getPlayer():getOnlineID()) end)
 
             end
 
@@ -151,7 +151,7 @@ local CreateMortarContextMenu = function(player, context, world_objects, _)
                     -- TODO Set distance
                     -- Distance should be handled by the spotter... Can't do it automatically, it wouldn't make any sense and it would be forever broken
 
-                    disassemble_option = mortar_menu:addOption(getText("UI_ContextMenu_DisassembleMortar"), world_objects, Mortar.Disassemble)
+                    disassemble_option = mortar_menu:addOption(getText("UI_ContextMenu_DisassembleMortar"), world_objects, Mortar.disassemble)
 
                 end
 

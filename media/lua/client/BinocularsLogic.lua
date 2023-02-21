@@ -26,7 +26,7 @@ local function HandleBinocularsClick(obj, x,y)
 end
 
 
-
+-- TODO Bind this to the item
 function TestBinoculars()
 
     -- Force zoom out (Java limitation, we can't really tweak this too much

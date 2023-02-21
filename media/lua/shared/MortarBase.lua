@@ -28,7 +28,8 @@ https://discord.gg/2skchrKrDv
 -- TODO Add check for higher z
 
 
-
+-- Init Mortar table
+--------------------------------------------------------------
 Mortar = {}
 Mortar.directions = {
     ["N"] = {0, -1},
@@ -45,23 +46,69 @@ Mortar.distMax = 12
 Mortar.distSteps = 2
 Mortar.rad = SandboxVars.Mortar.Radius or 8
 
+-------------------------------------------------------------
+-- Getters\Setters
+------------------------------------------------------------
 
-function Mortar.init()
+--- Set the current bomber and notify the spotter
+--- @param player IsoPlayer
+Mortar.setBomber = function(player)
 
-    print("Mortar: Initializing")
+    -- TODO We shouldn't even get in here without a spotter.
+    local pl = getPlayerByOnlineID(player)
 
-
-    local pl = getPlayer()
-    if not pl:getModData()['mortarDistance'] then
-        pl:getModData()['mortarDistance'] = SandboxVars.Mortar.Radius or 8
+    -- TODO Mostly for test, delete this when releasing this
+    if pl == nil then
+        pl = getPlayer()
     end
 
 
+    Mortar.bomber = pl
+    MortarUI.OnOpenPanel()
+
+
+
+    -- Send a command to the spotter so we he can send us back their coordinates
+    sendClientCommand(pl, "Mortar", "NotifySpotter", {bomber_id = player, spotter_id = Mortar.spotter:getOnlineID()})
+
+
+
+
+    print("Mortar: added bomber, starting loop")
+    Events.OnTick.Add(Mortar.checkBomberDistanceFromMortar)
+
+
+    --pl:setIgnoreMovement(true)      -- TODO this limits even aiming. Too strict
+
+    -- TODO Should update player rotation based on the position of the spotter
 end
-Events.OnGameStart.Add(Mortar.init)
+
+--- Get the current bomber or nil
+--- @return IsoPlayer
+Mortar.getBomber = function()
+    return Mortar.bomber
+end
+
+---Unset the current bomber
+Mortar.unsetBomber = function()
+    Mortar.bomber = nil
+
+end
+
+---Set the currently used mortar
+---@param obj IsoObject
+Mortar.setCurrentMortar = function(obj)
+    Mortar.current_mortar = obj
+end
 
 
-Mortar.SpawnDebris = function(square)
+-------------------------------------------------------------
+-- Shooting logic
+------------------------------------------------------------
+
+---Spawn debris in the chosen square
+---@param square IsoSquare
+Mortar.spawnDebris = function(square)
     -- the tile starts at 0 and ends 64 -8 (8  mortar tiles)
     local dug = IsoObject.new(square, "mortar_" .. ZombRand(63)-8, "", false) 
     square:AddTileObject(dug)
@@ -70,27 +117,27 @@ Mortar.SpawnDebris = function(square)
     end
     --ISInventoryPage.renderDirty = true
 end
+
+--- TODO This should be in common functions instead of here
+---@param chance any
+---@return boolean
 Mortar.roll = function(chance)
     local roll = ZombRand(1, 101);
     if roll <= chance then
         return true
     end
 end
-Mortar.GenGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
+
+--- Generate explosion and\or debris in the zone
+---@param operator IsoPlayer
+---@param spotter IsoPlayer
+---@param bommX number
+---@param bommY number
+---@param bommZ number
+---@param radius number
+Mortar.genGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
     local cell = getWorld():getCell()      -- We need to get the correct cell, not this one
     operator:startMuzzleFlash()
-
-    print("_____________________________")
-    print(bommX)
-    print(radius)
-
-    print(bommY)
-    print(radius)
-
-    print(bommZ)
-    print(radius)
-
-
 
     for x = bommX - radius, bommX + radius + 1 do
         for y = bommY - radius, bommY + radius + 1 do
@@ -119,9 +166,10 @@ Mortar.GenGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
                     }
                     sendClientCommand(spotter, 'object', Xtype, args)
                 end
-                chance = 40
+
+                local chance = 40
                 if Mortar.roll(chance) then
-                    Mortar.SpawnDebris(sq)
+                    Mortar.spawnDebris(sq)
                 end
 
                 -- Kill whatever thing is in the square
@@ -141,7 +189,13 @@ Mortar.GenGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
         end
     end
 end
-Mortar.ExecuteFire = function(operator, spotter, rad, dist)
+
+---Manages the actual mortar shot explosion
+---@param operator IsoPlayer
+---@param spotter IsoPlayer
+---@param rad number
+---@param dist number
+Mortar.executeFire = function(operator, spotter, rad, dist)
 
     local nx = Mortar.directions[tostring(spotter:getDir())][1]
     local ny = Mortar.directions[tostring(spotter:getDir())][2]
@@ -164,21 +218,27 @@ Mortar.ExecuteFire = function(operator, spotter, rad, dist)
     -- TODO This could break if the spotter moves away from the cell. So let's consider that
     if Mortar.direct_coordinates ~= nil then
         local test = Mortar.direct_coordinates
-        Mortar.GenGroundZero(operator, spotter, Mortar.direct_coordinates[1], Mortar.direct_coordinates[2], 0, finalRad)
+        Mortar.genGroundZero(operator, spotter, Mortar.direct_coordinates[1], Mortar.direct_coordinates[2], 0, finalRad)
         Mortar.direct_coordinates = nil     -- Reset them?
     else
-        Mortar.GenGroundZero(operator, spotter, bommX, bommY, bommZ, finalRad)
+        Mortar.genGroundZero(operator, spotter, bommX, bommY, bommZ, finalRad)
 
     end
 
 end
-Mortar.StartFiring = function(operator, spotter, rad, dist)
+
+---Setup the mortar to start fire or not in case something is missing
+---@param operator IsoPlayer
+---@param spotter IsoPlayer
+---@param rad number
+---@param dist number
+Mortar.startFiring = function(operator, spotter, rad, dist)
     print("Mortar: Trying to fire")
     -- SP or when there's no need for a spotter
     if not isServer() and not isClient() or not SandboxVars.Mortar.NecessarySpotter then -- i change the default to false
         print("SP or no Necessary Spotter")
         Mortar.spotter = pl
-        Mortar.ExecuteFire(operator, spotter, rad, dist)
+        Mortar.executeFire(operator, spotter, rad, dist)
     else
         if spotter == nil then
             print("No spotter")
@@ -187,9 +247,9 @@ Mortar.StartFiring = function(operator, spotter, rad, dist)
         end
 
         print("Checking again for walkie talkie")
-        if Mortar.CheckPlayerForWalkieTalkie(spotter) then
+        if Mortar.checkSpotterForRadio(spotter) then
             -- TODO Add a check for visibility -- probably a sandbox will do
-            Mortar.ExecuteFire(operator, spotter, rad, dist)
+            Mortar.executeFire(operator, spotter, rad, dist)
         else
             print("No walkie talkie on spotter")
             operator:Say("My spotter has no Walkie Talkie on their hand")
@@ -200,21 +260,26 @@ Mortar.StartFiring = function(operator, spotter, rad, dist)
 
 end
 
------------------------------------------------------------
+
+
+
+-------------------------------------------------------------
+-- Various functions
+------------------------------------------------------------
 
 
 -- Disassemble and returns the item to the player inventory
-Mortar.Disassemble = function()
-    -- TODO Make it
+Mortar.disassemble = function()
+    -- TODO Implement it
 end
 
-
-Mortar.CheckBomberDistanceFromMortar = function()
+-- Check the distance between bomber and mortar tile
+Mortar.checkBomberDistanceFromMortar = function()
 
 
     if Mortar.bomber == nil then
         print("Mortar: Can't find bomber anymore, exiting update")
-        Events.OnTick.Remove(Mortar.CheckBomberDistanceFromMortar)
+        Events.OnTick.Remove(Mortar.checkBomberDistanceFromMortar)
         MortarUI.close()        -- This also unset the bomber, kinda janky
         return
     end
@@ -230,56 +295,51 @@ Mortar.CheckBomberDistanceFromMortar = function()
 
     if MortarGetDistance2D(pl_x, pl_y, mort_x, mort_y) > Mortar.distSteps then
         MortarUI.close()        -- This also unset the bomber, kinda janky
-        Events.OnTick.Remove(Mortar.CheckBomberDistanceFromMortar)
+        Events.OnTick.Remove(Mortar.checkBomberDistanceFromMortar)
 
     end
 
 
 
 end
-Mortar.SetBomber = function(player)
 
-    -- TODO We shouldn't even get in here without a spotter.
+---comment
+---@param player any
+Mortar.checkSpotterForRadio = function(player)
+    -- TODO right hand should walkie and left hand should be binoculars
+
+    -- Pao: Binoculars shouldn't be necessary, only a radio. Binos are just an added bonus, imo
+    
+    local inv = player:getInventory()
+    local radio = inv:FindAndReturnCategory("Radio")
+
+    if radio then
+        
+        if radio:isEquipped() and radio:isActivated() and player:getPrimaryHandItem() == radio then
+            print("Mortar: Radio is in player's primary hand")
+            return true
+        end
+
+    end
+
+    return false
 
 
+end
 
 
-    local pl = getPlayerByOnlineID(player)
+-------------------------------------------------------
 
-    -- TODO Mostly for test, delete this when releasing this
-    if pl == nil then
-        pl = getPlayer()
+Mortar.init = function()
+
+    print("Mortar: Initializing")
+
+
+    local pl = getPlayer()
+    if not pl:getModData()['mortarDistance'] then
+        pl:getModData()['mortarDistance'] = SandboxVars.Mortar.Radius or 8
     end
 
 
-    Mortar.bomber = pl
-    MortarUI.OnOpenPanel()
-
-
-
-    -- Send a command to the spotter so we he can send us back their coordinates
-    sendClientCommand(pl, "Mortar", "NotifySpotter", {bomber_id = player, spotter_id = Mortar.spotter:getOnlineID()})
-
-
-
-
-    print("Mortar: added bomber, starting loop")
-    Events.OnTick.Add(Mortar.CheckBomberDistanceFromMortar)
-
-
-    --pl:setIgnoreMovement(true)      -- TODO this limits even aiming. Too strict
-
-    -- TODO Should update player rotation based on the position of the spotter
 end
-Mortar.GetBomber = function()
-    return Mortar.bomber
-end
-Mortar.UnsetBomber = function()
-    Mortar.bomber = nil
-
-end
-
-
-Mortar.SetCurrentMortar = function(obj)
-    Mortar.current_mortar = obj
-end
+Events.OnGameStart.Add(Mortar.init)

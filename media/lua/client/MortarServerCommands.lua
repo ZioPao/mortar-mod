@@ -14,7 +14,7 @@ ServerCommands.ReceiveMortarShot = function(args)
     local rad = 8
     local dist = 30
 
-    Mortar.StartFiring(operator, spotter, rad, dist)
+    Mortar.startFiring(operator, spotter, rad, dist)
 
 
 end
