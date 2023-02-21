@@ -1,3 +1,6 @@
+-- TODO Pao: This needs to be moved away, we don't wanna handle this from keybinds
+
+
 
 mortarSounds = {
 ['MortarBlast1'] = true,

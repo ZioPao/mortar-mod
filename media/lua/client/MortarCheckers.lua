@@ -24,6 +24,9 @@ https://discord.gg/2skchrKrDv
 ----------------------------------------------------------------------------------------------------------------------------
 --]]
 
+
+
+
 function MortarCheckers.isBomberValid()
     local pl = getSpecificPlayer(0)
     if isDriving() or getVehicle() then return false end

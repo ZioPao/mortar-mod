@@ -64,7 +64,7 @@ Mortar.setBomber = function(player)
 
 
     Mortar.bomber = pl
-    MortarUI.OnOpenPanel()
+    MortarUI.onOpenPanel()
 
 
 
@@ -254,6 +254,72 @@ end
 
 
 
+
+-------------------------------------------------------------
+-- Spotter functions
+------------------------------------------------------------
+
+
+Mortar.setSpotter = function(_, player)
+    print("Mortar: Setting spotter")
+
+    Mortar.spotter = player
+
+
+    -- TODO Manage cases where the spotter dies
+    -- TODO Manage case when the player stopped using the mortar (should unset the spotter)
+end
+
+---comment
+---@param player any
+Mortar.checkSpotterForRadio = function(player)
+    -- TODO right hand should walkie and left hand should be binoculars
+
+    -- Pao: Binoculars shouldn't be necessary, only a radio. Binos are just an added bonus, imo
+    
+    local inv = player:getInventory()
+    local radio = inv:FindAndReturnCategory("Radio")
+
+    if radio then
+        
+        if radio:isEquipped() and radio:isActivated() and player:getPrimaryHandItem() == radio then
+            print("Mortar: Radio is in player's primary hand")
+            return true
+        end
+
+    end
+
+    return false
+
+
+end
+
+
+-------------------------------------------------------------
+-- Various checks functions
+------------------------------------------------------------
+
+Mortar.isBomberValid = function(player)
+
+    if isDriving() or getVehicle() then return false end
+    if not player:isOutside() then return false end
+    if player:HasTrait('HardOfHearing') or player:HasTrait('Deaf') then return false end
+    if (player:isRunning() or player:isSprinting()) then return false end
+    if not player:isAsleep() then return true end
+    --TODO isHasFog --check if theres fog find the syntax  maybe  DayForecast() ? 
+
+end
+
+
+Mortar.isSpotterValid = function(player)
+    if player:isDriving() or player:getVehicle() then return false end
+    if player:HasTrait('ShortSighted')  then return false end
+    --if pl:isAiming() or pl:isSneaking() then return false end
+    if (player:isRunning() or player:isSprinting()) then return false end
+    if not player:isAsleep() then return true end
+
+end
+
 -------------------------------------------------------------
 -- Various functions
 ------------------------------------------------------------
@@ -294,29 +360,8 @@ Mortar.checkBomberDistanceFromMortar = function()
 
 end
 
----comment
----@param player any
-Mortar.checkSpotterForRadio = function(player)
-    -- TODO right hand should walkie and left hand should be binoculars
-
-    -- Pao: Binoculars shouldn't be necessary, only a radio. Binos are just an added bonus, imo
-    
-    local inv = player:getInventory()
-    local radio = inv:FindAndReturnCategory("Radio")
-
-    if radio then
-        
-        if radio:isEquipped() and radio:isActivated() and player:getPrimaryHandItem() == radio then
-            print("Mortar: Radio is in player's primary hand")
-            return true
-        end
-
-    end
-
-    return false
 
 
-end
 
 
 -------------------------------------------------------

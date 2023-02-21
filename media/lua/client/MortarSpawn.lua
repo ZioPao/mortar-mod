@@ -1,5 +1,6 @@
 -- for testing
 function SpawnMortar()
+	-- FIXME currently broken
 	local pl = getPlayer()
 	pl:getInventory():AddItems("Mortar.round", 5);
 	local weapon = "Mortar.weapon"; if not pl:getInventory():contains(weapon) then pl:getInventory():AddItem(weapon); end
