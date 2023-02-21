@@ -6,7 +6,7 @@
 local ServerCommands = {}
 
 
-ServerCommands.ReceiveMortarShot = function(args)
+ServerCommands.receiveMortarShot = function(args)
     local operator_id = args.operator
     local operator = getPlayerByOnlineID(operator_id)
 
@@ -22,7 +22,7 @@ ServerCommands.ReceiveMortarShot = function(args)
 
 end
 
-ServerCommands.ReceiveOperatorForSpotter = function(args)
+ServerCommands.receiveOperatorForSpotter = function(args)
     print("Mortar: setting the correct bomber for the spotter")
     local bomber_id = args.bomber_id
     Mortar.bomber = getPlayerByOnlineID(bomber_id)
@@ -30,12 +30,12 @@ ServerCommands.ReceiveOperatorForSpotter = function(args)
 
 end
 
-ServerCommands.SetDirectCoordinates = function(args)
+ServerCommands.setDirectCoordinates = function(args)
     Mortar.direct_coordinates = {args.x, args.y}
 end
 
-
-local function OnServerCommand(module, command, args)
+----------------------------------------------
+local function onServerCommand(module, command, args)
     if module == 'Mortar' then
         if ServerCommands[command] then
             args = args or {}
@@ -44,4 +44,4 @@ local function OnServerCommand(module, command, args)
     end
 end
 
-Events.OnServerCommand.Add(OnServerCommand)
+Events.OnServerCommand.Add(onServerCommand)

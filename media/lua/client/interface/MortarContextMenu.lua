@@ -1,6 +1,6 @@
---=========================================--
---[[ MORTAR MOD - CONTEXT MENU HANDLING--]]--
---=========================================--
+--========================================--
+--[[ MORTAR MOD - CONTEXT MENU HANDLING ]]--
+--========================================--
 
 
 
@@ -34,8 +34,8 @@ end
 
 ---------------------------------------------------------------------------
 
--- Operate the mortar menu
-local CreateOperateMortarContextMenu = function(_, context, world_objects)
+-- OCreate the Context menu for the Mortar
+local createOperateMortarContextMenu = function(_, context, world_objects)
 
     local root_menu
     local mortar_menu
@@ -92,4 +92,4 @@ local CreateOperateMortarContextMenu = function(_, context, world_objects)
     end
 
 end
-Events.OnFillWorldObjectContextMenu.Add(CreateOperateMortarContextMenu)
+Events.OnFillWorldObjectContextMenu.Add(createOperateMortarContextMenu)

@@ -23,6 +23,13 @@ https://discord.gg/2skchrKrDv
 ----------------------------------------------------------------------------------------------------------------------------
 --]] 
 
+
+-- TODO Pao: This has to be planned a bit again, it won't work like this
+
+
+
+
+
 MortarRotation = {}
 
 -- TODO something here is wrong, check it again
