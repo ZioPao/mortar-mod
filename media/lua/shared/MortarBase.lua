@@ -131,7 +131,7 @@ end
 ---@param radius number
 Mortar.genGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
     local cell = getWorld():getCell()      -- We need to get the correct cell, not this one
-    operator:startMuzzleFlash()
+    operator:startMuzzleFlash()         -- TODO we need to sync this, it will happen only on the spotter client right now
 
     for x = bommX - radius, bommX + radius + 1 do
         for y = bommY - radius, bommY + radius + 1 do

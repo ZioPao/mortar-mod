@@ -105,17 +105,23 @@ end
 function MortarUI:update()
     ISPanel.update(self)
 
-    local coords
-    if Mortar.direct_coordinates ~= nil then
-        local test = Mortar.direct_coordinates
-        coords = "X: " .. tostring(test[1]) .. ", Y: " .. tostring(test[2])
-    else
-        coords = "No direct coordinates"
+    if MortarUI.instance ~= nil then
+
+        local coords
+        if Mortar.direct_coordinates ~= nil then
+            local test = Mortar.direct_coordinates
+            coords = "X: " .. tostring(test[1]) .. ", Y: " .. tostring(test[2])
+        else
+            coords = "No direct coordinates"
+        end
+
+        if MortarUI.instance.coordinates_label_ref ~= nil then
+            MortarUI.instance.coordinates_label_ref:setName(coords)
+        end
+
+
     end
 
-    if MortarUI.instance.coordinates_label_ref ~= nil then
-        MortarUI.instance.coordinates_label_ref:setName(coords)
-    end
 
 
 end
