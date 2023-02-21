@@ -63,7 +63,7 @@ local createOperateMortarContextMenu = function(_, context, world_objects)
             Mortar.setCurrentMortar(v)
             root_menu = context:getNew(context)
 
-            if Mortar.isBomberValid(player) then
+            if Mortar.isBomberValid(player_obj) then
                 if Mortar.getBomber(player) then
                     mortar_menu = context:addOption(getText("UI_ContextMenu_StopOperatingMortar"), world_objects, function() MortarUI:close() end)
                 else

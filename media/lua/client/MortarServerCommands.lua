@@ -7,15 +7,17 @@ local ServerCommands = {}
 
 
 ServerCommands.receiveMortarShot = function(args)
-    local operator_id = args.operator
-    local operator = getPlayerByOnlineID(operator_id)
-
-    local spotter_id = args.spotter
-    local spotter = getPlayerByOnlineID(spotter_id)
-
+    local operator = getPlayerByOnlineID(args.operator)
+    local spotter = getPlayerByOnlineID(args.spotter)
+    if operator == nil or spotter == nil then
+        print("Mortar: operator or spotter are null, can't start firing")
+        -- TODO Add a way to let the player know about this
+        return
+    end
 
     local rad = 8
     local dist = 30
+
 
     Mortar.startFiring(operator, spotter, rad, dist)
 

@@ -301,7 +301,7 @@ end
 
 Mortar.isBomberValid = function(player)
 
-    if isDriving() or getVehicle() then return false end
+    if player:isDriving() or player:getVehicle() then return false end
     if not player:isOutside() then return false end
     if player:HasTrait('HardOfHearing') or player:HasTrait('Deaf') then return false end
     if (player:isRunning() or player:isSprinting()) then return false end

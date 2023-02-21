@@ -102,7 +102,7 @@ function MortarUI:createChildren()
 
     self.coordinates_label_ref = coordinates_label      -- Set a reference
 
-    Events.OnTick.Add(MortarUI.updateCoordinatesLabel)
+    --Events.OnTick.Add(MortarUI.updateCoordinatesLabel)
 
 
 
@@ -117,6 +117,9 @@ function MortarUI:close()
 end
 function MortarUI:update()
     ISPanel.update(self)
+
+    -- TODO is this run constantly?
+    print("TEST UPDATE PANEL")
 end
 function MortarUI:new(x, y, width, height)
 
