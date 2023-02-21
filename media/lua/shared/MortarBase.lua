@@ -241,7 +241,7 @@ Mortar.startFiring = function(operator, spotter, rad, dist)
         end
 
         print("Checking again for walkie talkie")
-        if Mortar.checkSpotterForRadio(spotter) then
+        if Mortar.checkSpotterRadio(spotter) then
             -- TODO Add a check for visibility -- probably a sandbox var will do
             Mortar.executeFire(operator, spotter, rad, dist)
         else
@@ -275,7 +275,7 @@ end
 
 ---Check if the spotter has a working radio
 ---@param player any
-Mortar.checkSpotterForRadio = function(player)
+Mortar.checkSpotterRadio = function(player)
     -- Pao: Binoculars shouldn't be necessary, only a radio. Binos are just an added bonus, imo
     -- Radios are set with Category = Item... So we have to fetch them before doing anything else
     local inv = player:getInventory()

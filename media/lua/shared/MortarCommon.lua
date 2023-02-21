@@ -12,7 +12,7 @@ MortarCommonFunctions.getDistance2D = function(x1, y1, x2, y2)
 
 end
 
-MortarCommonFunctions.roll = function(change)
+MortarCommonFunctions.roll = function(chance)
 
     local r = ZombRand(1, 101)
     if r <= chance then
