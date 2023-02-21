@@ -9,12 +9,24 @@ option Mortar.NecessarySpotter
     translation = Mortar_NecessarySpotter,
 }
 
+option Mortar.OperatorRange
+{
+    type = float,
+    min = 1.5,
+    default = 1.5,
+    max = 3,
+
+    page = Mortar,
+    translation = Mortar_OperatorRange
+}
+
+
 
 option Mortar.Radius
 {
     type = integer,
     min = 1,
-    max = 20
+    max = 20,
     default = 8,
 
     page = Mortar,

@@ -22,8 +22,20 @@ ClientCommands.AcceptMortarShot = function(player, args)
     --operator:faceLocation(x, y)   
 
 end
+ClientCommands.NotifySpotter = function(player, args)
+    print("Mortar: Notifying spotter!")
+    local spotter = getPlayerByOnlineID(args.spotter_id)
+    sendServerCommand(spotter, "Mortar", "ReceiveOperatorForSpotter", {bomber_id = args.bomber_id})
 
 
+
+end
+
+ClientCommands.SendDirectCoordinates = function(player, args)
+    local bomber = getPlayerByOnlineID(args.bomber_id)
+    sendServerCommand(bomber, "Mortar", "SetDirectCoordinates", {x = args.x, y = args.y})
+
+end
 
 local OnClientCommand = function(module, command, player_obj, args)
     if module == "Mortar" and ClientCommands[command] then

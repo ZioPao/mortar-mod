@@ -46,9 +46,6 @@ Mortar.distSteps = 2
 Mortar.rad = SandboxVars.Mortar.Radius or 8
 
 
-
-
-
 function Mortar.init()
 
     print("Mortar: Initializing")
@@ -146,11 +143,6 @@ Mortar.GenGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
 end
 Mortar.ExecuteFire = function(operator, spotter, rad, dist)
 
-
-
-
-
-
     local nx = Mortar.directions[tostring(spotter:getDir())][1]
     local ny = Mortar.directions[tostring(spotter:getDir())][2]
 
@@ -180,8 +172,6 @@ Mortar.ExecuteFire = function(operator, spotter, rad, dist)
     end
 
 end
-
-
 Mortar.StartFiring = function(operator, spotter, rad, dist)
     print("Mortar: Trying to fire")
     -- SP or when there's no need for a spotter
@@ -215,7 +205,7 @@ end
 
 -- Disassemble and returns the item to the player inventory
 Mortar.Disassemble = function()
-
+    -- TODO Make it
 end
 
 
@@ -225,6 +215,8 @@ Mortar.CheckBomberDistanceFromMortar = function()
     if Mortar.bomber == nil then
         print("Mortar: Can't find bomber anymore, exiting update")
         Events.OnTick.Remove(Mortar.CheckBomberDistanceFromMortar)
+        MortarUI.close()        -- This also unset the bomber, kinda janky
+        return
     end
 
     -- TODO We're not considering height, should be fine though.
@@ -236,7 +228,7 @@ Mortar.CheckBomberDistanceFromMortar = function()
 
     local max_distance_from_mortar = 1.5
 
-    if MortarGetDistance2D(pl_x, pl_y, mort_x, mort_y) > max_distance_from_mortar then
+    if MortarGetDistance2D(pl_x, pl_y, mort_x, mort_y) > Mortar.distSteps then
         MortarUI.close()        -- This also unset the bomber, kinda janky
         Events.OnTick.Remove(Mortar.CheckBomberDistanceFromMortar)
 
@@ -245,9 +237,12 @@ Mortar.CheckBomberDistanceFromMortar = function()
 
 
 end
-
-
 Mortar.SetBomber = function(player)
+
+    -- TODO We shouldn't even get in here without a spotter.
+
+
+
 
     local pl = getPlayerByOnlineID(player)
 
@@ -260,6 +255,14 @@ Mortar.SetBomber = function(player)
     Mortar.bomber = pl
     MortarUI.OnOpenPanel()
 
+
+
+    -- Send a command to the spotter so we he can send us back their coordinates
+    sendClientCommand(pl, "Mortar", "NotifySpotter", {bomber_id = player, spotter_id = Mortar.spotter:getOnlineID()})
+
+
+
+
     print("Mortar: added bomber, starting loop")
     Events.OnTick.Add(Mortar.CheckBomberDistanceFromMortar)
 
@@ -268,12 +271,9 @@ Mortar.SetBomber = function(player)
 
     -- TODO Should update player rotation based on the position of the spotter
 end
-
-
 Mortar.GetBomber = function()
     return Mortar.bomber
 end
-
 Mortar.UnsetBomber = function()
     Mortar.bomber = nil
 

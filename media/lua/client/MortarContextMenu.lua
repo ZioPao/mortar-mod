@@ -1,3 +1,7 @@
+--=========================================--
+--[[ MORTAR MOD - CONTEXT MENU HANDLING--]]--
+--=========================================--
+
 
 local spotter_table = {}
 
@@ -5,18 +9,16 @@ local PredicateMortarShell = function(item)
     if item:isBroken() then return false end
     return item:hasTag("Mortar.round") or item:getFullType() == "Mortar.round"
 end
-
-
-
 local SetSpotter = function(_, player)
     print("Mortar: Setting spotter")
 
     Mortar.spotter = player
 
+
     -- TODO Manage cases where the spotter dies
     -- TODO Manage case when the player stopped using the mortar (should unset the spotter)
 end
-local SearchForSpotter = function(operator, mortar_menu, world_obj)
+local SearchForSpotter = function(spotter_menu, operator)
     -- TODO This is limited by the cell. Won't work.
     print("Mortar: Searching spotter")
 
@@ -31,14 +33,17 @@ local SearchForSpotter = function(operator, mortar_menu, world_obj)
 
     local players = getOnlinePlayers()
     local acceptable_spotters = {}
-    for i = 0, 1 do
+    for i = 0, players:size() - 1 do
         local pl = players:get(i)
         if pl ~= operator then
             -- Check distance
             local dist = pl:getDistanceSq(operator)
             if dist < 150 then          -- TODO Set a correct distance, maybe via SandboxVars
                 print("Mortar: Found acceptable spotter => " .. tostring(i))
-                mortar_menu:addOption(getText("UI_ContextMenu_Spotter") .. pl:getUsername(), _, SetSpotter, pl)
+                local username = pl:getUsername()
+                print(username)
+                spotter_menu:addOption(username, _, SetSpotter, pl)
+
             end
         end
     end
@@ -47,7 +52,6 @@ end
 
 
 ---------------------------------------------------------------------------
-
 
 -- Operate the mortar menu
 local CreateOperateMortarContextMenu = function(_, context, world_objects)
@@ -61,8 +65,6 @@ local CreateOperateMortarContextMenu = function(_, context, world_objects)
 
         print(MortarRotation.isMortar(v:getSprite():getName()))
 
-        -- TODO Add 1.5 as a sandboxvars
-
         local player_obj= getPlayer()
 
         local pl_x = player_obj:getX()
@@ -72,33 +74,30 @@ local CreateOperateMortarContextMenu = function(_, context, world_objects)
 
 
 
-        local distance_check = MortarGetDistance2D(pl_x, pl_y, obj_x, obj_y) < 1.5
+        local distance_check = MortarGetDistance2D(pl_x, pl_y, obj_x, obj_y) < Mortar.distSteps
 
 
         if v:getSprite() and MortarRotation.isMortar(v:getSprite():getName()) and distance_check  then
 
             Mortar.SetCurrentMortar(v)
-
-
-            mortar_menu = context:getNew(context)
+            root_menu = context:getNew(context)
 
 
             if Mortar.GetBomber(player) then
-                root_menu = context:addOption(getText("UI_ContextMenu_StopOperatingMortar"), world_objects, function() MortarUI:close() end)
+                mortar_menu = context:addOption(getText("UI_ContextMenu_StopOperatingMortar"), world_objects, function() MortarUI:close() end)
             else
                 -- TODO I think it's the opposite, check it out
-                root_menu = context:addOption(getText("UI_ContextMenu_OperateMortar"), world_objects, function() Mortar.SetBomber(getPlayer():getOnlineID()) end)
+                mortar_menu = context:addOption(getText("UI_ContextMenu_OperateMortar"), world_objects, function() Mortar.SetBomber(getPlayer():getOnlineID()) end)
 
             end
-
-
-            context:addSubMenu(root_menu, mortar_menu)
-
 
             -- TODO Set it so we can't access it if sp
             if isClient() then
                 if SandboxVars.Mortar.NecessarySpotter  then
-                    SearchForSpotter(player_obj, mortar_menu, v)
+                    local spotter_option = context:addOption(getText("UI_ContextMenu_SetSpotter"), _, nil)
+                    local spotter_menu = ISContextMenu:getNew(context)
+                    context:addSubMenu(spotter_option, spotter_menu)
+                    SearchForSpotter(spotter_menu, player_obj)
                 end
             end
 
@@ -109,7 +108,6 @@ local CreateOperateMortarContextMenu = function(_, context, world_objects)
     end
 
 end
-
 Events.OnFillWorldObjectContextMenu.Add(CreateOperateMortarContextMenu)
 
 
@@ -123,7 +121,7 @@ Events.OnFillWorldObjectContextMenu.Add(CreateOperateMortarContextMenu)
 
 
 
-
+-- TODO Move this to MortarUI.lua
 local CreateMortarContextMenu = function(player, context, world_objects, _)
 
     local player_obj = getSpecificPlayer(player)

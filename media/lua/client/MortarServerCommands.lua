@@ -19,6 +19,17 @@ ServerCommands.ReceiveMortarShot = function(args)
 
 end
 
+ServerCommands.ReceiveOperatorForSpotter = function(args)
+    print("Mortar: setting the correct bomber for the spotter")
+    local bomber_id = args.bomber_id
+    Mortar.bomber = getPlayerByOnlineID(bomber_id)
+
+
+end
+
+ServerCommands.SetDirectCoordinates = function(args)
+    Mortar.direct_coordinates = {args.x, args.y}
+end
 
 
 local function OnServerCommand(module, command, args)

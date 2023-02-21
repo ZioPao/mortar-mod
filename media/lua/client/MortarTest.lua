@@ -1,5 +1,27 @@
 
 
+-- TODO Remake logic of context stuff
+
+function TestStuff2()
+
+    -- Operate mortar and Set Spotter are separate menus
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function testBoom(pl, bommX, bommY, bommZ, Xtype)
     local args = {

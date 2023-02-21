@@ -1,3 +1,7 @@
+--==================================--
+--[[ MORTAR MOD - CUSTOM MENU UI--]]--
+--==================================--
+
 require "ISUI/ISPanel"
 
 MortarUI = ISPanel:derive("MortarUI")
@@ -48,17 +52,28 @@ function MortarUI.OnOpenPanel()
     return MortarUI.instance
 
 end
-
 function MortarUI:initialise()
     ISPanel.initialise(self)
 end
+function MortarUI:UpdateCoordinatesLabel()
 
 
+    if Mortar.direct_coordinates ~= nil then
+
+        local test = Mortar.direct_coordinates
 
 
+        local coords = "X: " .. tostring(test[1]) .. ", Y: " .. tostring(test[2])
 
+        if MortarUI.instance.coordinates_label_ref ~= nil then
+            MortarUI.instance.coordinates_label_ref:setName(coords)
 
+        else
+            print("Mortar: no reference to coordinates label...")
+        end
+    end
 
+end
 function MortarUI:createChildren()
     ISPanel.createChildren(self)
 
@@ -66,27 +81,32 @@ function MortarUI:createChildren()
     shoot_btn:initialise()
     self:addChild(shoot_btn)
 
-
     local exit_btn = ISButton:new(100, 100, 80, 25, "EXIT", self, self.close)
     exit_btn:initialise()
     self:addChild(exit_btn)
 
+    local coordinates_label = ISLabel:new(100, 150, 80, "",1, 1, 1, 1, UIFont.Medium, false)
+    coordinates_label:initialise()
+    self:addChild(coordinates_label)
+
+    self.coordinates_label_ref = coordinates_label      -- Set a reference
+
+    Events.OnTick.Add(MortarUI.UpdateCoordinatesLabel)
+
+
+
 end
-
-
 function MortarUI:close()
     Mortar.UnsetBomber()
+    Events.OnTick.Remove(MortarUI.UpdateCoordinatesLabel)       -- Disable the update for coordinates
     MortarUI.instance:setVisible(false)
     MortarUI.instance:removeFromUIManager()
 
     MortarUI.instance = nil     -- Removes the reference
 end
-
-
 function MortarUI:update()
     ISPanel.update(self)
 end
-
 function MortarUI:new(x, y, width, height)
 
     local o = {}
@@ -100,6 +120,8 @@ function MortarUI:new(x, y, width, height)
     o.zOffsetSmallFont = 25;
     o.moveWithMouse = true
     o.panelTitle = title
+
+    o.coordinates_label_ref = nil
 
     return o
 end
