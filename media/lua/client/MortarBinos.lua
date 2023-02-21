@@ -7,7 +7,10 @@
 local function HandleBinocularsClick(obj, x,y)
 
     Events.OnObjectLeftMouseButtonDown.Remove(HandleBinocularsClick)
-
+    if MortarBomber == nil then
+        print("Mortar: no bomber available for this spotter. Won't send coordinates")
+        return
+    end
     local obj_x = obj:getX()
     local obj_y = obj:getY()
 

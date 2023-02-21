@@ -69,20 +69,6 @@ end
 function MortarUI:updateCoordinatesLabel()
 
 
-    if Mortar.direct_coordinates ~= nil then
-
-        local test = Mortar.direct_coordinates
-
-
-        local coords = "X: " .. tostring(test[1]) .. ", Y: " .. tostring(test[2])
-
-        if MortarUI.instance.coordinates_label_ref ~= nil then
-            MortarUI.instance.coordinates_label_ref:setName(coords)
-
-        else
-            print("Mortar: no reference to coordinates label...")
-        end
-    end
 
 end
 function MortarUI:createChildren()
@@ -102,24 +88,36 @@ function MortarUI:createChildren()
 
     self.coordinates_label_ref = coordinates_label      -- Set a reference
 
-    --Events.OnTick.Add(MortarUI.updateCoordinatesLabel)
-
-
 
 end
 function MortarUI:close()
     Mortar.unsetBomber()
     Events.OnTick.Remove(MortarUI.updateCoordinatesLabel)       -- Disable the update for coordinates
-    MortarUI.instance:setVisible(false)
-    MortarUI.instance:removeFromUIManager()
 
-    MortarUI.instance = nil     -- Removes the reference
+    if MortarUI.instance then 
+        MortarUI.instance:setVisible(false)
+        MortarUI.instance:removeFromUIManager()
+    
+        MortarUI.instance = nil     -- Removes the reference
+    end
+
 end
 function MortarUI:update()
     ISPanel.update(self)
 
-    -- TODO is this run constantly?
-    print("TEST UPDATE PANEL")
+    local coords
+    if Mortar.direct_coordinates ~= nil then
+        local test = Mortar.direct_coordinates
+        coords = "X: " .. tostring(test[1]) .. ", Y: " .. tostring(test[2])
+    else
+        coords = "No direct coordinates"
+    end
+
+    if MortarUI.instance.coordinates_label_ref ~= nil then
+        MortarUI.instance.coordinates_label_ref:setName(coords)
+    end
+
+
 end
 function MortarUI:new(x, y, width, height)
 
