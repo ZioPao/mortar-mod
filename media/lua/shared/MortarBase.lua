@@ -242,11 +242,11 @@ Mortar.startFiring = function(operator, spotter, rad, dist)
 
         print("Checking again for walkie talkie")
         if Mortar.checkSpotterForRadio(spotter) then
-            -- TODO Add a check for visibility -- probably a sandbox will do
+            -- TODO Add a check for visibility -- probably a sandbox var will do
             Mortar.executeFire(operator, spotter, rad, dist)
         else
             print("No walkie talkie on spotter")
-            operator:Say("My spotter has no Walkie Talkie on their hand")
+            operator:Say("My spotter has no Walkie Talkie on their hand")       -- TODO This is gonna appear on the spotter client!!! Doesn't make any sense
         end
 
     end
@@ -273,28 +273,35 @@ Mortar.setSpotter = function(_, player)
     -- TODO Manage case when the player stopped using the mortar (should unset the spotter)
 end
 
----comment
+---Check if the spotter has a working radio
 ---@param player any
 Mortar.checkSpotterForRadio = function(player)
-    -- TODO right hand should walkie and left hand should be binoculars
-
     -- Pao: Binoculars shouldn't be necessary, only a radio. Binos are just an added bonus, imo
-    
+    -- Radios are set with Category = Item... So we have to fetch them before doing anything else
     local inv = player:getInventory()
-    local radio = inv:FindAndReturnCategory("Radio")
+    local items = inv:getItems()
 
-    if radio then
-        
-        if radio:isEquipped() and radio:isActivated() and player:getPrimaryHandItem() == radio then
-            print("Mortar: Radio is in player's primary hand")
-            return true
+    local radio
+    for i = 0, items:size() - 1 do
+        local item = items:get(i)
+        local item_full_type = item:getFullType()
+
+        -- not sure why instanceof didn't work, but this should be fine
+        if luautils.stringStarts(item_full_type, "Radio.") then
+            radio = item
+            break
         end
-
     end
 
+    -- Another problem, to check if a radio is turned on we need to get getDeviceData(), not isActivated
+    if radio then
+        local device_data = radio:getDeviceData()
+        if device_data:getIsTurnedOn() then
+            print("Mortar: Radio is ready to go for the spotter")
+            return true
+        end
+    end
     return false
-
-
 end
 
 
