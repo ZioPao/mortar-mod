@@ -34,3 +34,28 @@ MortarCommonFunctions.isMortarSprite = function(sprite_name)
     end 
     return false
 end
+
+
+
+--------------------------------------
+
+
+if MortarCommonVars == nil then
+
+    MortarCommonVars = {
+        directions = {
+            ["N"] = {0, -1},
+            ["NE"] = {math.sqrt(2) / 2, -math.sqrt(2) / 2},
+            ["E"] = {1, 0},
+            ["SE"] = {math.sqrt(2) / 2, math.sqrt(2) / 2},
+            ["S"] = {0, 1},
+            ["SW"] = {-math.sqrt(2) / 2, math.sqrt(2) / 2},
+            ["W"] = {-1, 0},
+            ["NW"] = {-math.sqrt(2) / 2, -math.sqrt(2) / 2}
+        },
+        distMin = 4,
+        distMax = 12,
+        distSteps = 2,
+        rad = 8,
+    }
+end

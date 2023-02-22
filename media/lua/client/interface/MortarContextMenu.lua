@@ -24,7 +24,7 @@ local searchAndSetNearbySpotters = function(spotter_menu, operator)
                     print("Mortar: Found acceptable spotter => " .. tostring(i))
                     local username = pl:getUsername()
                     print(username)
-                    spotter_menu:addOption(username, _, Mortar.setSpotter, pl)
+                    spotter_menu:addOption(username, _, function() Mortar:setSpotter(pl) end)
                 end
 
 
@@ -53,24 +53,25 @@ local createOperateMortarContextMenu = function(player, context, worldobjects, t
         local obj_x = v:getX()
         local obj_y = v:getY()
 
-
-
-        local distance_check = MortarCommonFunctions.getDistance2D(pl_x, pl_y, obj_x, obj_y) < Mortar.distSteps
-
+        local distance_check = MortarCommonFunctions.getDistance2D(pl_x, pl_y, obj_x, obj_y) < MortarCommonVars.distSteps
 
         if v:getSprite() and MortarCommonFunctions.isMortarSprite(v:getSprite():getName()) and distance_check  then
         
 
-            Mortar.setCurrentMortar(v)
+
+            if Mortar:getCurrentMortar() ~= v then
+                Mortar:new()
+                Mortar:setCurrentMortar(v)
+            end
+
+
             root_menu = context:getNew(context)
 
             if Mortar.isBomberValid(player_obj) then
-                if Mortar.getBomber() == player_obj then
+                if Mortar:getBomber() == player_obj then
                     mortar_menu = context:addOption(getText("UI_ContextMenu_StopOperatingMortar"), worldobjects, function() MortarUI:close() end)
-                else
-                    -- TODO I think it's the opposite, check it out
-                    mortar_menu = context:addOption(getText("UI_ContextMenu_OperateMortar"), worldobjects, function() Mortar.setBomber(getPlayer():getOnlineID()) end)
-    
+                elseif Mortar:isAvailable() then
+                    mortar_menu = context:addOption(getText("UI_ContextMenu_OperateMortar"), worldobjects, function() Mortar:setBomber(getPlayer():getOnlineID()) end)
                 end
             end
             

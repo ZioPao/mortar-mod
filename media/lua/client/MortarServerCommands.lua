@@ -13,8 +13,8 @@ ServerCommands.receiveMortarShot = function(args)
         print("Mortar: operator or spotter are null, can't start firing")
 
         -- TODO this would run ONLY on the spotter client, since receiveMortarShot is intended to be run there
-        operator:Say(tostring('I need a spotter')) 
-        spotter:Say(tostring('I need a bomber')) 
+        --operator:Say(tostring('I need a spotter')) 
+        --spotter:Say(tostring('I need a bomber')) 
         
         return
     end
@@ -23,7 +23,7 @@ ServerCommands.receiveMortarShot = function(args)
     local dist = 30
 
 
-    Mortar.startFiring(operator, spotter, rad, dist)
+    Mortar:startFiring()
 
     -- TODO Same problem as before, only from the spotter perspective the operator would play the emote, but nothing would happen on the operator\bomber client
     spotter:playEmote("_SpotterScope4")
@@ -31,16 +31,17 @@ ServerCommands.receiveMortarShot = function(args)
     --spotter:playEmote("_SpotterScope4") --or use this
 end
 
-ServerCommands.receiveOperatorForSpotter = function(args)
-    print("Mortar: setting the correct bomber for the spotter")
-    local bomber_id = args.bomber_id
-    Mortar.bomber = getPlayerByOnlineID(bomber_id)
+ServerCommands.receiveMortarForSpotter = function(args)
+    print("Mortar: setting the correct mortar instance for the spotter")
 
+    Mortar:new()
+    Mortar:forceSetBomber(args.bomber_id)
+    Mortar:setSpotter(getPlayerByOnlineID(args.spotter_id))
 
 end
 
 ServerCommands.setDirectCoordinates = function(args)
-    Mortar.direct_coordinates = {args.x, args.y}
+    Mortar:setDirectCoordinates(args.x, args.y)
 end
 
 ----------------------------------------------

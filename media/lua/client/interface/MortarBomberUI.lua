@@ -24,7 +24,7 @@ end ]]
 local sendStartFiringToServer = function(_)
 
     if Mortar.checkRadio(Mortar.bomber) then
-        if Mortar.spotter ~= nil then
+        if Mortar:getSpotter() ~= nil then
             print("Mortar: found spotter, starting to fire")
             local op_id = getPlayer():getOnlineID()
             local spotter_id = Mortar.spotter:getOnlineID()
@@ -32,13 +32,10 @@ local sendStartFiringToServer = function(_)
     
         else
             print("Can't send command, no spotter")
-            Mortar.getBomber():Say("I don't have a spotter")
+            Mortar:getBomber():Say("I don't have a spotter")
         end
-
-
-
     else
-        Mortar.getBomber():Say("I'm forgetting the radio...")
+        Mortar:getBomber():Say("I'm forgetting the radio...")
     end
 
 
@@ -93,7 +90,7 @@ function MortarUI:createChildren()
 
 end
 function MortarUI:close()
-    Mortar.unsetBomber()
+    Mortar:unsetBomber()
     Events.OnTick.Remove(MortarUI.updateCoordinatesLabel)       -- Disable the update for coordinates
 
     if MortarUI.instance then 

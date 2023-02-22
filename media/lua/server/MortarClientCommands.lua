@@ -24,12 +24,12 @@ ClientCommands.acceptMortarShot = function(player, args)
     --operator:faceLocation(x, y)   
 
 end
-ClientCommands.notifySpotter = function(player, args)
-    print("Mortar: Notifying spotter!")
+ClientCommands.sendMortarToSpotter = function(player, args)
+    print("Mortar: setting mortar for spotter")
     local spotter = getPlayerByOnlineID(args.spotter_id)
-    sendServerCommand(spotter, "Mortar", "receiveOperatorForSpotter", {bomber_id = args.bomber_id})
+    --local bomber = getPlayerByOnlineID(args.bomber_id)
 
-
+    sendServerCommand(spotter, "Mortar", "receiveMortarForSpotter", {spotter_id = args.spotter_id, bomber_id = args.bomber_id})
 
 end
 ClientCommands.sendDirectCoordinates = function(player, args)
