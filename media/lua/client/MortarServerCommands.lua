@@ -44,7 +44,11 @@ end
 ServerCommands.setDirectCoordinates = function(args)
     Mortar.direct_coordinates = {args.x, args.y}
 end
+ServerCommands.acceptMuzzleFlash = function(args)
 
+    local pl = getPlayer()
+    pl:startMuzzleFlash()
+end
 ----------------------------------------------
 local function onServerCommand(module, command, args)
     if module == 'Mortar' then

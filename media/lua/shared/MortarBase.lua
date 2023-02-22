@@ -83,9 +83,9 @@ Mortar.setBomber = function(player_id)
     print("Mortar: added bomber, starting loop")
     Events.OnTick.Add(Mortar.checkBomberDistanceFromMortar)
 
-    
+
     -- Register the MortarRotDirection function with the OnPlayerMove event.
-    Events.OnPlayerMove.Add(MortarRotDirection) -- TODO Maybe we should trigger it ONLY when the
+    --Events.OnPlayerMove.Add(MortarRotDirection) -- TODO Maybe we should trigger it ONLY when the
 
     --pl:setIgnoreMovement(true)      -- TODO this limits even aiming. Too strict
 
@@ -139,6 +139,10 @@ end
 Mortar.genGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
     local cell = getWorld():getCell()      -- We need to get the correct cell, not this one
     operator:startMuzzleFlash()         -- TODO we need to sync this, it will happen only on the spotter client right now
+
+    sendClientCommand(spotter, 'Mortar', 'sendMuzzleFlash', {bomber_id = operator:getOnlineID()})
+
+
 
     for x = bommX - radius, bommX + radius + 1 do
         for y = bommY - radius, bommY + radius + 1 do

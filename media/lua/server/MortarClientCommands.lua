@@ -37,7 +37,11 @@ ClientCommands.sendDirectCoordinates = function(player, args)
     sendServerCommand(bomber, "Mortar", "setDirectCoordinates", {x = args.x, y = args.y})
 
 end
+ClientCommands.sendMuzzleFlash = function(player, args)
+    local bomber = getPlayerByOnlineID(args.bomber_id)
+    sendServerCommand(bomber, 'Mortar', 'acceptMuzzleFlash', {})
 
+end
 ------------------------------------------------
 
 local onClientCommand = function(module, command, player_obj, args)
