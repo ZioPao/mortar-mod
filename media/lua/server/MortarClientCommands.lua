@@ -41,6 +41,13 @@ ClientCommands.sendMuzzleFlash = function(player, args)
     sendServerCommand('Mortar', 'acceptMuzzleFlash', {bomber_id = args.bomber_id})
 
 end
+
+ClientCommands.sendBoomSound = function(player, args)
+
+    sendServerCommand('Mortar', 'receiveBoomSound', {x = args.sq_x, y = args.sq_y, z = args.sq_z})
+
+end
+
 ------------------------------------------------
 
 local onClientCommand = function(module, command, player_obj, args)

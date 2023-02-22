@@ -34,3 +34,19 @@ MortarCommonFunctions.isMortarSprite = function(sprite_name)
     end 
     return false
 end
+
+
+
+---------------------------
+if MortarCommonVars == nil then
+    MortarCommonVars = {}
+
+    MortarCommonVars.sounds = {
+            ['MortarBlast1'] = true,
+            ['MortarBlast2'] = true,
+            ['MortarBlast3'] = true,
+    }
+
+
+    
+end

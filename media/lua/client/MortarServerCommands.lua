@@ -13,8 +13,8 @@ ServerCommands.receiveMortarShot = function(args)
         print("Mortar: operator or spotter are null, can't start firing")
 
         -- TODO this would run ONLY on the spotter client, since receiveMortarShot is intended to be run there
-        operator:Say(tostring('I need a spotter')) 
-        spotter:Say(tostring('I need a bomber')) 
+        --operator:Say(tostring('I need a spotter')) 
+        --spotter:Say(tostring('I need a bomber')) 
         
         return
     end
@@ -44,6 +44,7 @@ end
 ServerCommands.setDirectCoordinates = function(args)
     Mortar.direct_coordinates = {args.x, args.y}
 end
+
 ServerCommands.acceptMuzzleFlash = function(args)
 
     local pl = getPlayerByOnlineID(args.bomber_id)
@@ -51,6 +52,19 @@ ServerCommands.acceptMuzzleFlash = function(args)
         pl:startMuzzleFlash()
     end
 end
+
+ServerCommands.receiveBoomSound = function(args)
+
+    local x = args.x
+    local y = args.y
+    local z = args.z
+
+
+    local sq = getCell():getGridSquare(x, y, z)
+    Mortar.setBoom(sq)
+
+end
+
 ----------------------------------------------
 local function onServerCommand(module, command, args)
     if module == 'Mortar' then

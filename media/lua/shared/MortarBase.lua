@@ -49,12 +49,13 @@ Mortar.distMax = 12
 Mortar.distSteps = 2
 Mortar.rad = SandboxVars.Mortar.Radius or 8
 
+
 -------------------------------------------------------------
 -- Getters\Setters
 ------------------------------------------------------------
 
 --- Set the current bomber and notify the spotter
---- @param player IsoPlayer
+--- @param player_id number
 Mortar.setBomber = function(player_id)
 
     -- TODO We shouldn't even get in here without a spotter.
@@ -65,15 +66,17 @@ Mortar.setBomber = function(player_id)
         pl = getPlayer()
     end
 
+    if Mortar.spotter == nil then
+        pl:Say("I don't have a spotter")
+        return
+    end
+
 
     Mortar.bomber = pl
     MortarUI.onOpenPanel()
 
 
     local temp_spotter = Mortar.spotter
-    print(Mortar.spotter)
-    
-
     -- Send a command to the spotter so we he can send us back their coordinates
     sendClientCommand(pl, "Mortar", "notifySpotter", {bomber_id = player_id, spotter_id = Mortar.spotter:getOnlineID()})
 
@@ -108,7 +111,18 @@ end
 ---@param obj IsoObject
 Mortar.setCurrentMortar = function(obj)
 if not getPlayer():isOutside() then return end
-    Mortar.current_mortar = obj
+    Mortar.currentMortar = obj
+end
+
+
+Mortar.setIsReadyToShoot = function(check)
+
+    Mortar.isReadyToShoot = check
+end
+
+Mortar.getIsReadyToShoot = function()
+
+    return Mortar.isReadyToShoot
 end
 
 
@@ -155,7 +169,7 @@ Mortar.genGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
 
                     -- TODO OnTIck is overkill imo -- i dont know what to do and this might not event work
                     Events.OnTick.Add(function() 
-                        if sq:getModData()['mortarHit'] and not sq:Is(IsoFlagType.burning)  then 
+                        if sq:getModData()['mortarHit'] and not sq:Is(IsoFlagType.burning) then
                             sq:getModData()['mortarHit'] = nil
                         end
                     end)
@@ -173,6 +187,7 @@ Mortar.genGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
                 local chance = 40
                 if MortarCommonFunctions.roll(chance) then
                     Mortar.spawnDebris(sq)
+                    sendClientCommand(spotter, 'Mortar', 'sendBoomSound', {sq_x = sq:getX(), sq_y = sq:getY(), sq_z = sq:getZ()})
                 end
 
                 -- Kill whatever thing is in the square
@@ -227,8 +242,8 @@ Mortar.executeFire = function(operator, spotter, rad, dist)
         Mortar.direct_coordinates = nil     -- Reset them?
     else
         Mortar.genGroundZero(operator, spotter, bommX, bommY, bommZ, finalRad)
-
     end
+
 
 end
 
@@ -264,6 +279,25 @@ Mortar.startFiring = function(operator, spotter, rad, dist)
 
 
 end
+
+
+
+
+ 
+Mortar.reloadRound = function()  
+    local inv = getPlayer():getInventory()
+    --if item:getFullType() == "Mortar.MortarRound" then 
+    local item = inv:FindAndReturn('Mortar.MortarRound')
+   if item and inv then
+        --getPlayer():playEmote("_mortarReload")      -- TODO Make it not loop this much
+        inv:RemoveOneOf('Mortar.MortarRound')
+        Mortar.setIsReadyToShoot(true)
+    else
+        getPlayer():Say(tostring('I have no ammo'))
+        Mortar.setIsReadyToShoot(false)
+    end
+end
+
 
 
 
@@ -390,21 +424,22 @@ Mortar.checkBomberDistanceFromMortar = function()
     local pl_x = Mortar.bomber:getX()
     local pl_y = Mortar.bomber:getY()
 
-    local mort_x = Mortar.current_mortar:getX()
-    local mort_y = Mortar.current_mortar:getY()
-
-    local max_distance_from_mortar = 1.5
+    local mort_x = Mortar.currentMortar:getX()
+    local mort_y = Mortar.currentMortar:getY()
 
     if MortarCommonFunctions.getDistance2D(pl_x, pl_y, mort_x, mort_y) > Mortar.distSteps then
-        MortarUI.close()        -- This also unset the bomber, kinda janky
+        MortarUI:close()        -- This also unset the bomber, kinda janky
         Events.OnTick.Remove(Mortar.checkBomberDistanceFromMortar)
 
     end
 end
 
-
-
-
+function Mortar.setBoom(square)
+    getSoundManager():PlayWorldSound(tostring(MortarCommonVars.sounds[ZombRand(1,4)]), square, 0, 5, 5, false)
+    
+    --getWorldMarkers():addPlayerHomingPoint(player, square:getX(), square:getY(), "arrow_triangle", 0.0,0.0,1.0, 0.6, true, 0.5)
+end
+    
 
 -------------------------------------------------------
 MortarInstance = nil

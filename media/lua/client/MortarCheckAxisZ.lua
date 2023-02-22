@@ -1,5 +1,5 @@
 
-
+-- TODO Move this into MortarBase
 
 function MortarisCanShoot(cx,cy) 
 	if NonPvpZone.getNonPvpZone(cx,cy) then return false end

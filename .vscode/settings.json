@@ -54,6 +54,14 @@
         "getClassFieldVal",
         "SandboxVars",
         "getClassField",
-        "ISWearClothing"
+        "ISWearClothing",
+        "ISPanel",
+        "UIFont",
+        "ISLabel",
+        "luautils",
+        "getSoundManager"
+    ],
+    "Lua.diagnostics.disable": [
+        "undefined-field"
     ]
 }
