@@ -26,24 +26,32 @@ local function findMortarNearPlayer()
 end
 
 -- Define the MortarRotDirection function.
-local function MortarRotDirection()
+function MortarRotDirection()
     local player = getPlayer()
-    local mortar = findMortarNearPlayer()
-    if not mortar then return end
-    
-    local newtile = MortarRotation.tileobj[tostring(player:getDir())]
-    mortar:setSprite(newtile)
-    mortar:getSprite():setName(newtile)
 
-    if isClient() then
-        mortar:transmitUpdatedSpriteToServer()
-        mortar:transmitUpdatedSpriteToClients()
-        mortar:transmitCompleteItemToServer()
+    if Mortar.bomber ~= nil then
+        
+        if Mortar.bomber == player then
+            local mortar = findMortarNearPlayer()
+            if not mortar then return end
+            
+            local newtile = Mortartileobj[tostring(player:getDir())]
+            mortar:setSprite(newtile)
+            mortar:getSprite():setName(newtile)
+        
+            if isClient() then
+                mortar:transmitUpdatedSpriteToServer()
+                mortar:transmitUpdatedSpriteToClients()
+                mortar:transmitCompleteItemToServer()
+            end
+        
+            getPlayerLoot(0):refreshBackpacks()
+            ISInventoryPage.dirtyUI()
+
+
+        end
     end
 
-    getPlayerLoot(0):refreshBackpacks()
-    ISInventoryPage.dirtyUI();
+    
 end
 
--- Register the MortarRotDirection function with the OnPlayerMove event.
-Events.OnPlayerMove.Add(MortarRotDirection)
