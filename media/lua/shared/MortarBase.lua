@@ -23,9 +23,11 @@ https://discord.gg/2skchrKrDv
 ----------------------------------------------------------------------------------------------------------------------------
 --]]
 
--- TODO Add Mortar spawning logic -- no need for this cuz we have distrib. they will just loot and place
--- TODO Add recipes? -- what do you mean?
--- Add check for higher z --done
+
+--[[ TODO Right now we're not making a new instance for this object. This means that only a single mortar would work
+        correctly on the whole server. We need to have something like Mortar.instantiate() where we generate a new
+        mortar object to assign the mortar tile\item
+    --]]
 
 require "MortarCheckAxisZ"
 
@@ -266,25 +268,37 @@ end
 -- Spotter functions
 ------------------------------------------------------------
 
-
+---Set the current spotter
 Mortar.setSpotter = function(_, player)
+    -- TODO this implies that there is only a single Mortar object on the whole server. We meed to add an init for the mortar to instance it
     print("Mortar: Setting spotter")
 
     Mortar.spotter = player
+    -- FIXME Pao: I don't think this will work since we're in shared, so not sure which player would be fetched.
+
+    -- This Event should be added when we're setting a spotter
+    Events.OnPlayerDeath.Add(function(pl_obj)
+
+        if Mortar.spotter then
+            if Mortar.spotter == pl_obj then
+                Mortar.unsetSpotter()
+            end
+        end
+
+        if Mortar.bomber then
+            if Mortar.bomber == pl_obj then
+                Mortar.unsetBomber()
+            end
+        end
 
 
-  
 
+    end)
 end
 
-      -- TODO Will this work????
-Events.OnPlayerDeath.Add(function()   
-    if  Mortar.spotter then 
-        Mortar.unsetBomber()
-        --or maybe 
-        -- Mortar.spotter = nil 
-    end 
-end) 
+Mortar.unsetSpotter = function()
+    Mortar.spotter = nil
+end
 
 
 
@@ -355,7 +369,7 @@ end
 
 -- Disassemble and returns the item to the player inventory
 Mortar.disassemble = function()
-    -- TODO Implement it
+    -- TODO Implement it?
 end
 
 -- Check the distance between bomber and mortar tile
@@ -393,17 +407,29 @@ end
 
 
 -------------------------------------------------------
+MortarInstance = nil
 
-Mortar.init = function()
+Mortar.instantiate = function()
+    -- TODO Should be called whenever we spawn\set a new mortar, and destroyed whenever we remove it
 
-    print("Mortar: Initializing")
+
+    -- TODO Bomber, spotter, and coordinates should be sent to the instance, not the generic Mortar class
+    if MortarInstance == nil then
+        MortarInstance = {}
+    end
 
 
+
+end
+
+
+
+
+local initMortarMod = function()
+    print("Mortar Mod: Initializing")
     local pl = getPlayer()
     if not pl:getModData()['mortarDistance'] then
         pl:getModData()['mortarDistance'] = SandboxVars.Mortar.Radius or 8
     end
-
-
 end
-Events.OnGameStart.Add(Mortar.init)
+Events.OnGameStart.Add(initMortarMod)
