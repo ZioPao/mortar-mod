@@ -29,8 +29,9 @@ end
 function MortarRotDirection()
     local player = getPlayer()
 
+    -- TODO Player should be in the adiacent tile, not the same as the mortar, to make it rotate
+
     if Mortar.bomber ~= nil then
-        
         if Mortar.bomber == player then
             local mortar = findMortarNearPlayer()
             if not mortar then return end
@@ -39,15 +40,13 @@ function MortarRotDirection()
             mortar:setSprite(newtile)
             mortar:getSprite():setName(newtile)
         
-            if isClient() then
-                mortar:transmitUpdatedSpriteToServer()
-                mortar:transmitUpdatedSpriteToClients()
-                mortar:transmitCompleteItemToServer()
-            end
+            mortar:transmitUpdatedSpriteToServer()
+            mortar:transmitUpdatedSpriteToClients()
+            --mortar:transmitCompleteItemToServer()
+        
         
             getPlayerLoot(0):refreshBackpacks()
             ISInventoryPage.dirtyUI()
-
 
         end
     end

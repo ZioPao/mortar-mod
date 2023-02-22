@@ -94,6 +94,12 @@ function MortarUI:createChildren()
 end
 function MortarUI:close()
     Mortar.unsetBomber()
+
+
+    -- TODO This is local only?
+    Events.OnPlayerMove.Remove(MortarRotDirection)
+
+
     Events.OnTick.Remove(MortarUI.updateCoordinatesLabel)       -- Disable the update for coordinates
 
     if MortarUI.instance then 
