@@ -1,4 +1,13 @@
 
+
+
+function MortarisCanShoot(cx,cy) 
+	if NonPvpZone.getNonPvpZone(cx,cy) then return false end
+	--if isBomberHasAmmo() then return false end
+	--TODO check ammo return 
+end
+
+
 function MortarFloorTest(cx,cy)
 	local cz = 8
 	for i = 0, 8-1  do
