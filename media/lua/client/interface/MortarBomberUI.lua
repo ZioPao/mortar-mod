@@ -23,24 +23,11 @@ end ]]
 
 local sendStartFiringToServer = function(_)
 
-    --- TODO ONLY FOR DEBUG, DELETE ME -- this might help incase we forget it
-    if isDebugEnabled() then return; end 
-    ---------------------------
-    if not isServer() and not isClient() then
-        Mortar.spotter = getPlayer()
-        print(" SP DEBUG THING")
-        local rad = 8
-        local dist = 30
-        Mortar.startFiring(getPlayer(), getPlayer(), rad, dist)
-        return
-    end
-    ---------------------------
-
     if Mortar.spotter ~= nil then
+        print("Mortar: found spotter, starting to fire")
         local op_id = getPlayer():getOnlineID()
         local spotter_id = Mortar.spotter:getOnlineID()
         sendClientCommand(getPlayer(), "Mortar", "acceptMortarShot", {operator = op_id, spotter = spotter_id})
-
 
     else
         print("Can't send command, no spotter")

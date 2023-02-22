@@ -38,7 +38,7 @@ end
 
 -- OCreate the Context menu for the Mortar
 local createOperateMortarContextMenu = function(player, context, worldobjects, test) --TODO this should have function(player, context, worldobjects, test) params? idk what this is
-	if test and ISWorldObjectContextMenu.Test then return true end
+	if test and ISWorldObjectContextMenu.Test then return true end      -- TODO This is not needed afaik
     local root_menu
     local mortar_menu
 
@@ -59,13 +59,8 @@ local createOperateMortarContextMenu = function(player, context, worldobjects, t
 
 
         if v:getSprite() and MortarRotation.isMortar(v:getSprite()) and distance_check  then
-        print(v:getSprite():getName())
-        print(MortarRotation.isMortar(v:getSprite():getName()))
-        
-        
             Mortar.setCurrentMortar(v)
             root_menu = context:getNew(context)
-
             if Mortar.isBomberValid(player_obj) then
                 if Mortar.getBomber() == player_obj then
                     mortar_menu = context:addOption(getText("UI_ContextMenu_StopOperatingMortar"), worldobjects, function() MortarUI:close() end)
