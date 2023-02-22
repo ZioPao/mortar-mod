@@ -67,7 +67,7 @@ local createOperateMortarContextMenu = function(player, context, worldobjects, t
             root_menu = context:getNew(context)
 
             if Mortar.isBomberValid(player_obj) then
-                if Mortar.getBomber(player) then
+                if Mortar.getBomber() == player_obj then
                     mortar_menu = context:addOption(getText("UI_ContextMenu_StopOperatingMortar"), worldobjects, function() MortarUI:close() end)
                 else
                     -- TODO I think it's the opposite, check it out
