@@ -23,15 +23,27 @@ end ]]
 
 local sendStartFiringToServer = function(_)
 
-    if Mortar.spotter ~= nil then
-        print("Mortar: found spotter, starting to fire")
-        local op_id = getPlayer():getOnlineID()
-        local spotter_id = Mortar.spotter:getOnlineID()
-        sendClientCommand(getPlayer(), "Mortar", "acceptMortarShot", {operator = op_id, spotter = spotter_id})
+    if Mortar.checkRadio(Mortar.bomber) then
+        if Mortar.spotter ~= nil then
+            print("Mortar: found spotter, starting to fire")
+            local op_id = getPlayer():getOnlineID()
+            local spotter_id = Mortar.spotter:getOnlineID()
+            sendClientCommand(getPlayer(), "Mortar", "acceptMortarShot", {operator = op_id, spotter = spotter_id})
+    
+        else
+            print("Can't send command, no spotter")
+            Mortar.getBomber():Say("I don't have a spotter")
+        end
+
+
 
     else
-        print("Can't send command, no spotter")
+        Mortar.getBomber():Say("I don't have a radio on me")
     end
+
+
+
+
 
 end
 
