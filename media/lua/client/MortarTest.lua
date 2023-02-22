@@ -37,6 +37,7 @@ end
 -- 7243
 -- 7339
 
+
 function SpawnMortarItem()
 
     -- THIS IS NOT SYNCED IN MP!!!!!!!!
@@ -64,10 +65,18 @@ function SpawnMortarItem()
     --mortar:transmitUpdatedSpriteToClients()
     --mortar:transmitCompleteItemToServer()
 
-
-
+Mortar.spawnDebris = function(square)
+    -- the tile starts at 0 and ends 64 -8 (8  mortar tiles)
+    local dug = IsoObject.new(square, "mortar_" .. ZombRand(63)-8, "", false) 
+    square:AddTileObject(dug)
+    if isClient() then
+        dug:transmitCompleteItemToServer()
+    end
+    ISInventoryPage.renderDirty = true
 end
 
+end
+print(Mortar.directions[tostring(getPlayer():getDir())])
 --Events.OnGameStart.Add(function()
 --    Events.OnPlayerMove.Add(MortarRotation.setMortar)
 --
