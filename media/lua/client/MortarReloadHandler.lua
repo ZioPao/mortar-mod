@@ -1,11 +1,11 @@
 
  
-function mortarReloader(item)  -- TODO checks if bomber
+function mortarReloader()  -- TODO checks if bomber
     local inv = getPlayer():getInventory()      
     --if item:getFullType() == "Mortar.MortarRound" then 
-   if inv:getItemCountRecurse('Mortar.MortarRound') then
-        getPlayer():playEmote("_mortarReload")         
-        inv:getItemCountRecurse('Mortar.MortarRound');
+    local item = inv:getItemCountRecurse('Mortar.MortarRound');
+   if item and inv then
+        getPlayer():playEmote("_mortarReload")       
         inv:DoRemoveItem(item);
         return true
     else
