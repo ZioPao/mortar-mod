@@ -37,56 +37,50 @@ end
 ---------------------------------------------------------------------------
 
 -- Create the Context menu for the Mortar
-local createOperateMortarContextMenu = function(player, context, worldobjects, test) --TODO this should have function(player, context, worldobjects, test) params? idk what this is
-	if test and ISWorldObjectContextMenu.Test then return true end      -- TODO This is not needed afaik
-    local root_menu
-    local mortar_menu
+local createOperateMortarContextMenu = function(player, context, worldobjects, _)
 
     for _, v in pairs(worldobjects) do
-        local square = v:getSquare()
-
-
         local player_obj= getPlayer()
-
         local pl_x = player_obj:getX()
         local pl_y = player_obj:getY()
         local obj_x = v:getX()
         local obj_y = v:getY()
 
 
-
         local distance_check = MortarCommonFunctions.getDistance2D(pl_x, pl_y, obj_x, obj_y) < Mortar.distSteps
 
-
         if v:getSprite() and MortarCommonFunctions.isMortarSprite(v:getSprite():getName()) and distance_check  then
-        
-
+            
+            -- TODO This should be moved to setBomber
             Mortar.setCurrentMortar(v)
-            root_menu = context:getNew(context)
+            context:getNew(context)
 
             if Mortar.isBomberValid(player_obj) then
                 if Mortar.getBomber() == player_obj then
-                    mortar_menu = context:addOption(getText("UI_ContextMenu_StopOperatingMortar"), worldobjects, function() MortarUI:close() end)
-                else
+                    context:addOption(getText("UI_ContextMenu_StopOperatingMortar"), worldobjects, function() MortarUI:close() end)
+                elseif Mortar.getBomber() == nil then
                     -- TODO I think it's the opposite, check it out
-                    mortar_menu = context:addOption(getText("UI_ContextMenu_OperateMortar"), worldobjects, function() Mortar.setBomber(getPlayer():getOnlineID()) end)
+                    context:addOption(getText("UI_ContextMenu_OperateMortar"), worldobjects, function() Mortar.setBomber(getPlayer():getOnlineID()) end)
     
                 end
-            end
-            
- 
 
-            -- TODO Set it so we can't access it if sp
-            if isClient() then
-                if SandboxVars.Mortar.NecessarySpotter  then
-                    local spotter_option = context:addOption(getText("UI_ContextMenu_SetSpotter"), player, nil)
-                    local spotter_menu = ISContextMenu:getNew(context)
-                    context:addSubMenu(spotter_option, spotter_menu)
-                    searchAndSetNearbySpotters(spotter_menu, player_obj)
+                -- TODO Set it so we can't access it if sp
+                if isClient() then
+                    if SandboxVars.Mortar.NecessarySpotter  then
+                        local spotter_option = context:addOption(getText("UI_ContextMenu_SetSpotter"), player, nil)
+                        local spotter_menu = ISContextMenu:getNew(context)
+                        context:addSubMenu(spotter_option, spotter_menu)
+                        searchAndSetNearbySpotters(spotter_menu, player_obj)
+                    end
                 end
-            end
 
             break
+
+
+
+            end
+            
+
 
         end
 

@@ -54,7 +54,7 @@ end
 function MortarUI.onOpenPanel()
 
     if MortarUI.instance == nil then
-        MortarUI.instance = MortarUI:new(100, 100, 250, 250, "Mortar UI")
+        MortarUI.instance = MortarUI:new(100, 100, 150, 250, "Mortar UI")
         MortarUI.instance:initialise()
         MortarUI.instance:instantiate()
     end
@@ -76,11 +76,11 @@ end
 function MortarUI:createChildren()
     ISPanel.createChildren(self)
 
-    local shoot_btn = ISButton:new(100, 50, 80, 25, "SHOOT", self, sendStartFiringToServer)
+    local shoot_btn = ISButton:new(40, 50, 80, 25, "SHOOT", self, sendStartFiringToServer)
     shoot_btn:initialise()
     self:addChild(shoot_btn)
 
-    local exit_btn = ISButton:new(100, 100, 80, 25, "EXIT", self, self.close)
+    local exit_btn = ISButton:new(40, 100, 80, 25, "EXIT", self, self.close)
     exit_btn:initialise()
     self:addChild(exit_btn)
 
@@ -140,7 +140,7 @@ function MortarUI:new(x, y, width, height)
     o.buttonBorderColor = {r=0.7, g=0.7, b=0.7, a=0.5}
     o.zOffsetSmallFont = 25;
     o.moveWithMouse = true
-    o.panelTitle = title
+    o.panelTitle = "Mortar Operator Menu"
 
     o.coordinates_label_ref = nil
 

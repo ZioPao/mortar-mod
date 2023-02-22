@@ -290,10 +290,8 @@ Mortar.setSpotter = function(_, player)
                 Mortar.unsetBomber()
             end
         end
-
-
-
     end)
+    
 end
 
 Mortar.unsetSpotter = function()

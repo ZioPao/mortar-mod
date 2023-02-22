@@ -25,7 +25,9 @@ ServerCommands.receiveMortarShot = function(args)
 
     Mortar.startFiring(operator, spotter, rad, dist)
 
-    -- TODO Same problem as before, only from the spotter perspective the operator would play the emote, but nothing would happen on the operator\bomber client
+
+    -- TODO Move this to when we're using binos
+    -- TODO SHould be stopped after we're done with the mortar
     spotter:playEmote("_SpotterScope4")
     operator:playEmote("_SpotterScope5")
     --spotter:playEmote("_SpotterScope4") --or use this
