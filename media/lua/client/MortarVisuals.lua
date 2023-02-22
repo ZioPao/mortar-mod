@@ -46,17 +46,6 @@ MortarRotation.tileobj = {
 }
 
 
-function MortarRotation.isMortar(spr) 
--- maybe this is the correct one
-    -- TODO This is wrong, you're checking the key with spr. We need to search for valu
-    for _, v in pairs(MortarRotation.tileobj) do
-        if v == spr:getName() then
-            return true
-        end
-    end
-    return false
-end
-
 
 
 -- TODO replace this with the contextmenu thing make it add a moddata perhaps      then...

@@ -1,5 +1,7 @@
 -- Define the Mortartileobj table outside of the sprChecker function to avoid creating it every time the function is called.
-local Mortartileobj = {
+
+-- TODO Made it global just as a workaround for now, it's needed to check stuff in MortarContextMenu
+Mortartileobj = {
     ["N"] = "mortar_56",
     ["NE"] = "mortar_57",
     ["E"] = "mortar_58",
@@ -10,23 +12,14 @@ local Mortartileobj = {
     ["NW"] = "mortar_63",
 }
 
--- Define the sprChecker function.
-local function sprChecker(spr)
-    for _, v in pairs(Mortartileobj) do 
-        if tostring(spr) == v then 	
-            return true
-        end
-    end 
-    return false
-end 
 
 -- Define the getMortar function.
-local function getMortar()
+local function findMortarNearPlayer()
     local player = getPlayer()
     local square = player:getCurrentSquare()
     for i=0, square:getObjects():size()-1 do
         local obj = square:getObjects():get(i)
-        if instanceof(obj, "IsoObject") and obj:getSprite() and sprChecker(obj:getSprite():getName()) then 
+        if instanceof(obj, "IsoObject") and obj:getSprite() and MortarCommonFunctions.isMortarSprite(obj:getSprite():getName()) then
             return obj
         end
     end
@@ -35,7 +28,7 @@ end
 -- Define the MortarRotDirection function.
 local function MortarRotDirection()
     local player = getPlayer()
-    local mortar = getMortar()
+    local mortar = findMortarNearPlayer()
     if not mortar then return end
     
     local newtile = MortarRotation.tileobj[tostring(player:getDir())]

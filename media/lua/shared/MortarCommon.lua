@@ -23,3 +23,14 @@ MortarCommonFunctions.roll = function(chance)
 
 
 end
+
+
+
+MortarCommonFunctions.isMortarSprite = function(sprite_name)
+    for _, v in pairs(Mortartileobj) do 
+        if tostring(sprite_name) == v then 	
+            return true
+        end
+    end 
+    return false
+end

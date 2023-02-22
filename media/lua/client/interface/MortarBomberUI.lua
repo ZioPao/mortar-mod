@@ -38,7 +38,7 @@ local sendStartFiringToServer = function(_)
 
 
     else
-        Mortar.getBomber():Say("I don't have a radio on me")
+        Mortar.getBomber():Say("I'm forgetting the radio...")
     end
 
 
@@ -114,7 +114,8 @@ function MortarUI:update()
             local test = Mortar.direct_coordinates
             coords = "X: " .. tostring(test[1]) .. ", Y: " .. tostring(test[2])
         else
-            coords = "No direct coordinates"
+            coords = ""     -- TODO This is gonna be implemented at a later time
+            --coords = "No direct coordinates"
         end
 
         if MortarUI.instance.coordinates_label_ref ~= nil then
