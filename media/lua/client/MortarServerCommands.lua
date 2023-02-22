@@ -46,8 +46,10 @@ ServerCommands.setDirectCoordinates = function(args)
 end
 ServerCommands.acceptMuzzleFlash = function(args)
 
-    local pl = getPlayer()
-    pl:startMuzzleFlash()
+    local pl = getPlayerByOnlineID(args.bomber_id)
+    if pl then
+        pl:startMuzzleFlash()
+    end
 end
 ----------------------------------------------
 local function onServerCommand(module, command, args)

@@ -38,8 +38,7 @@ ClientCommands.sendDirectCoordinates = function(player, args)
 
 end
 ClientCommands.sendMuzzleFlash = function(player, args)
-    local bomber = getPlayerByOnlineID(args.bomber_id)
-    sendServerCommand(bomber, 'Mortar', 'acceptMuzzleFlash', {})
+    sendServerCommand('Mortar', 'acceptMuzzleFlash', {bomber_id = args.bomber_id})
 
 end
 ------------------------------------------------

@@ -138,8 +138,6 @@ end
 ---@param radius number
 Mortar.genGroundZero = function(operator, spotter, bommX, bommY, bommZ, radius)
     local cell = getWorld():getCell()      -- We need to get the correct cell, not this one
-    operator:startMuzzleFlash()         -- TODO we need to sync this, it will happen only on the spotter client right now
-
     sendClientCommand(spotter, 'Mortar', 'sendMuzzleFlash', {bomber_id = operator:getOnlineID()})
 
 
