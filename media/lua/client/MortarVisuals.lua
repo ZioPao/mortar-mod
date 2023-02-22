@@ -89,6 +89,14 @@ function MortarRotation.getMortar()
     return nil
 end
 
+
+function MortarRotation.setMortarSprite(obj)
+---- TODO if the player is a bomber before calling this function 
+    local newSprite = MortarRotation.tileobj[tostring(getPlayer():getDir())]
+    obj:setSprite(newSprite)
+    obj:getSprite():setName(newSprite)
+end
+
 function MortarRotation.setMortar()
     local mortar = MortarRotation.getMortar()  -- TODO  replace this with a checker of the said moddata above
     print("Searching mortar")

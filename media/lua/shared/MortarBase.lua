@@ -102,6 +102,7 @@ end
 ---Set the currently used mortar
 ---@param obj IsoObject
 Mortar.setCurrentMortar = function(obj)
+if not getPlayer():isOutside() then return end
     Mortar.current_mortar = obj
 end
 

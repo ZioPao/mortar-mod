@@ -15,7 +15,7 @@ MortarUI.instance = nil
 
 -- TODO SET SO THE SHOOT BUTTON IS GREYED OUT IF THERE ARE NO ROUNDS IN PLAYER'S INVENTORY
 local predicateMortarShell = function(item)
-    if item:isBroken() then return false end
+    if item:isBroken() then return false end    
     return item:hasTag("Mortar.round") or item:getFullType() == "Mortar.round"
 end
 
