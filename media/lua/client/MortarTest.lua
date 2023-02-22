@@ -76,7 +76,7 @@ Mortar.spawnDebris = function(square)
 end
 
 end
-print(Mortar.directions[tostring(getPlayer():getDir())])
+--print(Mortar.directions[tostring(getPlayer():getDir())])
 --Events.OnGameStart.Add(function()
 --    Events.OnPlayerMove.Add(MortarRotation.setMortar)
 --
