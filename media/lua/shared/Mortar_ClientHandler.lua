@@ -22,7 +22,7 @@ function MortarClientHandler:new()
     o.bomber = nil
     o.spotter = nil
 
-    o.weaponInstanceId = nil      -- TODO this is not the real instance, we need to keep updating it
+    o.weaponInstanceId = nil
     o.tileX = nil
     o.tileY = nil
     o.tileZ = nil
@@ -369,7 +369,7 @@ end
 ---------
 
 
-function MortarClientHandler:SpawnDebris(sq)
+function MortarClientHandler.SpawnDebris(sq)
 
     local dug = IsoObject.new(sq, "mortar_" .. ZombRand(63)-8, "", false)
     sq:AddTileObject(dug)

@@ -106,6 +106,8 @@ function MortarUI:update()
                 MortarUI.instance.reload_btn_ref:setEnable(true)
                 MortarUI.instance.reload_btn_ref:setOnClick(function()
                     MortarClientHandler:reloadRound()
+                    MortarUI.instance.reload_btn_ref:setEnable(false)
+                    MortarUI.instance.reload_btn_ref:setOnClick(nil)
                 end)
 
 

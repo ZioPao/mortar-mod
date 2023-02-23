@@ -62,6 +62,48 @@ Events.OnServerStarted.Add(function()
     Events.EveryOneMinute.Add(MortarWeapon.SaveInstances)
 end)
 
+
+function MortarWeapon.TryCreateNewInstance(sq)
+    -- Checks already instanced weapons
+    local x = sq:getX()
+    local y = sq:getY()
+    local z = sq:getZ()
+
+    for _, v in pairs(MortarWeapon.instances) do
+
+        for key, table in pairs(v) do
+            if table.tileX == x and table.tileY == y and table.tileZ == z then
+                print("Mortar Info: onLoadGridsquare instace already created before")
+                return
+            end
+        end
+    end
+
+
+    local objects = sq:getObjects()
+    for i=0, objects:size() - 1 do
+
+        local obj = objects:get(i)
+        local sprite = obj:getSprite()
+
+        if sprite ~= nil then
+            local sprite_name = sprite:getName()
+            local check = MortarCommonFunctions.IsMortarSprite(sprite_name)
+            if check then
+                print("Mortar: found object, instancing new MortarWeapon")
+                MortarWeapon:new(x,y,z)
+                break
+            end
+        end
+
+    end
+
+
+
+end
+
+Events.LoadGridsquare.Add(MortarWeapon.TryCreateNewInstance)
+
 -----------------------------------------------
 local function initGlobalModData()
     ModData.getOrCreate(MortarCommonVars.globalModDataId)

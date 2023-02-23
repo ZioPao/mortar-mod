@@ -14,26 +14,8 @@ ClientCommands.generateMortarWeaponInstance = function(player, args)
     local x = args.x
     local y = args.y
     local z = args.z
-    local objects = getCell():getGridSquare(x, y, z):getObjects()
-
-    for i=0, objects:size() - 1 do
-
-        local obj = objects:get(i)
-
-        local sprite = obj:getSprite()
-
-        if sprite ~= nil then
-            local sprite_name = sprite:getName()
-            local check = MortarCommonFunctions.IsMortarSprite(sprite_name)
-            if check then
-                print("Mortar: found object, instancing new MortarWeapon")
-                MortarWeapon:new(x,y,z)
-                break
-            end
-        end
-
-    end
-
+    local sq = getCell():getGridSquare(x, y, z)
+    MortarWeapon.TryCreateNewInstance(sq)
 
 end
 

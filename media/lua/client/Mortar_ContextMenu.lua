@@ -44,7 +44,7 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
             -- We need to search the server for an active MortarWeapon. if there is none, we'll have to create one
             local weaponInstance = MortarClientHandler.SetWeaponInstance(v)
 
-
+            -- This will run JUST when OnLoadgridsquare failed.
             if weaponInstance == nil then
                 sendClientCommand(playerObj, 'Mortar', 'generateMortarWeaponInstance', {
                     x = v:getX(),
@@ -59,12 +59,10 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
             if weaponInstance ~= nil then
 
                 context:getNew(context)
-
                 if MortarCommonFunctions.IsBomberValid(playerObj) then
                     if MortarClientHandler.instance == nil then
                         MortarClientHandler:new()
                     end
-
 
                     if MortarClientHandler:getBomber() == playerObj then
                         context:addOption(getText("UI_ContextMenu_StopOperatingMortar"), worldObjects, function()
@@ -88,6 +86,7 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
 
                 end
             end
+
         end
     end
 end
