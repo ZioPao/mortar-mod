@@ -107,6 +107,32 @@ MortarCommonFunctions.IsSpotterValid = function(player)
     return false
 end
 
+--- Check if both the players are in the same faction
+---@param pl1 IsoPlayer
+---@param pl2 IsoPlayer
+MortarCommonFunctions.ArePlayersInSameFaction = function(pl1, pl2)
+
+    local factions = Faction:getFactions()
+
+    local pl1Username = pl1:getUsername()
+    local pl2Username = pl2:getUsername()
+
+    for i=0, factions:size() - 1 do
+        
+        local faction = factions:get(i)
+
+        if faction:isMember(pl1Username) or faction:isOwner(pl1Username) then
+            if faction:isMember(pl2Username) or faction:isOwner(pl2Username) then
+                return true
+            end
+        end
+
+    end
+
+    return false
+
+
+end
 
 --------------------------------
 -- Various
