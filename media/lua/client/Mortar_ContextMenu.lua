@@ -13,13 +13,17 @@ local function SearchAndSetNearbySpotters(spotterMenu, playerInMenu)
             -- Check distance
            
             local dist = pl:getDistanceSq(playerInMenu)
-            if dist < 1000 then          -- TODO Set a correct distance, maybe via SandboxVars
-                -- Validation is done at a later time
-                print("Mortar: Found acceptable spotter => " .. tostring(i))
-                local username = pl:getUsername()
-                print(username)
-                spotterMenu:addOption(username, _, function() MortarClientHandler:setSpotter(pl) end)
-            
+            if dist < 500 then          -- TODO Set a correct distance, maybe via SandboxVars
+
+                -- TODO Merge it with the dist check
+                if MortarCommonFunctions.ArePlayersInSameFaction(pl, playerInMenu) then
+                    -- Validation is done at a later time
+                    print("Mortar: Found acceptable spotter => " .. tostring(i))
+                    local username = pl:getUsername()
+                    print(username)
+
+                    spotterMenu:addOption(username, _, function() MortarClientHandler:setSpotter(pl) end)
+                end
             end
         end
     end

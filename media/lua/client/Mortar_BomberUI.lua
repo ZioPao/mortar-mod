@@ -1,8 +1,6 @@
 --=================================--
 --[[ MORTAR MOD - CUSTOM MENU UI ]]--
 --=================================--
-
-
 require "ISUI/ISPanel"
 
 MortarUI = ISPanel:derive("MortarUI")
@@ -23,6 +21,7 @@ function MortarUI:onOpenPanel(handler)
     return self.instance
 
 end
+
 function MortarUI:initialise()
     ISPanel.initialise(self)
     Events.OnTick.Add(MortarUI.CheckWeaponDistanceFromPlayer)
@@ -85,6 +84,7 @@ function MortarUI:createChildren()
 
 
 end
+
 function MortarUI:close()
 
 
@@ -110,16 +110,12 @@ function MortarUI:close()
     end
 
 end
+
 function MortarUI:update()
     ISPanel.update(self)
 
     if MortarUI.instance ~= nil then
         if MortarUI.instance.shoot_btn_ref ~= nil and MortarUI.instance.reload_btn_ref ~= nil then
-
-            --print("____________________________")
-            --print(MortarUI.instance.shoot_btn_ref:isEnabled())
-            --print(MortarUI.instance.reload_btn_ref:isEnabled())
-
 
             if MortarClientHandler:isReadyToShoot() then
                 --print("Mortar: ready to shoot")
@@ -136,26 +132,17 @@ function MortarUI:update()
                 MortarUI.instance.shoot_btn_ref:setOnClick(nil)
                 MortarUI.instance.reload_btn_ref:setEnable(true)
                 MortarUI.instance.reload_btn_ref:setOnClick(function()
-                    MortarClientHandler:reloadRound()
+                    -- FIXME Mostly a workaround, we should add something like a loading icon
                     MortarUI.instance.reload_btn_ref:setEnable(false)
                     MortarUI.instance.reload_btn_ref:setOnClick(nil)
+                    MortarClientHandler:reloadRound()
+
                 end)
-
-
             end
-
-
         end
-
-
-        -- Distance check
-
-
     end
-
-
-
 end
+
 function MortarUI:new(x, y, width, height, mortarHandler)
 
     local o = {}
