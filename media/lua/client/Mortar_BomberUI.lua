@@ -12,72 +12,40 @@ MortarUI = ISPanel:derive("MortarUI")
 MortarUI.instance = nil
 
 
+function MortarUI:onOpenPanel()
 
--- TODO SET SO THE SHOOT BUTTON IS GREYED OUT IF THERE ARE NO ROUNDS IN PLAYER'S INVENTORY
--- TODO the mortar has no condition so it will not break
---[[ local predicateMortarShell = function(item)
-    if item:isBroken() then return false end    
-    return item:hasTag("Mortar.round") or item:getFullType() == "Mortar.round"
-end ]]
-
-
-local sendStartFiringToServer = function(_)
-
-    if Mortar.checkRadio(Mortar.bomber) then
-        if Mortar:getSpotter() ~= nil then
-            print("Mortar: found spotter, starting to fire")
-            local op_id = getPlayer():getOnlineID()
-            local spotter_id = Mortar.spotter:getOnlineID()
-            sendClientCommand(getPlayer(), "Mortar", "acceptMortarShot", {operator = op_id, spotter = spotter_id})
-    
-        else
-            print("Can't send command, no spotter")
-            Mortar:getBomber():Say("I don't have a spotter")
-        end
-    else
-        Mortar:getBomber():Say("I'm forgetting the radio...")
+    if self.instance == nil then
+        self.instance = MortarUI:new(100, 100, 150, 250)
+        self.instance:initialise()
+        self.instance:instantiate()
     end
 
+    self.instance:addToUIManager()
+    self.instance:setVisible(true)
 
-
-
-
-end
-
-
-
-
-
-function MortarUI.onOpenPanel()
-
-    if MortarUI.instance == nil then
-        MortarUI.instance = MortarUI:new(100, 100, 250, 250, "Mortar UI")
-        MortarUI.instance:initialise()
-        MortarUI.instance:instantiate()
-    end
-
-    MortarUI.instance:addToUIManager()
-    MortarUI.instance:setVisible(true)
-
-    return MortarUI.instance
+    return self.instance
 
 end
 function MortarUI:initialise()
     ISPanel.initialise(self)
 end
-function MortarUI:updateCoordinatesLabel()
 
 
 
-end
 function MortarUI:createChildren()
     ISPanel.createChildren(self)
 
-    local shoot_btn = ISButton:new(100, 50, 80, 25, "SHOOT", self, sendStartFiringToServer)
+    local shoot_btn = ISButton:new(40, 50, 80, 25, "SHOOT", self, nil)
     shoot_btn:initialise()
+    shoot_btn:setEnable(false)
     self:addChild(shoot_btn)
 
-    local exit_btn = ISButton:new(100, 100, 80, 25, "EXIT", self, self.close)
+    local reload_btn = ISButton:new(40, 100, 80, 25, "RELOAD", self, nil)
+    reload_btn:initialise()
+    reload_btn:setEnable(false)
+    self:addChild(reload_btn)
+
+    local exit_btn = ISButton:new(40, 150, 80, 25, "EXIT", self, self.close)
     exit_btn:initialise()
     self:addChild(exit_btn)
 
@@ -85,12 +53,23 @@ function MortarUI:createChildren()
     coordinates_label:initialise()
     self:addChild(coordinates_label)
 
+    self.shoot_btn_ref = shoot_btn
+    self.reload_btn_ref = reload_btn
     self.coordinates_label_ref = coordinates_label      -- Set a reference
 
 
 end
 function MortarUI:close()
-    Mortar:unsetBomber()
+
+
+
+    --Mortar.unsetBomber()
+
+
+    -- TODO This is local only?
+    Events.OnPlayerMove.Remove(MortarRotDirection)
+
+
     Events.OnTick.Remove(MortarUI.updateCoordinatesLabel)       -- Disable the update for coordinates
 
     if MortarUI.instance then 
@@ -119,6 +98,33 @@ function MortarUI:update()
             MortarUI.instance.coordinates_label_ref:setName(coords)
         end
 
+        if MortarUI.instance.shoot_btn_ref ~= nil and MortarUI.instance.reload_btn_ref ~= nil then
+
+            --print("____________________________")
+            --print(MortarUI.instance.shoot_btn_ref:isEnabled())
+            --print(MortarUI.instance.reload_btn_ref:isEnabled())
+
+
+            if Mortar.getIsReadyToShoot() then
+                --print("Mortar: ready to shoot")
+                MortarUI.instance.shoot_btn_ref:setEnable(true)
+                MortarUI.instance.shoot_btn_ref:setOnClick(sendStartFiringToServer)
+                MortarUI.instance.reload_btn_ref:setEnable(false)
+                MortarUI.instance.reload_btn_ref:setOnClick(nil)
+
+            else
+                --print("Mortar: not ready to shoot")
+                MortarUI.instance.shoot_btn_ref:setEnable(false)
+                MortarUI.instance.shoot_btn_ref:setOnClick(nil)
+                MortarUI.instance.reload_btn_ref:setEnable(true)
+                MortarUI.instance.reload_btn_ref:setOnClick(Mortar.reloadRound)
+
+
+            end
+
+
+        end
+
 
     end
 
@@ -137,7 +143,7 @@ function MortarUI:new(x, y, width, height)
     o.buttonBorderColor = {r=0.7, g=0.7, b=0.7, a=0.5}
     o.zOffsetSmallFont = 25;
     o.moveWithMouse = true
-    o.panelTitle = title
+    o.panelTitle = "Mortar Operator Menu"
 
     o.coordinates_label_ref = nil
 

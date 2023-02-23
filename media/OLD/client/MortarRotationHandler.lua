@@ -19,7 +19,7 @@ local function findMortarNearPlayer()
     local square = player:getCurrentSquare()
     for i=0, square:getObjects():size()-1 do
         local obj = square:getObjects():get(i)
-        if instanceof(obj, "IsoObject") and obj:getSprite() and MortarCommonFunctions.isMortarSprite(obj:getSprite():getName()) then
+        if instanceof(obj, "IsoObject") and obj:getSprite() and MortarCommonFunctions.IsMortarSprite(obj:getSprite():getName()) then
             return obj
         end
     end

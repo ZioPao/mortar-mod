@@ -53,9 +53,9 @@ local createOperateMortarContextMenu = function(player, context, worldobjects, t
         local obj_x = v:getX()
         local obj_y = v:getY()
 
-        local distance_check = MortarCommonFunctions.getDistance2D(pl_x, pl_y, obj_x, obj_y) < MortarCommonVars.distSteps
+        local distance_check = MortarCommonFunctions.GetDistance2D(pl_x, pl_y, obj_x, obj_y) < MortarCommonVars.distSteps
 
-        if v:getSprite() and MortarCommonFunctions.isMortarSprite(v:getSprite():getName()) and distance_check  then
+        if v:getSprite() and MortarCommonFunctions.IsMortarSprite(v:getSprite():getName()) and distance_check  then
         
 
 

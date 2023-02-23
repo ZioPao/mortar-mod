@@ -178,7 +178,7 @@ function Mortar:genGroundZero(bommX, bommY, bommZ, radius)
             if IsoUtils.DistanceTo(bommX, bommY, x + 0.5, y + 0.5) <= radius then
                 local sq = cell:getGridSquare(x, y, bommZ)
                 local Xtype = 'addFireOnSquare'
-                if MortarCommonFunctions.roll(20) then
+                if MortarCommonFunctions.RollChance(20) then
                     Xtype = 'addSmokeOnSquare'
                 end
                 if sq:Is(IsoFlagType.burning) then 
@@ -192,7 +192,7 @@ function Mortar:genGroundZero(bommX, bommY, bommZ, radius)
                     end)
 
                 end
-                if MortarCommonFunctions.roll(60) then
+                if MortarCommonFunctions.RollChance(60) then
                     local args = {
                         x = x,
                         y = y,
@@ -202,7 +202,7 @@ function Mortar:genGroundZero(bommX, bommY, bommZ, radius)
                 end
 
                 local chance = 40
-                if MortarCommonFunctions.roll(chance) then
+                if MortarCommonFunctions.RollChance(chance) then
                     Mortar.spawnDebris(sq)
                 end
 
@@ -430,7 +430,7 @@ function Mortar:checkBomberDistanceFromMortar()
     local mort_x = self.current_mortar:getX()
     local mort_y = self.current_mortar:getY()
 
-    if MortarCommonFunctions.getDistance2D(pl_x, pl_y, mort_x, mort_y) > MortarCommonVars.distSteps then
+    if MortarCommonFunctions.GetDistance2D(pl_x, pl_y, mort_x, mort_y) > MortarCommonVars.distSteps then
         MortarUI:close()        -- This also unset the bomber, kinda janky
         Events.OnTick.Remove(updateCheckBomberDistance)
 
