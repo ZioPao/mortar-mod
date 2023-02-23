@@ -14,14 +14,12 @@ local function SearchAndSetNearbySpotters(spotterMenu, playerInMenu)
            
             local dist = pl:getDistanceSq(playerInMenu)
             if dist < 1000 then          -- TODO Set a correct distance, maybe via SandboxVars
-                if MortarCommonFunctions.IsSpotterValid(pl) then
-                    print("Mortar: Found acceptable spotter => " .. tostring(i))
-                    local username = pl:getUsername()
-                    print(username)
-                    spotterMenu:addOption(username, _, function() MortarClientHandler:setSpotter(pl) end)
-                end
-
-
+                -- Validation is done at a later time
+                print("Mortar: Found acceptable spotter => " .. tostring(i))
+                local username = pl:getUsername()
+                print(username)
+                spotterMenu:addOption(username, _, function() MortarClientHandler:setSpotter(pl) end)
+            
             end
         end
     end
@@ -63,7 +61,6 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
                 context:getNew(context)
 
                 if MortarCommonFunctions.IsBomberValid(playerObj) then
-
                     if MortarClientHandler.instance == nil then
                         MortarClientHandler:new()
                     end
@@ -77,7 +74,7 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
                     elseif MortarClientHandler:isAvailable() then
                         context:addOption(getText("UI_ContextMenu_OperateMortar"), worldObjects, function()
                             MortarClientHandler:instantiate(playerObj, v)
-                            MortarUI:onOpenPanel()
+                            MortarUI:onOpenPanel(MortarClientHandler.instance)
                         end)
                     end
 
@@ -87,7 +84,7 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
                     context:addSubMenu(spotterOption, spotterMenu)
                     SearchAndSetNearbySpotters(spotterMenu, playerObj)
 
-
+                    break
 
                 end
             end

@@ -25,7 +25,13 @@ function MortarWeapon:new(x, y, z)
 
     o.isRoundInChamber = false
 
-    table.insert(MortarWeapon.instances, o)
+
+    local id = MortarCommonFunctions.GenerateUUID()
+
+    local tempTable = {}
+    tempTable[id] = o
+
+    table.insert(MortarWeapon.instances, tempTable)
 
     return o
 end
@@ -47,7 +53,7 @@ end
 
 function MortarWeapon.SaveInstances()
     local mortarModData = ModData.getOrCreate(MortarCommonVars.globalModDataId)
-    print("Mortar: saving instances")
+    --print("Mortar: saving instances")
     mortarModData["instances"] = MortarWeapon.instances
     ModData.transmit(MortarCommonVars.globalModDataId)
 

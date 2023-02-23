@@ -9,10 +9,10 @@ MortarUI = ISPanel:derive("MortarUI")
 MortarUI.instance = nil
 
 
-function MortarUI:onOpenPanel()
+function MortarUI:onOpenPanel(handler)
 
     if self.instance == nil then
-        self.instance = MortarUI:new(100, 100, 150, 250)
+        self.instance = MortarUI:new(100, 100, 150, 250, handler)
         self.instance:initialise()
         self.instance:instantiate()
     end
@@ -88,18 +88,22 @@ function MortarUI:update()
 
 
             if MortarClientHandler:isReadyToShoot() then
-                print("Mortar: ready to shoot")
+                --print("Mortar: ready to shoot")
                 MortarUI.instance.shoot_btn_ref:setEnable(true)
-                MortarUI.instance.shoot_btn_ref:setOnClick(MortarClientHandler.tryStartFiring)
+                MortarUI.instance.shoot_btn_ref:setOnClick(function()
+                    MortarClientHandler:tryStartFiring()
+                end)
                 MortarUI.instance.reload_btn_ref:setEnable(false)
                 MortarUI.instance.reload_btn_ref:setOnClick(nil)
 
             else
-                print("Mortar: not ready to shoot")
+                --print("Mortar: not ready to shoot")
                 MortarUI.instance.shoot_btn_ref:setEnable(false)
                 MortarUI.instance.shoot_btn_ref:setOnClick(nil)
                 MortarUI.instance.reload_btn_ref:setEnable(true)
-                MortarUI.instance.reload_btn_ref:setOnClick(MortarClientHandler.reloadRound)
+                MortarUI.instance.reload_btn_ref:setOnClick(function()
+                    MortarClientHandler:reloadRound()
+                end)
 
 
             end
@@ -113,7 +117,7 @@ function MortarUI:update()
 
 
 end
-function MortarUI:new(x, y, width, height)
+function MortarUI:new(x, y, width, height, mortarHandler)
 
     local o = {}
     o = ISPanel:new(x, y, width, height)
@@ -127,6 +131,8 @@ function MortarUI:new(x, y, width, height)
     o.moveWithMouse = true
     o.panelTitle = "Mortar Operator Menu"
 
+
+    o.mortarClientHandler = mortarHandler
     o.coordinates_label_ref = nil
 
     return o

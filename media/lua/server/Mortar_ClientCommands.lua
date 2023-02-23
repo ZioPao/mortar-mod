@@ -49,8 +49,8 @@ ClientCommands.checkValidationStatus = function(player, args)
     local bomberPlayer = getPlayerByOnlineID(bomberId)
     local spotterPlayer = getPlayerByOnlineID(spotterId)
 
-    sendServerCommand(bomberPlayer, 'Mortar', 'updateBomberStatus', {spotterId = bomberId})
-    sendServerCommand(spotterPlayer, 'Mortar', 'updateSpotterStatus', {bomberId = spotterId})
+    sendServerCommand(bomberPlayer, 'Mortar', 'updateBomberStatus', {spotterId = spotterId})
+    sendServerCommand(spotterPlayer, 'Mortar', 'updateSpotterStatus', {bomberId = bomberId})
 
 end
 
@@ -87,8 +87,34 @@ end
 -- Reload
 -------------------
 ClientCommands.updateReloadStatus = function(player, args)
-    local weaponInstance = args.weaponInstance
-    weaponInstance:setIsRoundInChamber(args.check)
+    print("Mortar: updating reload status")
+    local weaponInstanceId = args.instanceId
+    print("Weapon Instance id: " .. weaponInstanceId)
+    local correctInstance
+
+    if weaponInstanceId then
+
+        -- TODO I fucked up something with this table
+        for _, v in pairs(MortarWeapon.instances) do
+            for uuid, currentInstance in pairs(v) do
+                print("Checking this uuid: " .. uuid)
+                if uuid == weaponInstanceId then
+                    correctInstance = currentInstance
+
+                end
+            end
+        end
+
+
+        if correctInstance ~= nil then
+            correctInstance.isRoundInChamber = args.check
+            print("Updated instance")
+        else
+            print("Couldnt find WeaponInstance")
+        end
+    else
+        print("Weapon instance id is null, cant reload")
+    end
 end
 
 

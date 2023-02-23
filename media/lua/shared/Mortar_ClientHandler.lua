@@ -21,7 +21,11 @@ function MortarClientHandler:new()
 
     o.bomber = nil
     o.spotter = nil
-    o.weaponInstance = nil
+
+    o.weaponInstanceId = nil      -- TODO this is not the real instance, we need to keep updating it
+    o.tileX = nil
+    o.tileY = nil
+    o.tileZ = nil
 
     o.isBomberValid = false
     o.isSpotterValid = false
@@ -37,7 +41,7 @@ function MortarClientHandler:instantiate(player, weaponInstance)
     self.bomber = player      -- Set the bomber
     self.weaponInstance = weaponInstance
 
-    Events.OnTick.Add(MortarClientHandler.validationCheckUpdate)
+    Events.OnTick.Add(MortarClientHandler.ValidationCheckUpdate)
 
 end
 
@@ -45,7 +49,7 @@ end
 function MortarClientHandler:delete()
 
     MortarClientHandler.instance = nil
-    Events.OnTick.Remove(MortarClientHandler.validationCheckUpdate)
+    Events.OnTick.Remove(MortarClientHandler.ValidationCheckUpdate)
 end
 
 
@@ -88,14 +92,18 @@ function MortarClientHandler:setIsSpotterValid(check)
     self.isSpotterValid = check
 end
 
-function MortarClientHandler:validationCheckUpdate()
+function MortarClientHandler.ValidationCheckUpdate()
 
     -- Agnostic, we don't care if it's the bomber or the spotter
+
+    print("Mortar: checking validation status")
     local player = getPlayer()
 
-
-    if self.bomber ~= nil and self.spotter ~= nil then
-        sendClientCommand(player, 'Mortar', 'checkValidationStatus', {bomberId = self.bomber:getOnlineID(), spotterId = self.spotter:getOnlineID()})
+    if MortarClientHandler:getBomber() ~= nil and MortarClientHandler:getSpotter() ~= nil then
+        sendClientCommand(player, 'Mortar', 'checkValidationStatus', {
+            bomberId = MortarClientHandler:getBomber():getOnlineID(),
+            spotterId = MortarClientHandler:getSpotter():getOnlineID()
+        })
     end
 end
 
@@ -119,6 +127,8 @@ function MortarClientHandler.UpdateWeaponInstances()
     if modData ~= nil then
         MortarSyncedWeapons = modData["instances"]
     end
+
+
 
 end
 
@@ -148,18 +158,25 @@ function MortarClientHandler.SetWeaponInstance(obj)
     local z = obj:getZ()
 
     for _, v in pairs(MortarSyncedWeapons) do
-        
+        for uuid, instance in pairs(v) do
+            if instance.tileX == x and instance.tileY == y and instance.tileZ == z then
+                MortarClientHandler.weaponInstanceId = uuid
+                MortarClientHandler.tileX = x
+                MortarClientHandler.tileY = y
+                MortarClientHandler.tileZ = z
+                return v
+            end
+            
 
-        if v.tileX == x and v.tileY == y and v.tileZ == z then
-            MortarClientHandler.weaponInstance = v
-            return v
         end
-        
+
+ 
     end
 
     return nil
 
 end
+
 
 
 Events.OnTick.Add(MortarClientHandler.UpdateWeaponInstances)
@@ -232,6 +249,7 @@ end
  
 function MortarClientHandler:reloadRound()
 
+    print("Mortar: reloading")
     local inv = getPlayer():getInventory()
     --if item:getFullType() == "Mortar.MortarRound" then 
     local item = inv:FindAndReturn('Mortar.MortarRound')
@@ -239,21 +257,28 @@ function MortarClientHandler:reloadRound()
    if item and inv then
         --getPlayer():playEmote("_mortarReload")      -- TODO Make it not loop this much
         inv:RemoveOneOf('Mortar.MortarRound')
-        check = true
+        sendClientCommand(getPlayer(), 'Mortar', 'updateReloadStatus', {check = true, instanceId = MortarClientHandler.weaponInstanceId})
     else
         getPlayer():Say(tostring('I have no ammo'))
-        check = false
     end
 
-    sendClientCommand(getPlayer(), 'Mortar', 'updateReloadStatus', {check = check, weaponInstance = self.weaponInstance})
 
 end
 
 function MortarClientHandler:isReadyToShoot()
 
-    if MortarClientHandler.weaponInstance then
-        return MortarClientHandler.weaponInstance:getIsRoundInChamber()        -- TODO Not sure if it'll work
+
+    if MortarClientHandler.weaponInstanceId ~= nil then
+        for _, v in pairs(MortarSyncedWeapons) do
+
+            for uuid, instance in pairs(v) do
+                if uuid == MortarClientHandler.weaponInstanceId then
+                    return instance.isRoundInChamber
+                end
+            end
+        end
     end
+
 
     return false
 
