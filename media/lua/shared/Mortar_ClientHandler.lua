@@ -240,9 +240,7 @@ end
 
 function MortarClientHandler:executeStartFiring()
 
-
-
-    self.bomber():playEmote("_MortarClick")
+    self.bomber:playEmote("_MortarClick")
 
     -- We need to send this to the spotter since that's where the actual "explosions" will be sent
     sendClientCommand(self.bomber, 'Mortar', 'sendMortarShot', {spotterId = self.spotter:getOnlineID()})
