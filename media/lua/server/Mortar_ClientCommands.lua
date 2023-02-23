@@ -60,6 +60,16 @@ ClientCommands.sendMortarShot = function(player, args)
 
 end
 
+
+--------------------
+-- Reload
+-------------------
+ClientCommands.updateReloadStatus = function(player, args)
+    local weaponInstance = args.weaponInstance
+    weaponInstance:setIsRoundInChamber(args.check)
+end
+
+
 ------------------------------------------------
 
 local onClientCommand = function(module, command, player_obj, args)

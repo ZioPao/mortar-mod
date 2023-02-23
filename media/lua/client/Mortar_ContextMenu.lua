@@ -44,12 +44,12 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
         if v:getSprite() and MortarCommonFunctions.IsMortarSprite(v:getSprite():getName()) and distance_check then
 
             -- We need to search the server for an active MortarWeapon. if there is none, we'll have to create one
-            local weaponInstance = MortarClientHandler.FindWeaponInstance(v)
+            local weaponInstance = MortarClientHandler.SetWeaponInstance(v)
 
 
             if weaponInstance == nil then
                 sendClientCommand(playerObj, 'Mortar', 'generateMortarWeaponInstance', {tileObj = v})
-                weaponInstance = MortarClientHandler.FindWeaponInstance(v)
+                weaponInstance = MortarClientHandler.SetWeaponInstance(v)
             end
 
 

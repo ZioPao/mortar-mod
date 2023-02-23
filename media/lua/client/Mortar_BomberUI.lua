@@ -2,9 +2,6 @@
 --[[ MORTAR MOD - CUSTOM MENU UI ]]--
 --=================================--
 
--- TODO Add Reload logic
-
-
 
 require "ISUI/ISPanel"
 
@@ -49,13 +46,14 @@ function MortarUI:createChildren()
     exit_btn:initialise()
     self:addChild(exit_btn)
 
-    local coordinates_label = ISLabel:new(100, 150, 80, "",1, 1, 1, 1, UIFont.Medium, false)
-    coordinates_label:initialise()
-    self:addChild(coordinates_label)
+    -- TODO Add it later with binos
+    -- local coordinates_label = ISLabel:new(100, 150, 80, "",1, 1, 1, 1, UIFont.Medium, false)
+    -- coordinates_label:initialise()
+    -- self:addChild(coordinates_label)
 
     self.shoot_btn_ref = shoot_btn
     self.reload_btn_ref = reload_btn
-    self.coordinates_label_ref = coordinates_label      -- Set a reference
+    --self.coordinates_label_ref = coordinates_label      -- Set a reference
 
 
 end
@@ -67,10 +65,8 @@ function MortarUI:close()
 
 
     -- TODO This is local only?
-    Events.OnPlayerMove.Remove(MortarRotDirection)
-
-
-    Events.OnTick.Remove(MortarUI.updateCoordinatesLabel)       -- Disable the update for coordinates
+    --Events.OnPlayerMove.Remove(MortarRotDirection)
+    --Events.OnTick.Remove(MortarUI.updateCoordinatesLabel)       -- Disable the update for coordinates
 
     if MortarUI.instance then 
         MortarUI.instance:setVisible(false)
@@ -84,20 +80,6 @@ function MortarUI:update()
     ISPanel.update(self)
 
     if MortarUI.instance ~= nil then
-
-        local coords
-        if Mortar.direct_coordinates ~= nil then
-            local test = Mortar.direct_coordinates
-            coords = "X: " .. tostring(test[1]) .. ", Y: " .. tostring(test[2])
-        else
-            coords = ""     -- TODO This is gonna be implemented at a later time
-            --coords = "No direct coordinates"
-        end
-
-        if MortarUI.instance.coordinates_label_ref ~= nil then
-            MortarUI.instance.coordinates_label_ref:setName(coords)
-        end
-
         if MortarUI.instance.shoot_btn_ref ~= nil and MortarUI.instance.reload_btn_ref ~= nil then
 
             --print("____________________________")
@@ -105,19 +87,19 @@ function MortarUI:update()
             --print(MortarUI.instance.reload_btn_ref:isEnabled())
 
 
-            if Mortar.getIsReadyToShoot() then
-                --print("Mortar: ready to shoot")
+            if MortarClientHandler:isReadyToShoot() then
+                print("Mortar: ready to shoot")
                 MortarUI.instance.shoot_btn_ref:setEnable(true)
-                MortarUI.instance.shoot_btn_ref:setOnClick(sendStartFiringToServer)
+                MortarUI.instance.shoot_btn_ref:setOnClick(MortarClientHandler.tryStartFiring)
                 MortarUI.instance.reload_btn_ref:setEnable(false)
                 MortarUI.instance.reload_btn_ref:setOnClick(nil)
 
             else
-                --print("Mortar: not ready to shoot")
+                print("Mortar: not ready to shoot")
                 MortarUI.instance.shoot_btn_ref:setEnable(false)
                 MortarUI.instance.shoot_btn_ref:setOnClick(nil)
                 MortarUI.instance.reload_btn_ref:setEnable(true)
-                MortarUI.instance.reload_btn_ref:setOnClick(Mortar.reloadRound)
+                MortarUI.instance.reload_btn_ref:setOnClick(MortarClientHandler.reloadRound)
 
 
             end

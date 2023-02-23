@@ -119,7 +119,7 @@ function MortarClientHandler.UpdateWeaponInstances()
     MortarSyncedWeapons = ModData.getOrCreate(MortarCommonVars.globalModDataId)
 end
 
-function MortarClientHandler.FindWeaponInstance(obj)
+function MortarClientHandler.SetWeaponInstance(obj)
 
     if MortarSyncedWeapons == nil then
         print("Mortar Debug: No mortar synced weapons")
@@ -129,6 +129,7 @@ function MortarClientHandler.FindWeaponInstance(obj)
     for _, v in pairs(MortarSyncedWeapons) do
 
         if v.tileObj == obj then
+            MortarClientHandler.weaponInstance = obj
             return v
         end
         
@@ -138,6 +139,7 @@ function MortarClientHandler.FindWeaponInstance(obj)
 
 end
 ------------------------------------------
+-- Shooting
 
 --- Called from bomber, will send notification to spotter to execute the code
 function MortarClientHandler:tryStartFiring()
@@ -196,3 +198,36 @@ function MortarClientHandler:startShooting()
 
 end
 
+------------------------------------------
+-- Reload
+ 
+function MortarClientHandler:reloadRound()
+
+    local inv = getPlayer():getInventory()
+    --if item:getFullType() == "Mortar.MortarRound" then 
+    local item = inv:FindAndReturn('Mortar.MortarRound')
+    local check
+   if item and inv then
+        --getPlayer():playEmote("_mortarReload")      -- TODO Make it not loop this much
+        inv:RemoveOneOf('Mortar.MortarRound')
+        check = true
+    else
+        getPlayer():Say(tostring('I have no ammo'))
+        check = false
+    end
+
+    sendClientCommand(getPlayer(), 'Mortar', 'updateReloadStatus', {check = check, weaponInstance = self.o.weaponInstance})
+
+end
+
+function MortarClientHandler:isReadyToShoot()
+
+    if MortarClientHandler.weaponInstance then
+        
+        return MortarClientHandler.weaponInstance:getIsRoundInChamber()        -- TODO Not sure if it'll work
+    end
+
+    return false
+
+
+end
