@@ -68,7 +68,7 @@ function MortarUI:close()
     --Events.OnPlayerMove.Remove(MortarRotDirection)
     --Events.OnTick.Remove(MortarUI.updateCoordinatesLabel)       -- Disable the update for coordinates
 
-    if MortarUI.instance then 
+    if MortarUI.instance then
         MortarUI.instance:setVisible(false)
         MortarUI.instance:removeFromUIManager()
     

@@ -22,6 +22,8 @@ ServerCommands.updateBomberStatus = function(args)
 
      -- Updates the MortarClientHandler on this side
     MortarClientHandler:setIsBomberValid(isValid)
+    MortarClientHandler:setBomber(player)
+    MortarClientHandler:setSpotter(getPlayerByOnlineID(args.spotterId))
     sendClientCommand(player, 'Mortar', 'sendUpdatedBomberStatus', {spotterId = args.spotterId, isValid = isValid})
 
 end
@@ -42,6 +44,8 @@ ServerCommands.updateSpotterStatus = function(args)
 
     -- Updates the MortarClientHandler on this side
     MortarClientHandler:setIsSpotterValid(isValid)
+    MortarClientHandler:setBomber(getPlayerByOnlineID(args.bomberId))
+    MortarClientHandler:setSpotter(player)
     sendClientCommand(player, 'Mortar', 'sendUpdatedSpotterStatus', {bomberId = args.bomberId, isValid = isValid} )
 
 end
@@ -90,7 +94,7 @@ ServerCommands.receiveBoomSound = function(args)
 
     local sq = getCell():getGridSquare(x, y, z)
     getSoundManager():PlayWorldSound(tostring(MortarCommonVars.sounds[ZombRand(1,4)]), sq, 0, 5, 5, false)
-    
+
 end
 
 ----------------------------------------------

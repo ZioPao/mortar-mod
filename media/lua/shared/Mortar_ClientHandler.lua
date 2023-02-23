@@ -257,7 +257,7 @@ function MortarClientHandler:generateShot(sqX, sqY, sqZ, rad)
             if IsoUtils.DistanceTo(sqX, sqY, x + 0.5, y + 0.5) <= rad then
                 local sq = cell:getGridSquare(x, y, sqZ)
                 local vanillaCommand = 'addFireOnSquare'
-                if MortarCommonFunctions.roll(20) then
+                if MortarCommonFunctions.RollChance(20) then
                     vanillaCommand = 'addSmokeOnSquare'
                 end   
                 if sq:Is(IsoFlagType.burning) then 
@@ -274,7 +274,7 @@ function MortarClientHandler:generateShot(sqX, sqY, sqZ, rad)
 
                 end
 
-                if MortarCommonFunctions.roll(60) then
+                if MortarCommonFunctions.RollChance(60) then
                     local argsVanillaCommand = {
                         x = x,
                         y = y,
@@ -284,7 +284,7 @@ function MortarClientHandler:generateShot(sqX, sqY, sqZ, rad)
                 end
 
                 local chance = 40
-                if MortarCommonFunctions.roll(chance) then
+                if MortarCommonFunctions.RollChance(chance) then
                     MortarClientHandler.SpawnDebris(sq)
                     sendClientCommand(self.spotter, 'Mortar', 'sendBoomSound', {sqX = sq:getX(), sqY = sq:getY(), sqZ = sq:getZ()})
                 end
