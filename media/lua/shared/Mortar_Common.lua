@@ -67,7 +67,7 @@ MortarCommonFunctions.CheckRadio = function(player_inventory)
     if radio then
         local device_data = radio:getDeviceData()
         if device_data:getIsTurnedOn() then
-            print("Mortar: Radio is ready to go")
+            --print("Mortar: Radio is ready to go")
             return true
         end
     end

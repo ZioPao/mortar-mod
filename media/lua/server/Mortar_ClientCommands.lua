@@ -78,7 +78,7 @@ end
 ClientCommands.sendMortarShot = function(player, args)
 
     local spotterPlayer = getPlayerByOnlineID(args.spotterId)
-    sendServerCommand(spotterPlayer, 'Mortar', 'receiveMortarShot')
+    sendServerCommand(spotterPlayer, 'Mortar', 'receiveMortarShot', {})
 
 end
 
@@ -118,10 +118,26 @@ ClientCommands.updateReloadStatus = function(player, args)
 end
 
 
+
+----------------
+-- Cosmetic stuff
+---------------
+
+ClientCommands.sendMuzzleFlash = function(player, args)
+    sendServerCommand('Mortar', 'acceptMuzzleFlash', {bomberId = args.bomberId})
+
+end
+
+ClientCommands.sendBoomSound = function(player, args)
+
+    sendServerCommand('Mortar', 'receiveBoomSound', {x = args.sqX, y = args.sqY, z = args.sqZ})
+
+end
+
 ------------------------------------------------
 
 local onClientCommand = function(module, command, player_obj, args)
-    print("Mortar: Received command " .. command)
+    --print("Mortar: Received command " .. command)
     if module == "Mortar" and ClientCommands[command] then
         ClientCommands[command](player_obj, args)
     end

@@ -69,6 +69,29 @@ ServerCommands.receiveMortarShot = function(args)
 end
 
 
+----------------
+-- Cosmetic stuff
+----------------
+
+ServerCommands.acceptMuzzleFlash = function(args)
+
+    local pl = getPlayerByOnlineID(args.bomberId)
+    if pl then
+        pl:startMuzzleFlash()
+    end
+end
+
+ServerCommands.receiveBoomSound = function(args)
+
+    local x = args.x
+    local y = args.y
+    local z = args.z
+
+
+    local sq = getCell():getGridSquare(x, y, z)
+    getSoundManager():PlayWorldSound(tostring(MortarCommonVars.sounds[ZombRand(1,4)]), sq, 0, 5, 5, false)
+    
+end
 
 ----------------------------------------------
 local function onServerCommand(module, command, args)

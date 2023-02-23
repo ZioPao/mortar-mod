@@ -54,6 +54,14 @@
         "getClassFieldVal",
         "SandboxVars",
         "getClassField",
-        "ISWearClothing"
+        "ISWearClothing",
+        "ISPanel",
+        "getSoundManager",
+        "luautils",
+        "getWorld",
+        "IsoUtils",
+        "IsoFlagType",
+        "ISContextMenu",
+        "getOnlinePlayers"
     ]
 }

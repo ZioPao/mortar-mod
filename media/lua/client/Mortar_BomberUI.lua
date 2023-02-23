@@ -73,6 +73,9 @@ function MortarUI:close()
         MortarUI.instance:removeFromUIManager()
     
         MortarUI.instance = nil     -- Removes the reference
+
+        Events.OnTick.Remove(MortarClientHandler.ValidationCheckUpdate)
+
     end
 
 end
