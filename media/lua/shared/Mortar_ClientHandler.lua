@@ -96,7 +96,7 @@ function MortarClientHandler.ValidationCheckUpdate()
 
     -- Agnostic, we don't care if it's the bomber or the spotter
 
-    print("Mortar: checking validation status")
+    --print("Mortar: checking validation status")
     local player = getPlayer()
 
     if MortarClientHandler:getBomber() ~= nil and MortarClientHandler:getSpotter() ~= nil then
@@ -229,9 +229,13 @@ function MortarClientHandler:startShooting()
         explosionX = self.coordinates[1]
         explosionY = self.coordinates[2]
     else
+        -- TODO I think I missed something, self.spotter runs on the spotter but self.spotter is nil
+        self.spotter = getPlayer()
         local nx = MortarCommonVars.directions[tostring(self.spotter:getDir())][1]
         local ny = MortarCommonVars.directions[tostring(self.spotter:getDir())][2]
         local dist = ZombRand(MortarCommonVars.distMin, MortarCommonVars.distMax)
+
+
 
         explosionX = math.floor(self.spotter:getX() + (nx * dist))
         explosionY = math.floor(self.spotter:getY() + (ny * dist))
@@ -241,6 +245,66 @@ function MortarClientHandler:startShooting()
     --local trajectory = getCell():getGridSquare(explosionX, explosionY, explosionZ)
 
     MortarClientHandler:generateShot(explosionX, explosionY, explosionZ, finalRad)
+
+end
+
+function MortarClientHandler:generateShot(sqX, sqY, sqZ, rad)
+    local cell = getWorld():getCell()      -- We need to get the correct cell, not this one
+    sendClientCommand(self.spotter, 'Mortar', 'sendMuzzleFlash', {bomberId = self.bomber:getOnlineID()})
+
+    for x = sqX - rad, sqX + rad + 1 do
+        for y = sqY - rad, sqY + rad + 1 do
+            if IsoUtils.DistanceTo(sqX, sqY, x + 0.5, y + 0.5) <= rad then
+                local sq = cell:getGridSquare(x, y, sqZ)
+                local vanillaCommand = 'addFireOnSquare'
+                if MortarCommonFunctions.roll(20) then
+                    vanillaCommand = 'addSmokeOnSquare'
+                end   
+                if sq:Is(IsoFlagType.burning) then 
+                    sq:getModData()['mortarHit'] = true
+
+                    -- TODO This needs to be in a function and removed after a while, they're gonna stack up
+                    Events.OnTick.Add(function() 
+                        if sq:getModData()['mortarHit'] and not sq:Is(IsoFlagType.burning) then
+                            sq:getModData()['mortarHit'] = nil
+                        end
+                    end)
+
+
+
+                end
+
+                if MortarCommonFunctions.roll(60) then
+                    local argsVanillaCommand = {
+                        x = x,
+                        y = y,
+                        z = sqZ
+                    }
+                    sendClientCommand(self.spotter, 'object', vanillaCommand, argsVanillaCommand)
+                end
+
+                local chance = 40
+                if MortarCommonFunctions.roll(chance) then
+                    MortarClientHandler.SpawnDebris(sq)
+                    sendClientCommand(self.spotter, 'Mortar', 'sendBoomSound', {sqX = sq:getX(), sqY = sq:getY(), sqZ = sq:getZ()})
+                end
+
+                -- Kill whatever thing is in the square
+                local entities = sq:getMovingObjects()
+
+                if entities then
+                    for i = entities:size(), 1, -1 do
+                        local entity = entities:get(i - 1)
+                        if instanceof(entity, "IsoZombie") or instanceof(entity, "IsoPlayer") then
+                            if not entity:isGodMod() then
+                                entity:Kill(entity)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
 
 end
 
@@ -281,6 +345,17 @@ function MortarClientHandler:isReadyToShoot()
 
 
     return false
+
+
+end
+
+
+-------- 
+-- Visuals
+---------
+
+
+function MortarClientHandler:SpawnDebris(sq)
 
 
 end
