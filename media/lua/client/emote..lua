@@ -1,0 +1,2 @@
+-- getPlayer():playEmote("_MortarClick")
+-- getPlayer():playEmote("_MortarIdle")
