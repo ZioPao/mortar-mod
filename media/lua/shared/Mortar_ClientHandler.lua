@@ -34,48 +34,45 @@ end
 
 function MortarClientHandler:instantiate(player, weaponInstance)
 
-    self.o.bomber = player      -- Set the bomber
-    self.o.weaponInstance = weaponInstance
+    self.bomber = player      -- Set the bomber
+    self.weaponInstance = weaponInstance
 
     Events.OnTick.Add(MortarClientHandler.validationCheckUpdate)
-    Events.OnTick.Add(MortarClientHandler.UpdateWeaponInstances)
 
 end
 
 
 function MortarClientHandler:delete()
 
-    self.o = nil
-
+    MortarClientHandler.instance = nil
     Events.OnTick.Remove(MortarClientHandler.validationCheckUpdate)
-    Events.OnTick.Remove(MortarClientHandler.UpdateWeaponInstances)
 end
 
 
 ------------------------------------
 
 function MortarClientHandler:setBomber(player)
-    self.o.bomber = player
+    self.bomber = player
 end
 
 function MortarClientHandler:getBomber()
-    return self.o.bomber
+    return self.bomber
 end
 
 function MortarClientHandler:setSpotter(player)
-    self.o.spotter = player
+    self.spotter = player
 end
 
 function MortarClientHandler:getSpotter()
-    return self.o.spotter
+    return self.spotter
 end
 
 function MortarClientHandler:setCoordinates(x,y)
-    self.o.coordinates = {x,y}
+    self.coordinates = {x,y}
 end
 
 function MortarClientHandler:setWeaponInstance(weaponInstance)
-    self.o.weaponInstance = weaponInstance
+    self.weaponInstance = weaponInstance
 end
 
 
@@ -84,11 +81,11 @@ end
 
 function MortarClientHandler:setIsBomberValid(check)
 
-    self.o.isBomberValid = check
+    self.isBomberValid = check
 end
 
 function MortarClientHandler:setIsSpotterValid(check)
-    self.o.isSpotterValid = check
+    self.isSpotterValid = check
 end
 
 function MortarClientHandler:validationCheckUpdate()
@@ -97,14 +94,14 @@ function MortarClientHandler:validationCheckUpdate()
     local player = getPlayer()
 
 
-    if self.o.bomber ~= nil and self.o.spotter ~= nil then
-        sendClientCommand(player, 'Mortar', 'checkValidationStatus', {bomberId = self.o.bomber:getOnlineID(), spotterId = self.o.spotter:getOnlineID()})
+    if self.bomber ~= nil and self.spotter ~= nil then
+        sendClientCommand(player, 'Mortar', 'checkValidationStatus', {bomberId = self.bomber:getOnlineID(), spotterId = self.spotter:getOnlineID()})
     end
 end
 
 function MortarClientHandler:isAvailable()
 
-    if self.o.bomber == nil then
+    if self.bomber == nil then
         return true
     end
 
@@ -116,8 +113,28 @@ end
 -- Weapon instance handler
 
 function MortarClientHandler.UpdateWeaponInstances()
-    MortarSyncedWeapons = ModData.getOrCreate(MortarCommonVars.globalModDataId)
+
+    local modData = ModData.get(MortarCommonVars.globalModDataId)
+
+    if modData ~= nil then
+        MortarSyncedWeapons = modData["instances"]
+    end
+
 end
+
+function MortarClientHandler.onReceive(key, modData)
+    if modData then
+        ModData.remove(key)
+        ModData.add(key, modData)
+    end
+end
+Events.OnReceiveGlobalModData.Add(MortarClientHandler.onReceive)
+
+function MortarClientHandler.onConnect()
+    ModData.request(MortarCommonVars.globalModDataId)
+end
+Events.OnConnected.Add(MortarClientHandler.onConnect)
+
 
 function MortarClientHandler.SetWeaponInstance(obj)
 
@@ -126,10 +143,15 @@ function MortarClientHandler.SetWeaponInstance(obj)
         return
     end
 
-    for _, v in pairs(MortarSyncedWeapons) do
+    local x = obj:getX()
+    local y = obj:getY()
+    local z = obj:getZ()
 
-        if v.tileObj == obj then
-            MortarClientHandler.weaponInstance = obj
+    for _, v in pairs(MortarSyncedWeapons) do
+        
+
+        if v.tileX == x and v.tileY == y and v.tileZ == z then
+            MortarClientHandler.weaponInstance = v
             return v
         end
         
@@ -138,6 +160,13 @@ function MortarClientHandler.SetWeaponInstance(obj)
     return nil
 
 end
+
+
+Events.OnTick.Add(MortarClientHandler.UpdateWeaponInstances)
+
+
+
+
 ------------------------------------------
 -- Shooting
 
@@ -146,20 +175,20 @@ function MortarClientHandler:tryStartFiring()
     print("Mortar: Trying to fire")
 
     -- Check if spotter exists
-    if self.o.spotter == nil then
+    if self.spotter == nil then
         print("No spotter")
-        self.o.bomber:Say("I don't have a spotter right now")
+        self.bomber:Say("I don't have a spotter right now")
         return
     end
 
     -- Checks if spotter is valid
-    if self.o.isSpotterValid and self.o.isBomberValid then
+    if self.isSpotterValid and self.isBomberValid then
         MortarClientHandler:executeStartFiring()
-    elseif self.o.isBomberValid then
-        self.o.bomber:Say("I can't reach my spotter anymore")
+    elseif self.isBomberValid then
+        self.bomber:Say("I can't reach my spotter anymore")
     else
         -- Not even the bomber is valid
-        self.o.bomber:Say("I think I'm missing something")
+        self.bomber:Say("I think I'm missing something")
     end
 end
 
@@ -167,7 +196,7 @@ end
 function MortarClientHandler:executeStartFiring()
 
     -- We need to send this to the spotter since that's where the actual "explosions" will be sent
-    sendClientCommand(self.o.bomber, 'Mortar', 'sendMortarShot', {spotterId = self.o.spotter:getOnlineID()})
+    sendClientCommand(self.bomber, 'Mortar', 'sendMortarShot', {spotterId = self.spotter:getOnlineID()})
 
 end
 
@@ -179,15 +208,15 @@ function MortarClientHandler:startShooting()
     local explosionY
     local explosionZ
 
-    if self.o.coordinates then
-        explosionX = self.o.coordinates[1]
-        explosionY = self.o.coordinates[2]
+    if self.coordinates then
+        explosionX = self.coordinates[1]
+        explosionY = self.coordinates[2]
     else
-        local nx = MortarCommonVars.directions[tostring(self.o.spotter:getDir())][1]
-        local ny = MortarCommonVars.directions[tostring(self.o.spotter:getDir())][2]
+        local nx = MortarCommonVars.directions[tostring(self.spotter:getDir())][1]
+        local ny = MortarCommonVars.directions[tostring(self.spotter:getDir())][2]
         local dist = ZombRand(MortarCommonVars.distMin, MortarCommonVars.distMax)
 
-        explosionX = math.floor(self.o.spotter:getX() + (nx * dist))
+        explosionX = math.floor(self.spotter:getX() + (nx * dist))
         explosionY = math.floor(self.spotter:getY() + (ny * dist))
     end
 
@@ -216,14 +245,13 @@ function MortarClientHandler:reloadRound()
         check = false
     end
 
-    sendClientCommand(getPlayer(), 'Mortar', 'updateReloadStatus', {check = check, weaponInstance = self.o.weaponInstance})
+    sendClientCommand(getPlayer(), 'Mortar', 'updateReloadStatus', {check = check, weaponInstance = self.weaponInstance})
 
 end
 
 function MortarClientHandler:isReadyToShoot()
 
     if MortarClientHandler.weaponInstance then
-        
         return MortarClientHandler.weaponInstance:getIsRoundInChamber()        -- TODO Not sure if it'll work
     end
 

@@ -77,7 +77,17 @@ end
 
 
 MortarCommonFunctions.IsBomberValid = function(player)
+    if player:isDriving() or player:getVehicle() then return false end
+    if player:HasTrait('ShortSighted')  then return false end
 
+
+    if not player:isAsleep() then
+        if MortarCommonFunctions.CheckRadio(player:getInventory()) then
+            return true
+       end
+    end
+
+    return false
 end
 
 MortarCommonFunctions.IsSpotterValid = function(player)
@@ -88,9 +98,12 @@ MortarCommonFunctions.IsSpotterValid = function(player)
 
 
     if not player:isAsleep() then
-        MortarCommonFunctions.CheckRadio(player:getInventory())
-
+        if MortarCommonFunctions.CheckRadio(player:getInventory()) then
+            return true
+        end
     end
+
+    return false
 end
 
 

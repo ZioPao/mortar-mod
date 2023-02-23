@@ -48,13 +48,17 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
 
 
             if weaponInstance == nil then
-                sendClientCommand(playerObj, 'Mortar', 'generateMortarWeaponInstance', {tileObj = v})
+                sendClientCommand(playerObj, 'Mortar', 'generateMortarWeaponInstance', {
+                    x = v:getX(),
+                    y = v:getY(),
+                    z = v:getZ()
+                })
                 weaponInstance = MortarClientHandler.SetWeaponInstance(v)
             end
 
 
 
-            if weaponInstance == nil then
+            if weaponInstance ~= nil then
 
                 context:getNew(context)
 

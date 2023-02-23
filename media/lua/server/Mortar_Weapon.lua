@@ -11,7 +11,7 @@ end
 
 
 ------------------------------------
-function MortarWeapon:new(tileObject)
+function MortarWeapon:new(x, y, z)
 
     print("Mortar: instancing new mortar weapon")
 
@@ -19,7 +19,10 @@ function MortarWeapon:new(tileObject)
     setmetatable(o, self)
     self.__index = self
 
-    o.tileObj = tileObject
+    o.tileX = x
+    o.tileY = y
+    o.tileZ = z
+
     o.isRoundInChamber = false
 
     table.insert(MortarWeapon.instances, o)
@@ -30,15 +33,6 @@ end
 ------------------------------------
 -- Setters\Getters
 ------------------------------------
-
-function MortarWeapon:setTileObject(tileObject)
-    self.tileObj = tileObject
-end
-
-function MortarWeapon:getTileObject()
-    return self.tileObj
-end
-
 
 function MortarWeapon:setIsRoundInChamber(check)
     self.isRoundInChamber = check
@@ -53,12 +47,12 @@ end
 
 function MortarWeapon.SaveInstances()
     local mortarModData = ModData.getOrCreate(MortarCommonVars.globalModDataId)
-
+    print("Mortar: saving instances")
     mortarModData["instances"] = MortarWeapon.instances
     ModData.transmit(MortarCommonVars.globalModDataId)
 
 end
-Events.OnGameStart.Add(function()
+Events.OnServerStarted.Add(function()
     Events.EveryOneMinute.Add(MortarWeapon.SaveInstances)
 end)
 
@@ -66,5 +60,5 @@ end)
 local function initGlobalModData()
     ModData.getOrCreate(MortarCommonVars.globalModDataId)
 end
-
+-- TODO OnPickup or deletion of mortar we should destroy the instance!!!
 Events.OnInitGlobalModData.Add(initGlobalModData)
