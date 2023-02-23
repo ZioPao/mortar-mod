@@ -25,9 +25,37 @@ function MortarUI:onOpenPanel(handler)
 end
 function MortarUI:initialise()
     ISPanel.initialise(self)
+    Events.OnTick.Add(MortarUI.CheckWeaponDistanceFromPlayer)
+
 end
 
+function MortarUI.CheckWeaponDistanceFromPlayer(tick)
 
+    if MortarClientHandler:getBomber() == nil then
+        print("Mortar Info: no bomber found anymore for the UI, exiting update")
+        MortarUI:close()
+        return
+    end
+
+    local bomber = MortarClientHandler:getBomber()
+
+    local bomberX = bomber:getX()
+    local bomberY = bomber:getY()
+    --local bomberZ = bomber:getZ()
+
+
+    local mortarCoordinates = MortarClientHandler:getTilesLocation()
+
+    if MortarCommonFunctions.GetDistance2D(bomberX, bomberY, mortarCoordinates[1], mortarCoordinates[2]) > MortarCommonVars.distSteps then
+        print("Mortar Info: player too far, destroying MortarUI")
+        MortarUI:close()        -- This also unset the bomber, kinda janky
+    
+    end
+    
+    
+    
+
+end
 
 function MortarUI:createChildren()
     ISPanel.createChildren(self)
@@ -73,8 +101,11 @@ function MortarUI:close()
         MortarUI.instance:removeFromUIManager()
     
         MortarUI.instance = nil     -- Removes the reference
+        MortarClientHandler:delete()
 
+        
         Events.OnTick.Remove(MortarClientHandler.ValidationCheckUpdate)
+        Events.OnTick.Remove(MortarUI.CheckWeaponDistanceFromPlayer)
 
     end
 
@@ -115,6 +146,9 @@ function MortarUI:update()
 
 
         end
+
+
+        -- Distance check
 
 
     end

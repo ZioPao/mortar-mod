@@ -48,12 +48,32 @@ end
 
 function MortarClientHandler:delete()
 
-    MortarClientHandler.instance = nil
+    print("MortarClientHandler: destroying instance")
     Events.OnTick.Remove(MortarClientHandler.ValidationCheckUpdate)
+
+    local tbl = {}
+    setmetatable(tbl, nil)
+
+
+    self.bomber = nil
+    self.spotter = nil
+    self.tileX = nil
+    self.tileY = nil
+    self.tileZ = nil
+    
+    self.weaponInstanceId = nil
+
+    self.isBomberValid = false
+    self.isSpotterValid = false
+    
+    self.coordinates = nil
+
+    MortarClientHandler.instance = nil
 end
 
 
 ------------------------------------
+-- Setter\Getters
 
 function MortarClientHandler:setBomber(player)
     self.bomber = player
@@ -79,6 +99,11 @@ function MortarClientHandler:setWeaponInstance(weaponInstance)
     self.weaponInstance = weaponInstance
 end
 
+function MortarClientHandler:getTilesLocation()
+
+    return {self.tileX, self.tileY, self.tileZ}
+
+end
 
 -----------------------------------------
 -- Validation
@@ -116,6 +141,9 @@ function MortarClientHandler:isAvailable()
     return false
 
 end
+
+
+
 
 -----------------------------------------
 -- Weapon instance handler

@@ -37,9 +37,9 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
         local obj_x = v:getX()
         local obj_y = v:getY()
 
-        local distance_check = MortarCommonFunctions.GetDistance2D(pl_x, pl_y, obj_x, obj_y) < MortarCommonVars.distSteps
+        local distanceCheck = MortarCommonFunctions.GetDistance2D(pl_x, pl_y, obj_x, obj_y) < MortarCommonVars.distSteps
 
-        if v:getSprite() and MortarCommonFunctions.IsMortarSprite(v:getSprite():getName()) and distance_check then
+        if v:getSprite() and MortarCommonFunctions.IsMortarSprite(v:getSprite():getName()) and distanceCheck then
 
             -- We need to search the server for an active MortarWeapon. if there is none, we'll have to create one
             local weaponInstance = MortarClientHandler.SetWeaponInstance(v)
@@ -62,6 +62,7 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
                 if MortarCommonFunctions.IsBomberValid(playerObj) then
                     if MortarClientHandler.instance == nil then
                         MortarClientHandler:new()
+                        
                     end
 
                     if MortarClientHandler:getBomber() == playerObj then
