@@ -214,6 +214,20 @@ function MortarClientHandler:executeStartFiring()
 
     -- We need to send this to the spotter since that's where the actual "explosions" will be sent
     sendClientCommand(self.bomber, 'Mortar', 'sendMortarShot', {spotterId = self.spotter:getOnlineID()})
+    sendClientCommand(self.bomber, 'Mortar', 'updateReloadStatus', {check = false, instanceId = MortarClientHandler.weaponInstanceId})
+    
+
+    -- Force set that we don't have any round directly on the client to prevent multiple spam shots
+    -- FIXME Mostly a workaround for now until I think of a better solution to speed things up
+    if MortarClientHandler.weaponInstanceId ~= nil then
+        for _, v in pairs(MortarSyncedWeapons) do
+            for uuid, instance in pairs(v) do
+                if uuid == MortarClientHandler.weaponInstanceId then
+                    instance.isRoundInChamber = false
+                end
+            end
+        end
+    end
 
 end
 
@@ -357,5 +371,10 @@ end
 
 function MortarClientHandler:SpawnDebris(sq)
 
-
+    local dug = IsoObject.new(sq, "mortar_" .. ZombRand(63)-8, "", false)
+    sq:AddTileObject(dug)
+    if isClient() then
+        dug:transmitCompleteItemToServer()
+    end
+    
 end
