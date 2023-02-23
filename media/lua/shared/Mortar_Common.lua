@@ -79,7 +79,8 @@ end
 MortarCommonFunctions.IsBomberValid = function(player)
     if player:isDriving() or player:getVehicle() then return false end
     if player:HasTrait('ShortSighted')  then return false end
-
+    if not player:isOutside() then return false end
+    if player:HasTrait('Deaf') then return false end
 
     if not player:isAsleep() then
         if MortarCommonFunctions.CheckRadio(player:getInventory()) then
