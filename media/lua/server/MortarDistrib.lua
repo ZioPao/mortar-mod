@@ -4,18 +4,18 @@ require"SuburbsDistributions"
 
 
 local locations = {
-  "ArmyHangarOutfit",
-  "ArmyHangarTools",
+ -- "ArmyHangarOutfit",
+  --"ArmyHangarTools",
   "ArmyStorageAmmunition",
-  "ArmyStorageElectronics",
+  --"ArmyStorageElectronics",
   "ArmyStorageGuns",
   --"ArmyStorageMedical",
-  "ArmyStorageOutfit",
+  --"ArmyStorageOutfit",
   "ArmySurplusBackpacks",
-  "ArmySurplusFootwear",
-  "ArmySurplusHeadwear",
-  "ArmySurplusMisc",
-  "ArmySurplusOutfit",
+ -- "ArmySurplusFootwear",
+ -- "ArmySurplusHeadwear",
+  --"ArmySurplusMisc",
+ -- "ArmySurplusOutfit",
   "ArmySurplusTools"
 }
 --print(type(locations[1]))

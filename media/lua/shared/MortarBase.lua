@@ -30,7 +30,7 @@ https://discord.gg/2skchrKrDv
     --]]
 
 require "MortarCheckAxisZ"
-
+require "MortarBurstHandler"
 -- Init Mortar table
 --------------------------------------------------------------
 Mortar = {}
@@ -133,13 +133,19 @@ end
 ---Spawn debris in the chosen square
 ---@param square IsoSquare
 Mortar.spawnDebris = function(square)
+
+local mortar = IsoObject.new(square, "mortarburst_0", "", false) 
+square:AddTileObject(mortar)
+BurstTicker(mortar, -1, 12)
+
+--[[ 
     -- the tile starts at 0 and ends 64 -8 (8  mortar tiles)
     local dug = IsoObject.new(square, "mortar_" .. ZombRand(63)-8, "", false) 
     square:AddTileObject(dug)
     if isClient() then
         dug:transmitCompleteItemToServer()
     end
-    ISInventoryPage.renderDirty = true
+    ISInventoryPage.renderDirty = true ]]
 end
 
 

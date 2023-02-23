@@ -1,0 +1,98 @@
+
+
+	item MortarBurst_1
+    {
+    DisplayCategory = Junk,
+    Weight	=	0.1,
+    Type	=	Normal,
+    DisplayName	=	MortarBurst,
+    Icon	=	MortarBurst_1,
+    }
+	item MortarBurst_2
+    {
+    DisplayCategory = Junk,
+    Weight	=	0.1,
+    Type	=	Normal,
+    DisplayName	=	MortarBurst,
+    Icon	=	MortarBurst_2,
+    }
+	item MortarBurst_3
+    {
+    DisplayCategory = Junk,
+    Weight	=	0.1,
+    Type	=	Normal,
+    DisplayName	=	MortarBurst,
+    Icon	=	MortarBurst_3,
+    }
+	item MortarBurst_4
+    {
+    DisplayCategory = Junk,
+    Weight	=	0.1,
+    Type	=	Normal,
+    DisplayName	=	MortarBurst,
+    Icon	=	MortarBurst_4,
+    }
+	item MortarBurst_5
+    {
+    DisplayCategory = Junk,
+    Weight	=	0.1,
+    Type	=	Normal,
+    DisplayName	=	MortarBurst,
+    Icon	=	MortarBurst_5,
+    }
+	item MortarBurst_6
+    {
+    DisplayCategory = Junk,
+    Weight	=	0.1,
+    Type	=	Normal,
+    DisplayName	=	MortarBurst,
+    Icon	=	MortarBurst_6,
+    }
+	item MortarBurst_7
+    {
+    DisplayCategory = Junk,
+    Weight	=	0.1,
+    Type	=	Normal,
+    DisplayName	=	MortarBurst,
+    Icon	=	MortarBurst_7,
+    }
+	item MortarBurst_8
+    {
+    DisplayCategory = Junk,
+    Weight	=	0.1,
+    Type	=	Normal,
+    DisplayName	=	MortarBurst,
+    Icon	=	MortarBurst_8,
+    }
+	item MortarBurst_9
+    {
+    DisplayCategory = Junk,
+    Weight	=	0.1,
+    Type	=	Normal,
+    DisplayName	=	MortarBurst,
+    Icon	=	MortarBurst_9,
+    }
+	item MortarBurst_10
+    {
+    DisplayCategory = Junk,
+    Weight	=	0.1,
+    Type	=	Normal,
+    DisplayName	=	MortarBurst,
+    Icon	=	MortarBurst_10,
+    }
+	item MortarBurst_11
+    {
+    DisplayCategory = Junk,
+    Weight	=	0.1,
+    Type	=	Normal,
+    DisplayName	=	MortarBurst,
+    Icon	=	MortarBurst_11,
+    }
+	item MortarBurst_12
+    {
+    DisplayCategory = Junk,
+    Weight	=	0.1,
+    Type	=	Normal,
+    DisplayName	=	MortarBurst,
+    Icon	=	MortarBurst_12,
+    }
