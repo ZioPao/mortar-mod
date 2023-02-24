@@ -360,6 +360,12 @@ function MortarClientHandler:generateShot(sqX, sqY, sqZ, rad)
     end
 
 
+
+    for _, v in pairs(MortarClientHandler.explosionsTable.objects) do
+        print("Listing an explosion ->" .. tostring(v))
+    end
+
+
     Events.OnTick.Add(MortarClientHandler.UpdateExplosionTiles)
 
 
@@ -424,8 +430,8 @@ end
 
 
 MortarClientHandler.explosionsTable = {
-    count = 1,
-    tickDiff = 64,
+    count = 2,
+    tickDiff = 6,           -- TODO Make this a constant somewhere and make a func to "recreate" this table instead of just recreating it manually
     objects = {}
 }
 
@@ -439,13 +445,7 @@ function MortarClientHandler.SpawnExplosionTile(sq)
         explosionObject:transmitCompleteItemToServer()
     end
 
-    MortarClientHandler.explosionsTable = {
-        count = 2,
-        tickDiff = 64
-    }
-    if MortarClientHandler.explosionsTable.objects == nil then
-        MortarClientHandler.explosionsTable.objects = {}
-    end
+    -- TODO This is not working ocrrectly, only one object gets added
     table.insert(MortarClientHandler.explosionsTable.objects, explosionObject)
 
 end
@@ -465,34 +465,34 @@ function MortarClientHandler.UpdateExplosionTiles(_)
     if MortarClientHandler.explosionsTable.tickDiff <= 0 then
         for _, v in pairs(MortarClientHandler.explosionsTable.objects) do
 
-            if count == 14 then
-                MortarCommonFunctions.DestroyTile(v)
+            if count > 15 then
+                MortarCommonFunctions.DestroyTile(v)        -- FIXME Doesn't seem to work
             else
                 print("MortarInfo: updating sprite for explosion, count " .. tostring(count))
                 local newTile = MortarCommonVars.burstTiles[count]
                 print(newTile)
 
-                v:setSpriteFromName(newTile)
-                --v:getSprite():setName(newTile)      -- TODO are we sure about this?
+                v:setSprite(newTile)
+                v:getSprite():setName(newTile)
 
-                --v:transmitUpdatedSpriteToServer()
-                --v:transmitUpdatedSpriteToClients()
+                v:transmitUpdatedSpriteToServer()
+                v:transmitUpdatedSpriteToClients()
 
             end
         end
         -- Update count and reset tickDiff
         MortarClientHandler.explosionsTable.count = count + 1
-        MortarClientHandler.explosionsTable.tickDiff = 64
+        MortarClientHandler.explosionsTable.tickDiff = 6
     end
 
 
-    if count == 14 then
+    if count > 15 then
         Events.OnTick.Remove(MortarClientHandler.UpdateExplosionTiles)
 
-        -- Reset table just in case
+        -- Reset table
         MortarClientHandler.explosionsTable = {
-            count = 0,
-            tickDiff = 0,
+            count = 2,
+            tickDiff = 6,
             objects = {}
         }
     end
