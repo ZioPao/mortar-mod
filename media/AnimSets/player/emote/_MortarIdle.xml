@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<animNode x_extends="default.xml">
-	<m_Name>_MortarIdle</m_Name>
-	<m_AnimName>MortarIdle</m_AnimName>
-	<m_Conditions>
-		<m_StringValue>_MortarIdle</m_StringValue>
-	</m_Conditions>
-</animNode>

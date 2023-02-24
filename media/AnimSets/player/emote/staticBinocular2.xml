@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<animNode x_extends="default.xml">
-	<m_Name>staticBinocular2</m_Name>
-	<m_AnimName>staticBinocular2</m_AnimName>
-	<m_Conditions>
-		<m_StringValue>staticBinocular2</m_StringValue>
-	</m_Conditions>
-</animNode>
