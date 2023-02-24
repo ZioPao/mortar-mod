@@ -2,13 +2,6 @@
 --[[ MORTAR MOD - BOMBER\SPOTTER HANDLER ]]--
 --=========================================--
 
--- List of todos
--- TODO 1) we need to consider safehouses
--- TODO 2) fire spread thing to safehouses
--- TODO 3) Tweak distmin distMax
--- TODO 4) ...
-
-
 if MortarClientHandler == nil then
     MortarClientHandler = {}
 end
