@@ -1,4 +1,6 @@
 
+--getPlayer():playEmote("_MortarIdle") 
+--getPlayer():playEmote("_MortarClick") 
 
 
 MortartBurstTiles = {
