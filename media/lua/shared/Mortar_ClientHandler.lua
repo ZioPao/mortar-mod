@@ -6,7 +6,7 @@
 -- TODO 1) we need to consider safehouses
 -- TODO 2) fire spread thing to safehouses
 -- TODO 3) Tweak distmin distMax
--- TODO 4) ...
+-- TODO 4) Add BurstHandler
 
 
 if MortarClientHandler == nil then
