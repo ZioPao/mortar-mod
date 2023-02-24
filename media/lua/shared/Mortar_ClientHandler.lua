@@ -17,6 +17,7 @@ if MortarSyncedWeapons == nil then
     MortarSyncedWeapons = {}
 end
 
+
 ------------------------------------
 function MortarClientHandler:new()
 
@@ -300,7 +301,7 @@ function MortarClientHandler:startShooting()
 end
 
 function MortarClientHandler:generateShot(sqX, sqY, sqZ, rad)
-    local cell = getWorld():getCell()      -- We need to get the correct cell, not this one
+    local cell = getWorld():getCell()
     sendClientCommand(self.spotter, 'Mortar', 'sendMuzzleFlash', {bomberId = self.bomber:getOnlineID()})
 
     for x = sqX - rad, sqX + rad + 1 do
@@ -337,6 +338,7 @@ function MortarClientHandler:generateShot(sqX, sqY, sqZ, rad)
                 local chance = 40
                 if MortarCommonFunctions.RollChance(chance) then
                     MortarClientHandler.SpawnDebris(sq)
+                    MortarClientHandler.SpawnExplosionTile(sq)
                     sendClientCommand(self.spotter, 'Mortar', 'sendBoomSound', {sqX = sq:getX(), sqY = sq:getY(), sqZ = sq:getZ()})
                 end
 
@@ -356,6 +358,10 @@ function MortarClientHandler:generateShot(sqX, sqY, sqZ, rad)
             end
         end
     end
+
+
+    Events.OnTick.Add(MortarClientHandler.UpdateExplosionTiles)
+
 
 end
 
@@ -414,4 +420,82 @@ function MortarClientHandler.SpawnDebris(sq)
         dug:transmitCompleteItemToServer()
     end
     
+end
+
+
+MortarClientHandler.explosionsTable = {
+    count = 1,
+    tickDiff = 64,
+    objects = {}
+}
+
+
+function MortarClientHandler.SpawnExplosionTile(sq)
+
+    -- Generate a NEW tile
+    local explosionObject = IsoObject.new(sq, MortarCommonVars.burstTiles[1], "", false)
+    sq:AddTileObject(explosionObject)
+    if isClient() then
+        explosionObject:transmitCompleteItemToServer()
+    end
+
+    MortarClientHandler.explosionsTable = {
+        count = 2,
+        tickDiff = 64
+    }
+    if MortarClientHandler.explosionsTable.objects == nil then
+        MortarClientHandler.explosionsTable.objects = {}
+    end
+    table.insert(MortarClientHandler.explosionsTable.objects, explosionObject)
+
+end
+
+
+
+
+
+
+function MortarClientHandler.UpdateExplosionTiles(_)
+
+
+    MortarClientHandler.explosionsTable.tickDiff = MortarClientHandler.explosionsTable.tickDiff - 1
+    local count = MortarClientHandler.explosionsTable.count
+
+
+    if MortarClientHandler.explosionsTable.tickDiff <= 0 then
+        for _, v in pairs(MortarClientHandler.explosionsTable.objects) do
+
+            if count == 14 then
+                MortarCommonFunctions.DestroyTile(v)
+            else
+                print("MortarInfo: updating sprite for explosion, count " .. tostring(count))
+                local newTile = MortarCommonVars.burstTiles[count]
+                print(newTile)
+
+                v:setSpriteFromName(newTile)
+                --v:getSprite():setName(newTile)      -- TODO are we sure about this?
+
+                --v:transmitUpdatedSpriteToServer()
+                --v:transmitUpdatedSpriteToClients()
+
+            end
+        end
+        -- Update count and reset tickDiff
+        MortarClientHandler.explosionsTable.count = count + 1
+        MortarClientHandler.explosionsTable.tickDiff = 64
+    end
+
+
+    if count == 14 then
+        Events.OnTick.Remove(MortarClientHandler.UpdateExplosionTiles)
+
+        -- Reset table just in case
+        MortarClientHandler.explosionsTable = {
+            count = 0,
+            tickDiff = 0,
+            objects = {}
+        }
+    end
+
+
 end

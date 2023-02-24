@@ -62,6 +62,13 @@
         "IsoUtils",
         "IsoFlagType",
         "ISContextMenu",
-        "getOnlinePlayers"
+        "getOnlinePlayers",
+        "IsoObject",
+        "ISInventoryPage",
+        "sledgeDestroy",
+        "Faction"
+    ],
+    "Lua.diagnostics.disable": [
+        "undefined-field"
     ]
 }

@@ -44,6 +44,16 @@ MortarCommonFunctions.GetHighestZ = function(cx, cy)
 	end
 end
 
+MortarCommonFunctions.DestroyTile = function(tile)
+
+    if isClient() then
+		sledgeDestroy(tile)
+	else
+		tile:getSquare():transmitRemoveItemFromSquare(tile)
+	end
+
+
+end
 -------------------------------------
 -- Validation checks
 
@@ -194,6 +204,26 @@ if MortarCommonVars == nil then
         ['MortarBlast3'] = true,
     }
     
+
+    MortarCommonVars.burstTiles = {
+                "mortarburst_0",
+                "mortarburst_1",
+                "mortarburst_2",
+                "mortarburst_3",
+                "mortarburst_4",
+                "mortarburst_5",
+                "mortarburst_6",
+                "mortarburst_7",
+                "mortarburst_8",
+                "mortarburst_9",
+                "mortarburst_10",
+                "mortarburst_11",
+                "mortarburst_12",
+                "mortarburst_13",
+                "mortarburst_14"
+    }
+
+
     MortarCommonVars.globalModDataId = "MORTAR_INFO"
 
 end
