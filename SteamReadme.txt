@@ -2,7 +2,7 @@
 [h2]Multiplayer only![/h2]
 [img]https://i.imgur.com/p7Fv1Z6.gif[/img]
 
-Made by Glytch3r and Pao
+Made by Glytch3r, Pao, Saph and Ossalion
 
 [h1]Tutorial[/h1]
 [olist]
@@ -17,3 +17,8 @@ Made by Glytch3r and Pao
 
 [h1]Notes[/h1]
 The spotter will determine where the shot lands. Wherever the spotter is directed, the shot will land in a zone near in front of them.
+
+[img]https://i.imgur.com/CI6eepb.gif[/img]
+
+Workshop ID: 2938379857
+Mod ID: Mortar

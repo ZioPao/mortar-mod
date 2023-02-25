@@ -1,6 +1,8 @@
-name=Mortar
+name=Mortar Mod
 id=Mortar
-description=Mortar
+description=When you really want to blow up something... or someone.
 poster=poster.png
 tiledef=mortar 2701
 pack=mortar
+modversion=0.1.3
+pzversion=41.65
