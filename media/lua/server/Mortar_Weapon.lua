@@ -29,10 +29,12 @@ function MortarWeapon:new(x, y, z)
 
     local id = MortarCommonFunctions.GenerateUUID()
 
-    local tempTable = {}
-    tempTable[id] = o
+    --local tempTable = {}
+    --tempTable[id] = o
 
-    table.insert(MortarWeapon.instances, tempTable)
+    MortarWeapon.instances[id] = o
+
+    --table.insert(MortarWeapon.instances, tempTable)
 
     return o
 end
@@ -44,13 +46,34 @@ end
 function MortarWeapon:setIsRoundInChamber(check)
     self.isRoundInChamber = check
 end
+
 function MortarWeapon:getIsRoundInChamber()
     return self.isRoundInChamber
 end
 
+
+
 -----------------------------------
 -- Save\Load handling
 ------------------------------------
+
+function MortarWeapon.FindInstance(object)
+	
+    local x = object:getX()
+    local y = object:getY()
+    local z = object:getZ()
+    for key, table in pairs(MortarWeapon.instances) do
+        if table.tileX == x and table.tileY == y and table.tileZ == z then
+            print("MortarInfo: found MortarWeapon instance in GlobalModData")
+            print("MortarInfo: key " .. tostring(key))
+            return table
+        end
+        
+    end
+    
+    return nil
+end
+
 
 function MortarWeapon.TransmitInstances()
     local mortarModData = ModData.getOrCreate(MortarCommonVars.globalModDataId)
@@ -70,14 +93,9 @@ function MortarWeapon.TryCreateNewInstance(sq)
     local y = sq:getY()
     local z = sq:getZ()
 
-    for _, v in pairs(MortarWeapon.instances) do
-
-        for key, table in pairs(v) do
-            if table.tileX == x and table.tileY == y and table.tileZ == z then
-                print("Mortar Info: onLoadGridsquare instace already created before")
-                return
-            end
-        end
+    if MortarWeapon.FindInstance(sq) then
+        print("MortarInfo: onLoadGridsquare instace already created before")
+        return
     end
 
 
@@ -104,6 +122,22 @@ function MortarWeapon.TryCreateNewInstance(sq)
 end
 
 
+function MortarWeapon.DestroyInstance(object)
+
+    -- FIXME pretty awful right now, redo it
+    -- TODO Reload status will disappear with this method. We should pass it as modData to the object
+    local instance = MortarWeapon.FindInstance(object)
+
+    if instance then
+        instance.tileX = nil
+        instance.tileY = nil
+        instance.tileZ = nil
+        instance.isRoundInChamber = nil
+    end
+end
+
+Events.OnObjectAboutToBeRemoved.Add(MortarWeapon.DestroyInstance)
+
 -----------------------------------------------
 local function initGlobalModData()
     local modData = ModData.getOrCreate(MortarCommonVars.globalModDataId)
@@ -111,15 +145,13 @@ local function initGlobalModData()
 
     print("MortarInfo: checking mod data received")
 
-    for _,v in pairs(modData['instances']) do
-        print("MortarInfo: loading " .. tostring(v))
-
-        for _, value in pairs(v) do
-            print(value.tileX)
-            print(value.tileY)
-            print(value.tileZ)
-            print(value.isRoundInChamber)
-        end
+    for key,v in pairs(modData['instances']) do
+        print("MortarInfo: loading " .. tostring(key))
+        print(v.tileX)
+        print(v.tileY)
+        print(v.tileZ)
+        print(v.isRoundInChamber)
+  
     end
 
     print("MortarInfo: finished loading mod data")
