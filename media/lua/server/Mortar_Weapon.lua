@@ -3,6 +3,7 @@
 --================================--
 -- Server Only, this needs to be synced between everyone
 
+-- TODO OnPickup or deletion of mortar we should destroy the instance!!!
 
 if MortarWeapon == nil then
     MortarWeapon = {}
@@ -51,7 +52,7 @@ end
 -- Save\Load handling
 ------------------------------------
 
-function MortarWeapon.SaveInstances()
+function MortarWeapon.TransmitInstances()
     local mortarModData = ModData.getOrCreate(MortarCommonVars.globalModDataId)
     --print("Mortar: saving instances")
     mortarModData["instances"] = MortarWeapon.instances
@@ -59,7 +60,7 @@ function MortarWeapon.SaveInstances()
 
 end
 Events.OnServerStarted.Add(function()
-    Events.EveryOneMinute.Add(MortarWeapon.SaveInstances)
+    Events.EveryOneMinute.Add(MortarWeapon.TransmitInstances)
 end)
 
 
@@ -102,11 +103,28 @@ function MortarWeapon.TryCreateNewInstance(sq)
 
 end
 
-Events.LoadGridsquare.Add(MortarWeapon.TryCreateNewInstance)
 
 -----------------------------------------------
 local function initGlobalModData()
-    ModData.getOrCreate(MortarCommonVars.globalModDataId)
+    local modData = ModData.getOrCreate(MortarCommonVars.globalModDataId)
+    MortarWeapon.instances = modData['instances']
+
+    print("MortarInfo: checking mod data received")
+
+    for _,v in pairs(modData['instances']) do
+        print("MortarInfo: loading " .. tostring(v))
+
+        for _, value in pairs(v) do
+            print(value.tileX)
+            print(value.tileY)
+            print(value.tileZ)
+            print(value.isRoundInChamber)
+        end
+    end
+
+    print("MortarInfo: finished loading mod data")
+
+    Events.LoadGridsquare.Add(MortarWeapon.TryCreateNewInstance)
+
 end
--- TODO OnPickup or deletion of mortar we should destroy the instance!!!
 Events.OnInitGlobalModData.Add(initGlobalModData)
