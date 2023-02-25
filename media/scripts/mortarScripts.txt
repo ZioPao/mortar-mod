@@ -1,24 +1,23 @@
 
 module Base {
 
-sound MortarBlast1 {  category = Improvised, clip { file = media/sound/mortarSFX1.ogg,  }  } 
-sound MortarBlast2 {  category = Improvised, clip { file = media/sound/mortarSFX2.ogg,  }  } 
-sound MortarBlast3 {  category = Improvised, clip { file = media/sound/mortarSFX3.ogg,  }  } 
+    sound MortarBlast1 {  category = Improvised, clip { file = media/sound/mortarSFX1.ogg,  }  } 
+    sound MortarBlast2 {  category = Improvised, clip { file = media/sound/mortarSFX2.ogg,  }  } 
+    sound MortarBlast3 {  category = Improvised, clip { file = media/sound/mortarSFX3.ogg,  }  } 
 
 
     model Binoculars
-	{
-		mesh = Worlditems/Binoculars,
-		texture = Worlditems/Binoculars,
-		scale = 0.6,
-	}
+    {
+        mesh = Worlditems/Binoculars,
+        texture = Worlditems/Binoculars,
+        scale = 0.6,
+    }
 
 
-	
 
 }
 module Mortar { 
-imports { Base }
+    imports { Base }
 	
 
     item MortarRound
@@ -28,7 +27,6 @@ imports { Base }
 		DisplayCategory = Explosives,
         DisplayName	=	Mortar Ammo,
         Icon	=	mortarammo_ico,
-		BasketBall
     }
 	
     item MortarBinoculars
@@ -71,7 +69,7 @@ imports { Base }
         BaseSpeed = 0.95,
         WeaponLength = 0.35,
         AttachmentType = BigWeapon,
-   }
+    }
    
 
    
@@ -85,6 +83,7 @@ imports { Base }
 		DisplayName		= Mortar,
 		WorldObjectSprite	= mortar_56,
 	}
+    
 	recipe staticBinocular
     {
        MortarBinoculars,
@@ -98,6 +97,11 @@ imports { Base }
        Sound:Dismantle,
 		Time:555555.0,
     }
+
+
+
+
+    
 	recipe MortarRound
     {
        MortarRound,
