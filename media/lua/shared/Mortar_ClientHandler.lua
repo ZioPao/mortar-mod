@@ -2,16 +2,13 @@
 --[[ MORTAR MOD - BOMBER\SPOTTER HANDLER ]]--
 --=========================================--
 
--- List of todos
--- TODO 1) we need to consider safehouses
--- TODO 2) fire spread thing to safehouses
--- TODO 3) Tweak distmin distMax
--- TODO 4) Add BurstHandler
-
 
 if MortarClientHandler == nil then
     MortarClientHandler = {}
 end
+
+local instance          -- Single instance of Clienthandler
+
 
 if MortarSyncedWeapons == nil then
     MortarSyncedWeapons = {}
@@ -37,9 +34,9 @@ function MortarClientHandler:new()
 
     o.isBomberValid = false
     o.isSpotterValid = false
-    
+
     o.coordinates = nil
-    MortarClientHandler.instance = o
+    instance = o
 
     return o
 end
@@ -84,9 +81,20 @@ function MortarClientHandler:delete()
 
 
 
-    MortarClientHandler.instance = nil
+    instance = nil
 end
 
+--- Get or creates a new instance
+---@return MortarClientHandler
+function MortarClientHandler.GetInstance()
+
+    if instance then
+        return instance
+    else
+        return MortarClientHandler:new()
+    end
+
+end
 
 ------------------------------------
 -- Setter\Getters
@@ -138,12 +146,16 @@ function MortarClientHandler.ValidationCheckUpdate()
     -- Agnostic, we don't care if it's the bomber or the spotter
 
     --print("Mortar: checking validation status")
+
+    local currentInstance = MortarClientHandler.GetInstance()
+
+
     local player = getPlayer()
 
-    if MortarClientHandler:getBomber() ~= nil and MortarClientHandler:getSpotter() ~= nil then
+    if currentInstance:getBomber() ~= nil and currentInstance:getSpotter() ~= nil then
         sendClientCommand(player, 'Mortar', 'checkValidationStatus', {
-            bomberId = MortarClientHandler:getBomber():getOnlineID(),
-            spotterId = MortarClientHandler:getSpotter():getOnlineID()
+            bomberId = currentInstance:getBomber():getOnlineID(),
+            spotterId = currentInstance:getSpotter():getOnlineID()
         })
     end
 end
@@ -192,6 +204,7 @@ Events.OnConnected.Add(MortarClientHandler.onConnect)
 
 function MortarClientHandler.SetWeaponInstance(obj)
 
+    -- TODO This needs to be moved somewhere else
     if MortarSyncedWeapons == nil then
         print("Mortar Debug: No mortar synced weapons")
         return
@@ -200,10 +213,11 @@ function MortarClientHandler.SetWeaponInstance(obj)
     local x = obj:getX()
     local y = obj:getY()
     local z = obj:getZ()
+    
 
     for _, v in pairs(MortarSyncedWeapons) do
-        for uuid, instance in pairs(v) do
-            if instance.tileX == x and instance.tileY == y and instance.tileZ == z then
+        for uuid, weaponInstance in pairs(v) do
+            if weaponInstance.tileX == x and weaponInstance.tileY == y and weaponInstance.tileZ == z then
                 MortarClientHandler.weaponInstanceId = uuid
                 MortarClientHandler.tileX = x
                 MortarClientHandler.tileY = y
@@ -244,7 +258,7 @@ function MortarClientHandler:tryStartFiring()
 
     -- Checks if spotter is valid
     if self.isSpotterValid and self.isBomberValid then
-        MortarClientHandler:executeStartFiring()
+        self:executeStartFiring()
     elseif self.isBomberValid then
         self.bomber:Say("I can't reach my spotter anymore")
     else
@@ -260,16 +274,16 @@ function MortarClientHandler:executeStartFiring()
 
     -- We need to send this to the spotter since that's where the actual "explosions" will be sent
     sendClientCommand(self.bomber, 'Mortar', 'sendMortarShot', {spotterId = self.spotter:getOnlineID()})
-    sendClientCommand(self.bomber, 'Mortar', 'updateReloadStatus', {check = false, instanceId = MortarClientHandler.weaponInstanceId})
+    sendClientCommand(self.bomber, 'Mortar', 'updateReloadStatus', {check = false, instanceId = self.weaponInstanceId})
     
 
     -- Force set that we don't have any round directly on the client to prevent multiple spam shots
     -- FIXME Mostly a workaround for now until I think of a better solution to speed things up
-    if MortarClientHandler.weaponInstanceId ~= nil then
+    if self.weaponInstanceId ~= nil then
         for _, v in pairs(MortarSyncedWeapons) do
-            for uuid, instance in pairs(v) do
-                if uuid == MortarClientHandler.weaponInstanceId then
-                    instance.isRoundInChamber = false
+            for uuid, weaponInstance in pairs(v) do
+                if uuid == self.weaponInstanceId then
+                    weaponInstance.isRoundInChamber = false
                 end
             end
         end
@@ -304,7 +318,7 @@ function MortarClientHandler:startShooting()
     explosionZ = MortarCommonFunctions.GetHighestZ(explosionX, explosionY) 
     --local trajectory = getCell():getGridSquare(explosionX, explosionY, explosionZ)
 
-    MortarClientHandler:generateShot(explosionX, explosionY, explosionZ, finalRad)
+    self:generateShot(explosionX, explosionY, explosionZ, finalRad)
 
 end
 

@@ -7,6 +7,9 @@ MortarUI = ISPanel:derive("MortarUI")
 MortarUI.instance = nil
 
 
+local mortarHandlerInstance
+
+
 function MortarUI:onOpenPanel(handler)
 
     if self.instance == nil then
@@ -30,20 +33,20 @@ end
 
 function MortarUI.CheckWeaponDistanceFromPlayer(tick)
 
-    if MortarClientHandler:getBomber() == nil then
+    if mortarHandlerInstance:getBomber() == nil then
         print("Mortar Info: no bomber found anymore for the UI, exiting update")
         MortarUI:close()
         return
     end
 
-    local bomber = MortarClientHandler:getBomber()
+    local bomber = mortarHandlerInstance:getBomber()
 
     local bomberX = bomber:getX()
     local bomberY = bomber:getY()
     --local bomberZ = bomber:getZ()
 
 
-    local mortarCoordinates = MortarClientHandler:getTilesLocation()
+    local mortarCoordinates = mortarHandlerInstance:getTilesLocation()
 
     if MortarCommonFunctions.GetDistance2D(bomberX, bomberY, mortarCoordinates[1], mortarCoordinates[2]) > MortarCommonVars.distSteps then
         print("Mortar Info: player too far, destroying MortarUI")
@@ -101,7 +104,7 @@ function MortarUI:close()
         MortarUI.instance:removeFromUIManager()
     
         MortarUI.instance = nil     -- Removes the reference
-        MortarClientHandler:delete()
+        MortarClientHandler.GetInstance():delete()
 
         
         Events.OnTick.Remove(MortarClientHandler.ValidationCheckUpdate)
@@ -117,11 +120,11 @@ function MortarUI:update()
     if MortarUI.instance ~= nil then
         if MortarUI.instance.shoot_btn_ref ~= nil and MortarUI.instance.reload_btn_ref ~= nil then
 
-            if MortarClientHandler:isReadyToShoot() then
+            if mortarHandlerInstance:isReadyToShoot() then
                 --print("Mortar: ready to shoot")
                 MortarUI.instance.shoot_btn_ref:setEnable(true)
                 MortarUI.instance.shoot_btn_ref:setOnClick(function()
-                    MortarClientHandler:tryStartFiring()
+                    mortarHandlerInstance:tryStartFiring()
                 end)
                 MortarUI.instance.reload_btn_ref:setEnable(false)
                 MortarUI.instance.reload_btn_ref:setOnClick(nil)
@@ -135,7 +138,7 @@ function MortarUI:update()
                     -- FIXME Mostly a workaround, we should add something like a loading icon
                     MortarUI.instance.reload_btn_ref:setEnable(false)
                     MortarUI.instance.reload_btn_ref:setOnClick(nil)
-                    MortarClientHandler:reloadRound()
+                    mortarHandlerInstance:reloadRound()
 
                 end)
             end
@@ -158,7 +161,7 @@ function MortarUI:new(x, y, width, height, mortarHandler)
     o.panelTitle = "Mortar Operator Menu"
 
 
-    o.mortarClientHandler = mortarHandler
+    mortarHandlerInstance = mortarHandler
     o.coordinates_label_ref = nil
 
     return o

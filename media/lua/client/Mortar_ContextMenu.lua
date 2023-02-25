@@ -22,7 +22,7 @@ local function SearchAndSetNearbySpotters(spotterMenu, playerInMenu)
                     local username = pl:getUsername()
                     print(username)
 
-                    spotterMenu:addOption(username, _, function() MortarClientHandler:setSpotter(pl) end)
+                    spotterMenu:addOption(username, _, function() MortarClientHandler.GetInstance():setSpotter(pl) end)
                 end
             end
         end
@@ -64,20 +64,20 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
 
                 context:getNew(context)
                 if MortarCommonFunctions.IsBomberValid(playerObj) then
-                    if MortarClientHandler.instance == nil then
-                        MortarClientHandler:new()
-                        
-                    end
 
-                    if MortarClientHandler:getBomber() == playerObj then
+                    local clientHandler = MortarClientHandler.GetInstance()
+
+                    if clientHandler:getBomber() == playerObj then
                         context:addOption(getText("UI_ContextMenu_StopOperatingMortar"), worldObjects, function()
-                            MortarClientHandler:delete()
+                            clientHandler:delete()
                             MortarUI:close()
                         end)
-                    elseif MortarClientHandler:isAvailable() then
+                    elseif clientHandler:isAvailable() then
                         context:addOption(getText("UI_ContextMenu_OperateMortar"), worldObjects, function()
-                            MortarClientHandler:instantiate(playerObj, v)
-                            MortarUI:onOpenPanel(MortarClientHandler.instance)
+
+                
+                            clientHandler:instantiate(playerObj, v)
+                            MortarUI:onOpenPanel(clientHandler)
                         end)
                     end
 
