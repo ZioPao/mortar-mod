@@ -215,22 +215,17 @@ function MortarClientHandler.SetWeaponInstance(obj)
     local z = obj:getZ()
     
 
-    for _, v in pairs(MortarSyncedWeapons) do
-        for uuid, weaponInstance in pairs(v) do
-            if weaponInstance.tileX == x and weaponInstance.tileY == y and weaponInstance.tileZ == z then
-                MortarClientHandler.weaponInstanceId = uuid
-                MortarClientHandler.tileX = x
-                MortarClientHandler.tileY = y
-                MortarClientHandler.tileZ = z
-                return v
-            end
-            
-
+    for uuid, weaponInstance in pairs(MortarSyncedWeapons) do
+        if weaponInstance.tileX == x and weaponInstance.tileY == y and weaponInstance.tileZ == z then
+            MortarClientHandler.weaponInstanceId = uuid
+            MortarClientHandler.tileX = x
+            MortarClientHandler.tileY = y
+            MortarClientHandler.tileZ = z
+            return weaponInstance
         end
+        
 
- 
     end
-
     return nil
 
 end
