@@ -7,6 +7,25 @@ local ClientCommands = {}
 
 
 --------------------------
+-- Reset Client Handlers
+--------------------------
+ClientCommands.sendResetSpotterClientHandler = function(player, args)
+
+    local playerId = args.playerId
+
+    if playerId then
+        local player = getPlayerByOnlineID(playerId)
+        sendServerCommand(player, 'Mortar', 'resetClientHandler', {})
+    end
+
+
+
+end
+
+
+
+
+--------------------------
 -- Weapon instance handling
 --------------------------
 ClientCommands.generateMortarWeaponInstance = function(player, args)

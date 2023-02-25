@@ -59,6 +59,11 @@ function MortarClientHandler:delete()
     print("MortarClientHandler: destroying instance")
     Events.OnTick.Remove(MortarClientHandler.ValidationCheckUpdate)
 
+    if self.spotter then
+        sendClientCommand(getPlayer(), 'Mortar', 'sendResetSpotterClientHandler', {playerId = self.spotter:getOnlineID()})
+    end
+
+
     local tbl = {}
     setmetatable(tbl, nil)
 
@@ -75,6 +80,9 @@ function MortarClientHandler:delete()
     self.isSpotterValid = false
     
     self.coordinates = nil
+
+
+
 
     MortarClientHandler.instance = nil
 end
@@ -308,6 +316,18 @@ function MortarClientHandler:generateShot(sqX, sqY, sqZ, rad)
         for y = sqY - rad, sqY + rad + 1 do
             if IsoUtils.DistanceTo(sqX, sqY, x + 0.5, y + 0.5) <= rad then
                 local sq = cell:getGridSquare(x, y, sqZ)
+
+                -- Safehouses are... safe, so let's be kind to them
+                local safeHouse = SafeHouse.getSafeHouse(sq)
+
+                if safeHouse ~= nil then
+                    break   -- Next check
+                else
+                    print("Not a safehouse, let's destroy this square")
+                end
+
+
+
                 local vanillaCommand = 'addFireOnSquare'
                 if MortarCommonFunctions.RollChance(20) then
                     vanillaCommand = 'addSmokeOnSquare'
@@ -468,9 +488,9 @@ function MortarClientHandler.UpdateExplosionTiles(_)
             if count > 15 then
                 MortarCommonFunctions.DestroyTile(v)        -- FIXME Doesn't seem to work
             else
-                print("MortarInfo: updating sprite for explosion, count " .. tostring(count))
+                --print("MortarInfo: updating sprite for explosion, count " .. tostring(count))
                 local newTile = MortarCommonVars.burstTiles[count]
-                print(newTile)
+                --print(newTile)
 
                 v:setSprite(newTile)
                 v:getSprite():setName(newTile)

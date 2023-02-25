@@ -6,6 +6,18 @@
 local ServerCommands = {}
 
 
+
+--------------------------
+-- Reset Client Handlers
+--------------------------
+ServerCommands.resetClientHandler = function(args)
+
+    MortarClientHandler:delete()
+
+end
+
+
+
 -------------------
 -- Validation
 -------------------
