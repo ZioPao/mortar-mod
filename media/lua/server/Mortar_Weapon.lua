@@ -62,6 +62,12 @@ function MortarWeapon.FindInstance(object)
     local x = object:getX()
     local y = object:getY()
     local z = object:getZ()
+
+    if MortarWeapon.instances == nil then
+        print("MortarMod: something wrong is going on in FindInstance, the instances table is nil")
+    end
+
+
     for key, table in pairs(MortarWeapon.instances) do
         if table.tileX == x and table.tileY == y and table.tileZ == z then
             print("MortarInfo: found MortarWeapon instance in GlobalModData")
@@ -98,7 +104,7 @@ function MortarWeapon.TryCreateNewInstance(sq)
         return
     end
 
-
+    
     local objects = sq:getObjects()
     for i=0, objects:size() - 1 do
 
@@ -142,6 +148,11 @@ Events.OnObjectAboutToBeRemoved.Add(MortarWeapon.DestroyInstance)
 local function initGlobalModData()
     local modData = ModData.getOrCreate(MortarCommonVars.globalModDataId)
     MortarWeapon.instances = modData['instances']
+
+    if MortarWeapon.instances == nil then
+        MortarWeapon.instances = {}
+    end
+
 
     print("MortarInfo: checking mod data received")
 
