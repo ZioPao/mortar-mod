@@ -275,11 +275,9 @@ function MortarClientHandler:executeStartFiring()
     -- Force set that we don't have any round directly on the client to prevent multiple spam shots
     -- FIXME Mostly a workaround for now until I think of a better solution to speed things up
     if self.weaponInstanceId ~= nil then
-        for _, v in pairs(MortarSyncedWeapons) do
-            for uuid, weaponInstance in pairs(v) do
-                if uuid == self.weaponInstanceId then
-                    weaponInstance.isRoundInChamber = false
-                end
+        for uuid, weaponInstance in pairs(MortarSyncedWeapons) do
+            if uuid == self.weaponInstanceId then
+                weaponInstance.isRoundInChamber = false
             end
         end
     end
@@ -425,15 +423,13 @@ function MortarClientHandler:isReadyToShoot()
 
 
     if MortarClientHandler.weaponInstanceId ~= nil then
-        for _, v in pairs(MortarSyncedWeapons) do
-
-            for uuid, instance in pairs(v) do
-                if uuid == MortarClientHandler.weaponInstanceId then
-                    return instance.isRoundInChamber
-                end
+        for uuid, weaponInstance in pairs(MortarSyncedWeapons) do
+            if uuid == MortarClientHandler.weaponInstanceId then
+                return weaponInstance.isRoundInChamber
             end
         end
     end
+
 
 
     return false
@@ -526,5 +522,16 @@ function MortarClientHandler.UpdateExplosionTiles(_)
         }
     end
 
+
+end
+
+
+
+
+function TestMortarInstances()
+
+    for uuid, weaponInstance in pairs(MortarSyncedWeapons) do
+        print(uuid)
+    end
 
 end

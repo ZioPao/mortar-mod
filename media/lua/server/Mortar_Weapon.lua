@@ -153,6 +153,9 @@ local function initGlobalModData()
         MortarWeapon.instances = {}
     end
 
+    if modData['instances'] == nil then
+        return      -- This means it wasn't initialized before, so let's get back
+    end
 
     print("MortarInfo: checking mod data received")
 

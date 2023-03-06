@@ -94,15 +94,11 @@ ClientCommands.updateReloadStatus = function(player, args)
     local correctInstance
 
     if weaponInstanceId then
+        for uuid, v in pairs(MortarWeapon.instances) do
+            print("Checking this uuid: " .. uuid)
+            if uuid == weaponInstanceId then
+                correctInstance = v
 
-        -- TODO I fucked up something with this table
-        for _, v in pairs(MortarWeapon.instances) do
-            for uuid, currentInstance in pairs(v) do
-                print("Checking this uuid: " .. uuid)
-                if uuid == weaponInstanceId then
-                    correctInstance = currentInstance
-
-                end
             end
         end
 

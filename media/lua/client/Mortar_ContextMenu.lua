@@ -89,6 +89,12 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
 
                     break
 
+                else
+                    -- TODO ADD CONTEXT MENU THAT SAYS THAT THERE IS SOMETHING MISSING
+                    local cantOperateOption = context:addOption(getText("UI_ContextMenu_CantOperateMortar"), _, nil)
+                    cantOperateOption.notAvailable = true
+                    return
+
                 end
             end
 

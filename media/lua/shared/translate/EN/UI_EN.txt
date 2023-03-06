@@ -2,6 +2,7 @@ UI_EN = {
 	UI_ContextMenu_OperateMortar = "Operate Mortar",
 	UI_ContextMenu_StopOperatingMortar = "Stop operating mortar"
 	UI_ContextMenu_SetSpotter = "Set Mortar spotter",
+	UI_ContextMenu_CantOperateMortar = "Can't operate mortar right now",
 	UI_ContextMenu_ShootMortar = "Shoot",
 	UI_ContextMenu_DisassembleMortar = "Disassemble",
 	UI_ContextMenu_Radius = "Max  Blast Radius ",
