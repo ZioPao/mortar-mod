@@ -1,12 +1,19 @@
 
 local MortarClientData = {}
 MortarClientData.table = {}
+local MortarInstance = require("Mortar_Instance")
 
 ---Sync client global mod data with the server
 ---@param id string
-function MortarClientData.InitializeInstance(id)
-    sendClientCommand(getPlayer(), MortarCommonVars.MOD_ID, "UpdateInstances ",
+function MortarClientData.InitializeInstance(coords)
+    print("Initialize instance")
+    local id = tostring(coords.x) .. tostring(coords.y) .. tostring(coords.z)
+    MortarClientData.table[id] = MortarInstance:new(-1, -1, coords)
+    if isClient() then
+        sendClientCommand(getPlayer(), MortarCommonVars.MOD_ID, "UpdateInstances ",
         { data = MortarClientData.table[id], id = id })
+    end
+
 end
 
 ---If it returns nil, it means that we need to wait a bit in the UI before showing everything.
@@ -18,7 +25,7 @@ function MortarClientData.GetOrCreateInstance(coords)
     if MortarClientData.table[id] then
         return MortarClientData.table[id]
     else
-        MortarClientData.InitializeInstance(id)
+        MortarClientData.InitializeInstance(coords)
         return nil
     end
 end

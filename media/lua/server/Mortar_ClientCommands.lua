@@ -64,6 +64,7 @@ end
 
 --* Global Mod Data syncing *--
 ClientCommands.UpdateInstances = function(playerObj, args)
+    print("Running update instances")
     if MortarData == nil then return end
     if MortarData.GetModData() == nil then return end
 

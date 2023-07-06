@@ -123,7 +123,6 @@ end
 
 function MortarUI:update()
     ISCollapsableWindow.update(self)
-    print("upd")
 
     if self.mortarInstance == nil then
         -- Check the server and fetch it again
@@ -133,24 +132,60 @@ function MortarUI:update()
         self.btnReload:setEnable(false)
 
     
-        self.panelInfo:setText("MORTAR NOT AVAILABLE")
+        self.panelInfo:setText(" <CENTRE> <RED> MORTAR NOT AVAILABLE")
         self.panelInfo.textDirty = true
         return
     end
 
+    -- Setup some various variables that we're gonna use later
+    local pl = getPlayer()
+    local plID = pl:getOnlineID()
+    local inv = pl:getInventory()
+    local shells = inv:FindAll('Mortar.MortarRound')
+    local shellsAmount = shells:size()
+
+
+
+    -- Set operator again
+    self.mortarInstance:setOperator(plID)
+
     -- Update info panel
-    self.panelInfo:setText("Various infos")
 
-
+    local info = string.format(" <CENTRE> Operator: %s \n <CENTRE> Shells Left: %d", pl:getUsername(), shellsAmount)
+    self.panelInfo:setText(info)
+    self.panelInfo.textDirty = true
 
     -- Check if player has an active radio, then he can set the spotter
-    -- TODO DEBUG ONLY
-    self.btnSetSpotter:setEnable(true)
-    --self.btnSetSpotter:setEnable(MortarCommonFunctions.CheckRadio(getPlayer():getInventory()))
+    if MortarCommonFunctions.CheckRadio(pl:getInventory()) then
+        self.btnSetSpotter:setEnable(true)
+        self.btnSetSpotter:setTooltip("Select the spotter. They must be in your same faction")
+    else
+        self.btnSetSpotter:setEnable(false)
+        self.btnSetSpotter:setTooltip("You don't have a radio to comunicate with spotters.")
 
+    end
+
+    -- Update shoot button status
     local isReadyToShoot = self.mortarInstance:isReadyToShoot()
     self.btnShoot:setEnable(isReadyToShoot)
-    self.btnReload:setEnable(not isReadyToShoot)
+
+    -- Handle reloading
+    local isReloaded = self.mortarInstance:getIsReloaded()
+    local isShellInInventory = shellsAmount > 1
+
+    if not isReloaded and isShellInInventory then
+        self.btnReload:setEnable(true)
+        self.btnReload:setTooltip("You've got %d shells in your inventory.")
+
+    elseif not isReloaded and not isShellInInventory  then
+        self.btnReload:setEnable(false)
+        self.btnReload:setTooltip(" <RED> You've got no shells left!")
+
+    else
+        self.btnReload:setEnable(false)
+        self.btnReload:setTooltip(" <GREEN> Shell is in the mortar")
+
+    end
 
     if self.openedPanel then
         self.openedPanel:setX(self:getRight())
@@ -160,8 +195,9 @@ function MortarUI:update()
 
 
     -------------------
+
     -- If player goes away from the mortar, close the window
-    if MortarCommonFunctions.GetDistance2D(self.bomber:getX(), self.bomber:getY(), self.coords.x, self.coords.y) > MortarCommonVars.distSteps then
+    if MortarCommonFunctions.GetDistance2D(pl:getX(), pl:getY(), self.coords.x, self.coords.y) > MortarCommonVars.distSteps then
         self:close()
     end
 
@@ -177,7 +213,6 @@ function MortarUI:close()
     if self.openedPanel then
         self.openedPanel:close()
     end
-    self:setvisible(false)
     self:removeFromUIManager()
     ISCollapsableWindow.close(self)
 end

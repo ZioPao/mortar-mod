@@ -27,7 +27,7 @@ local ENTRY_HGT = FONT_HGT_MEDIUM + 2 * 2
 
 SpottersViewerPanel = ISCollapsableWindow:derive("SpottersViewerPanel")
 
-function SpottersViewerPanel.Open(x,y)
+function SpottersViewerPanel.Open(x, y)
     if SpottersViewerPanel.instance then
         SpottersViewerPanel.instance:close()
     end
@@ -76,7 +76,6 @@ function SpottersViewerPanel:initialise()
 
     local players = FetchPlayers()
     self.mainCategory:initList(players)
-
 end
 
 function SpottersViewerPanel:prerender()
@@ -92,7 +91,6 @@ function SpottersViewerPanel:prerender()
 end
 
 function SpottersViewerPanel:onClick(button)
-   
     -- todo use double click
 end
 
@@ -106,7 +104,6 @@ end
 function SpottersViewerPanel:update()
     ISCollapsableWindow.update(self)
     local selection = self.mainCategory.datas.selected
-
 end
 
 function SpottersViewerPanel:close()
@@ -145,6 +142,7 @@ function SpottersScrollingTable:createChildren()
     self.datas.joypadParent = self
     self.datas.font = UIFont.NewSmall
     self.datas.doDrawItem = self.drawDatas
+    self.datas:setOnMouseDoubleClick(self, SpottersScrollingTable.selectSpotter)
     self.datas.drawBorder = true
     self.datas:addColumn("", 0)
     self:addChild(self.datas)
@@ -162,6 +160,10 @@ function SpottersScrollingTable:initList(module)
             self.datas:addItem(username, pl)
         end
     end
+end
+
+function SpottersScrollingTable:selectSpotter(pl)
+    self.viewer.mortarInstance:setSpotter(pl:getOnlineID())
 end
 
 function SpottersScrollingTable:update()
