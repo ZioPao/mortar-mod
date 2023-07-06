@@ -1,11 +1,9 @@
---=================================--
---[[ MORTAR MOD - CUSTOM MENU UI ]]--
---=================================--
+local MortarClientHandler = require("Mortar_ClientHandler")
 
 MortarUI = ISCollapsableWindow:derive("MortarUI")
 MortarUI.instance = nil
 
-function MortarUI:new(x, y, width, height, mortarInstance)
+function MortarUI:new(x, y, width, height, coords)
     local o = {}
     o = ISCollapsableWindow:new(x, y, width, height)
     setmetatable(o, self)
@@ -14,14 +12,17 @@ function MortarUI:new(x, y, width, height, mortarInstance)
     o.width = width
     o.height = height
 
-    o.resizable = false
-
     o.variableColor = { r = 0.9, g = 0.55, b = 0.1, a = 1 }
     o.borderColor = { r = 0.4, g = 0.4, b = 0.4, a = 1 }
     o.backgroundColor = { r = 0, g = 0, b = 0, a = 1.0 }
     o.buttonBorderColor = { r = 0.7, g = 0.7, b = 0.7, a = 0.5 }
     o.moveWithMouse = true
-    o.mortarInstance = mortarInstance
+
+
+    -- TODO Instead of a UUID or crap like that, fetch it from the synced table with a combination of the coordinates.
+    -- X .. Y .. Z or something like this.
+    o.coords = coords
+    o.mortarInstance = MortarClientHandler.GetOrCreateInstance(coords)
 
     MortarUI.instance = o
     return o
@@ -82,12 +83,16 @@ end
 
 function MortarUI:update()
 
+    if self.mortarInstance == nil then
+        -- Check the server and fetch it again
+        self.mortarInstance = MortarClientHandler.GetOrCreateInstance(self.coords)
+        return
+    end
+
     -- Check if player has an active radio, then he can set the spotter
     self.btnSetSpotter:setEnable(MortarCommonFunctions.CheckRadio(getPlayer():getInventory()))
 
-
     local isReadyToShoot = self.mortarInstance:isReadyToShoot()
-
     self.btnShoot:setEnable(isReadyToShoot)
     self.btnReload:setEnable(not isReadyToShoot)
 
@@ -113,14 +118,14 @@ function MortarUI:setVisible(visible)
     self.javaObject:setVisible(visible)
 end
 
-function MortarUI.OnOpenPanel(mortarInstance)
+function MortarUI.OnOpenPanel(coords)
 
     if MortarUI.instance then
         MortarUI.instance:close()
     end
 
     -- TODO Should be in the middle of the screen
-    local pnl = MortarUI:new(50, 200, 400, 700, mortarInstance)
+    local pnl = MortarUI:new(50, 200, 400, 700, coords)
     pnl:initialise()
     pnl:addToUIManager()
     pnl:bringToTop()

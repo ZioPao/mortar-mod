@@ -60,7 +60,15 @@ end
 
 
 
+--* Global Mod Data syncing *--
+ClientCommands.UpdateInstances = function(playerObj, args)
+    if MortarData == nil then return end
+    if MortarData.GetModData() == nil then return end
 
+    MortarData.GetModData()[args.id] = args.data
+    ModData.add(MortarCommonVars.MOD_ID, MortarData.GetModData())
+    ModData.transmit(MortarCommonVars.MOD_ID)
+end
 
 
 

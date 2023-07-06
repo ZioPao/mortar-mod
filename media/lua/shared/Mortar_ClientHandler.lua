@@ -2,6 +2,12 @@
 --[[ MORTAR MOD - BOMBER\SPOTTER HANDLER ]]--
 --=========================================--
 
+
+
+
+
+
+
 -- TODO Rethink this crap
 
 
@@ -535,5 +541,3 @@ function TestMortarInstances()
 
 end
 
-
-return MortarClientHandler
