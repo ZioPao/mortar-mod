@@ -83,7 +83,10 @@ end
 -- Shooting logic
 -------------------------
 
-ServerCommands.receiveMortarShot = function(args)
+ServerCommands.DoMortarShot = function(args)
+
+    -- TODO This doesn't make any fucking sense. We're from the spotter. We don't need to handle it from there
+
     local clientHandlerInstance = MortarHandler:GetInstance()
     clientHandlerInstance:startShooting()
 end

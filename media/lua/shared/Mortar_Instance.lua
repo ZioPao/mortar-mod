@@ -45,7 +45,33 @@ end
 --************************--
 -- Actions
 
-function MortarInstance:shoot()
+function MortarInstance:initializeShot()
+    print("Mortar: Trying to fire")
+
+    -- Check if spotter exists
+    if self.spotter == nil then
+        print("No spotter")
+        self.operator:Say("I don't have a spotter right now")
+        return
+    end
+
+    -- Checks if spotter is valid
+    if self.isSpotterValid and self.isOperatorValid then
+        self:executeShot()
+    elseif self.isOperatorValid then
+        self.operator:Say("I can't reach my spotter anymore")
+    else
+        -- Not even the bomber is valid
+        self.operator:Say("I think I'm missing something")
+    end
+end
+
+function MortarInstance:executeShot()
+    self.operator:playEmote("_MortarClick")
+
+    -- TODO Send shot to server
+    sendClientCommand(self.operator, MortarCommonVars.MOD_ID, 'SendShot', {spotterID = self.spotter:getOnlineID()})
+
 
 end
 
