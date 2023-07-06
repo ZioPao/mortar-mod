@@ -1,5 +1,9 @@
 local MortarClientHandler = require("Mortar_ClientHandler")
 
+
+-- TODO Add status panel
+
+
 MortarUI = ISCollapsableWindow:derive("MortarUI")
 MortarUI.instance = nil
 
@@ -29,6 +33,23 @@ function MortarUI:new(x, y, width, height, coords)
 end
 
 function MortarUI:createChildren()
+
+
+    self.panelInfo = ISPanel:new(0, 0, self:getWidth(), self:getHeight()/4)
+    self:addChild(self.panelInfo)
+
+    self.labelSpotterInfo = ISLabel:new(10, 10, 25, "Spotter: test", 1, 1, 1, 1, UIFont.Small, true)
+    self.labelSpotterInfo:initialise()
+    self.labelSpotterInfo:instantiate()
+    self.panelInfo:addChild(self.labelSpotterInfo)
+
+    self.labelShellInfo = ISLabel:new(10, self.labelSpotterInfo:getBottom() + 10, 25, "Shell: test", 1, 1, 1, 1, UIFont.Small, true)
+    self.labelShellInfo:initialise()
+    self.labelShellInfo:instantiate()
+    self.panelInfo:addChild(self.labelShellInfo)
+
+    -----------------------
+
     local xPadding = 10
     local yOffset = 10
 
