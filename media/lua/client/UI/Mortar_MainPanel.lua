@@ -1,3 +1,6 @@
+local MODES = {'SOLO', 'SPOT'}
+
+
 --local MortarClientHandler = require("Mortar_ClientHandler")
 local MortarData = require("Mortar_ClientData")
 
@@ -44,6 +47,7 @@ function MortarUI:new(x, y, width, height, coords)
     -- TODO Instead of a UUID or crap like that, fetch it from the synced table with a combination of the coordinates.
     -- X .. Y .. Z or something like this.
     o.coords = coords
+    o.mode = 'SPOT'
     o.mortarInstance = MortarData.GetOrCreateInstance(coords)
 
     MortarUI.instance = o
@@ -93,6 +97,13 @@ function MortarUI:createChildren()
     self.btnSetSpotter:setEnable(true)
     self:addChild(self.btnSetSpotter)
 
+    yOffset = yOffset + self.btnSetSpotter:getHeight() + 10
+
+    self.btnSwitchMode = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Switch Mode', self, self.onClick )
+    self.btnSwitchMode.internal = "SWITCH_MODE"
+    self.btnSwitchMode:initialise()
+    self.btnSwitchMode:setEnable(true)
+    self:addChild(self.btnSwitchMode)
 
 
     self.btnClose = ISButton:new(xPadding, self:getHeight() - btnHeight - 10, btnWidth, btnHeight, 'Close', self, self.onClick)
@@ -116,11 +127,79 @@ function MortarUI:onClick(btn)
         self.mortarInstance:reloadRound()
     elseif btn.internal == 'SET_SPOTTER' then
         self.openedPanel = SpottersViewerPanel.Open(self:getRight(), self:getBottom() - self:getHeight())
+    elseif btn.internal == 'SWITCH_MODE' then
+        if self.mode == 'SOLO' then
+            self.mode = 'SPOT'
+        else
+            self.mode = 'SOLO'
+        end
     elseif btn.internal == 'EXIT' then
         self:close()
     end
 
 end
+
+
+function MortarUI:updateShootButton()
+
+    if self.mode == 'SOLO' then
+        if self.mortarInstance:getIsReloaded() then
+            self.btnShoot:setEnable(true)
+            self.btnShoot:setTooltip("Ready to shoot")
+        end
+
+    else
+        local spotterID = self.mortarInstance:getSpotterID()
+        local isReadyToShoot = self.mortarInstance:isReadyToShoot()
+    
+        if spotterID == -1 then
+            self.btnShoot:setEnable(false)
+            self.btnShoot:setTooltip("You didn't set a spotter")
+        else
+            self.btnShoot:setEnable(isReadyToShoot)
+        end
+    end
+
+end
+
+function MortarUI:updateSetSpotterButton(plInv)
+    if self.mode == 'SPOT' then
+        if MortarCommonFunctions.CheckRadio(plInv) then
+            self.btnSetSpotter:setEnable(true)
+            self.btnSetSpotter:setTooltip("Select the spotter. They must be in your same faction")
+        else
+            self.btnSetSpotter:setEnable(false)
+            self.btnSetSpotter:setTooltip("You don't have a radio to comunicate with spotters")
+    
+        end
+    else
+        self.btnSetSpotter:setEnable(false)
+        self.btnSetSpotter:setTooltip("Solo mode")
+    end
+end
+
+function MortarUI:updateReloadButton(shellsAmount)
+    local isReloaded = self.mortarInstance:getIsReloaded()
+    local isMidReloading = self.mortarInstance:getIsMidReloading()
+    local isShellInInventory = shellsAmount > 1
+
+    if isMidReloading then
+        self.btnReload:setEnable(false)
+        self.btnReload:setTooltip("Currently reloading")
+    elseif not isReloaded and isShellInInventory then
+        self.btnReload:setEnable(true)
+        self.btnReload:setTooltip("You've got %d shells in your inventory.")
+
+    elseif not isReloaded and not isShellInInventory  then
+        self.btnReload:setEnable(false)
+        self.btnReload:setTooltip(" <RED> You've got no shells left!")
+
+    else
+        self.btnReload:setEnable(false)
+        self.btnReload:setTooltip(" <GREEN> Shell is in the mortar")
+    end
+end
+
 
 function MortarUI:update()
     ISCollapsableWindow.update(self)
@@ -132,7 +211,6 @@ function MortarUI:update()
         self.btnShoot:setEnable(false)
         self.btnReload:setEnable(false)
 
-    
         self.panelInfo:setText(" <CENTRE> <RED> MORTAR NOT AVAILABLE")
         self.panelInfo.textDirty = true
         return
@@ -145,57 +223,25 @@ function MortarUI:update()
     local shells = inv:FindAll('Mortar.MortarRound')
     local shellsAmount = shells:size()
 
-
-
     -- Set operator again
     self.mortarInstance:setOperator(plID)
 
     -- Update info panel
-
     local info = string.format(" <CENTRE> Operator: %s \n <CENTRE> Shells Left: %d", pl:getUsername(), shellsAmount)
     self.panelInfo:setText(info)
     self.panelInfo.textDirty = true
 
     -- Check if player has an active radio, then he can set the spotter
-    if MortarCommonFunctions.CheckRadio(pl:getInventory()) then
-        self.btnSetSpotter:setEnable(true)
-        self.btnSetSpotter:setTooltip("Select the spotter. They must be in your same faction")
-    else
-        self.btnSetSpotter:setEnable(false)
-        self.btnSetSpotter:setTooltip("You don't have a radio to comunicate with spotters.")
+    self:updateSetSpotterButton(inv)
+    self:updateShootButton()
+    self:updateReloadButton(shellsAmount)
 
-    end
-
-    -- Update shoot button status
-    local isReadyToShoot = self.mortarInstance:isReadyToShoot()
-    self.btnShoot:setEnable(isReadyToShoot)
-
-    -- Handle reloading
-    local isReloaded = self.mortarInstance:getIsReloaded()
-    local isShellInInventory = shellsAmount > 1
-
-    if not isReloaded and isShellInInventory then
-        self.btnReload:setEnable(true)
-        self.btnReload:setTooltip("You've got %d shells in your inventory.")
-
-    elseif not isReloaded and not isShellInInventory  then
-        self.btnReload:setEnable(false)
-        self.btnReload:setTooltip(" <RED> You've got no shells left!")
-
-    else
-        self.btnReload:setEnable(false)
-        self.btnReload:setTooltip(" <GREEN> Shell is in the mortar")
-
-    end
-
+    -- Handle the spotters panel position. It needs to stick to the main panel!
     if self.openedPanel then
         self.openedPanel:setX(self:getRight())
         self.openedPanel:setY(self:getBottom() - self:getHeight())
     end
 
-
-
-    -------------------
 
     -- If player goes away from the mortar, close the window
     if MortarCommonFunctions.GetDistance2D(pl:getX(), pl:getY(), self.coords.x, self.coords.y) > MortarCommonVars.distSteps then

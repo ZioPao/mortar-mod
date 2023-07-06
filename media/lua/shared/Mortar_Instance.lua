@@ -16,7 +16,9 @@ function MortarInstance:new(operatorID, spotterID, coords)
 
     o.isOperatorValid = false
     o.isSpotterValid = false
+
     o.isReloaded = false
+    o.isMidReloading = false
 
     MortarInstance.current = o
     return o
@@ -24,11 +26,11 @@ end
 
 --************************--
 -- Getters
-function MortarInstance:getOperator()
+function MortarInstance:getOperatorID()
     return self.operatorID
 end
 
-function MortarInstance:getSpotter()
+function MortarInstance:getSpotterID()
     return self.spotterID
 end
 
@@ -38,6 +40,10 @@ end
 
 function MortarInstance:getIsReloaded()
     return self.isReloaded
+end
+
+function MortarInstance:getIsMidReloading()
+    return self.isMidReloading
 end
 
 function MortarInstance:isReadyToShoot()
@@ -68,6 +74,11 @@ function MortarInstance:setIsReloaded(val)
     self.isReloaded = val
 end
 
+---Set isMidReloading value
+---@param val boolean
+function MortarInstance:setIsMidReloading(val)
+    self.isMidReloading = val
+end
 --************************--
 -- Actions
 
@@ -99,9 +110,10 @@ end
 function MortarInstance.HandleReloading()
     -- 5 secs
     local cTime = os.time()
-    print("Waiting for reload")
+    --print("Waiting for reload")
     if cTime > MortarInstance.current.sTimeReload + 5 then
         MortarInstance.current:setIsReloaded(true)
+        MortarInstance.current:setIsMidReloading(false)
         Events.OnTick.Remove(MortarInstance.HandleReloading)
     end
 end
@@ -122,6 +134,7 @@ function MortarInstance:reloadRound()
     operatorPlayer:Say("Reloading...")
 
     self.sTimeReload = os.time()
+    self:setIsMidReloading(true)
     Events.OnTick.Add(MortarInstance.HandleReloading)
 end
 
