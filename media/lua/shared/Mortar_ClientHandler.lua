@@ -2,11 +2,7 @@
 --[[ MORTAR MOD - BOMBER\SPOTTER HANDLER ]]--
 --=========================================--
 
-
-if MortarClientHandler == nil then
-    MortarClientHandler = {}
-end
-
+local MortarClientHandler = {}
 local instance          -- Single instance of Clienthandler
 
 
@@ -535,3 +531,6 @@ function TestMortarInstances()
     end
 
 end
+
+
+return MortarClientHandler
