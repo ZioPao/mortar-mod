@@ -16,8 +16,8 @@ end
 
 local function OnInitGlobalModData()
 	MortarData.modData = ModData.getOrCreate(MortarCommonVars.MOD_ID)
-    if MortarData.modData and MortarData.modData.instances then
-        for key, v in pairs(MortarData.modData['instances']) do
+    if MortarData.modData then
+        for key, v in pairs(MortarData.modData) do
             print("MortarInfo: loading " .. tostring(key))
             print(v.tileX)
             print(v.tileY)
@@ -25,9 +25,7 @@ local function OnInitGlobalModData()
             print(v.isRoundInChamber)
         end
     else
-        MortarData.modData = {
-            instances = {}
-        }
+        MortarData.modData = {}
     end
 end
 

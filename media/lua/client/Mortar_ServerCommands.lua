@@ -4,7 +4,32 @@
 
 
 local ServerCommands = {}
-local MortarHandler = require("Mortar_ClientHandler")
+local MortarShotHandler = require("Mortar_ShotHandler")
+--local MortarHandler = require("Mortar_ClientHandler")
+
+
+
+--* Player Actions *--
+
+ServerCommands.DoMortarShot = function(args)
+
+    -- TODO This doesn't make any fucking sense. We're from the spotter. We don't need to handle it from there
+
+    -- local clientHandlerInstance = MortarHandler:GetInstance()
+    -- clientHandlerInstance:startShooting()
+    local pl = getPlayer()
+    local plCoords = {x = pl:getX(), y = pl:getY(), z = pl:getZ()}
+
+    MortarShotHandler.Fire(args.mortarPos, plCoords)
+end
+
+----------------------------------
+
+
+
+
+
+
 
 
 --------------------------
@@ -83,13 +108,7 @@ end
 -- Shooting logic
 -------------------------
 
-ServerCommands.DoMortarShot = function(args)
 
-    -- TODO This doesn't make any fucking sense. We're from the spotter. We don't need to handle it from there
-
-    local clientHandlerInstance = MortarHandler:GetInstance()
-    clientHandlerInstance:startShooting()
-end
 
 
 ----------------

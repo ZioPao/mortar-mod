@@ -1,8 +1,7 @@
-local MortarClientHandler = require("Mortar_ClientHandler")
+--local MortarClientHandler = require("Mortar_ClientHandler")
+local MortarData = require("Mortar_ClientData")
 
-
--- TODO Add status panel
-
+-- TODO Make it local
 
 MortarUI = ISCollapsableWindow:derive("MortarUI")
 MortarUI.instance = nil
@@ -12,6 +11,8 @@ function MortarUI:new(x, y, width, height, coords)
     o = ISCollapsableWindow:new(x, y, width, height)
     setmetatable(o, self)
     self.__index = self
+
+    o.resizable = false
 
     o.width = width
     o.height = height
@@ -26,7 +27,7 @@ function MortarUI:new(x, y, width, height, coords)
     -- TODO Instead of a UUID or crap like that, fetch it from the synced table with a combination of the coordinates.
     -- X .. Y .. Z or something like this.
     o.coords = coords
-    o.mortarInstance = MortarClientHandler.GetOrCreateInstance(coords)
+    o.mortarInstance = MortarData.GetOrCreateInstance(coords)
 
     MortarUI.instance = o
     return o
@@ -35,7 +36,7 @@ end
 function MortarUI:createChildren()
 
 
-    self.panelInfo = ISPanel:new(0, 0, self:getWidth(), self:getHeight()/4)
+    self.panelInfo = ISPanel:new(0, 20, self:getWidth(), self:getHeight()/4)
     self:addChild(self.panelInfo)
 
     self.labelSpotterInfo = ISLabel:new(10, 10, 25, "Spotter: test", 1, 1, 1, 1, UIFont.Small, true)
@@ -51,33 +52,37 @@ function MortarUI:createChildren()
     -----------------------
 
     local xPadding = 10
-    local yOffset = 10
+    local yOffset = self.panelInfo:getBottom() + 10
 
     local btnWidth = self:getWidth() - xPadding*2
     local btnHeight = 25
 
-    self.btnShoot = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'SHOOT', self, self.onClick)
+    self.btnShoot = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Shoot', self, self.onClick)
+    self.btnShoot.internal = "SHOOT"
     self.btnShoot:initialise()
     self.btnShoot:setEnable(false)
     self:addChild(self.btnShoot)
 
-    yOffset = yOffset + self.btnShoot:getHeight()
+    yOffset = yOffset + self.btnShoot:getHeight() + 10
 
-    self.btnReload = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'RELOAD', self, self.onClick )
+    self.btnReload = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Reload', self, self.onClick )
+    self.btnReload.internal = "RELOAD"
     self.btnReload:initialise()
     self.btnReload:setEnable(false)
     self:addChild(self.btnReload)
 
-    yOffset = yOffset + self.btnReload:getHeight()
+    yOffset = yOffset + self.btnReload:getHeight() + 10
 
-    self.btnSetSpotter = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'SET_SPOTTER', self, self.onClick )
+    self.btnSetSpotter = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Set spotter', self, self.onClick )
+    self.btnSetSpotter.internal = "SET_SPOTTER"
     self.btnSetSpotter:initialise()
     self.btnSetSpotter:setEnable(false)
     self:addChild(self.btnSetSpotter)
 
 
 
-    self.btnClose = ISButton:new(xPadding, self:getBottom() + 10, btnWidth, btnHeight, 'EXIT', self, self.onClick)
+    self.btnClose = ISButton:new(xPadding, self:getHeight() - btnHeight - 10, btnWidth, btnHeight, 'Close', self, self.onClick)
+    self.btnClose.internal = "EXIT"
     self.btnClose:initialise()
     self:addChild(self.btnClose)
 
@@ -106,7 +111,7 @@ function MortarUI:update()
 
     if self.mortarInstance == nil then
         -- Check the server and fetch it again
-        self.mortarInstance = MortarClientHandler.GetOrCreateInstance(self.coords)
+        self.mortarInstance = MortarData.GetOrCreateInstance(self.coords)
         return
     end
 
@@ -140,16 +145,20 @@ function MortarUI:setVisible(visible)
 end
 
 function MortarUI.OnOpenPanel(coords)
+    -------------------------
+    -- MortarUI.OnOpenPanel({x=getPlayer():getX(), y = getPlayer():getY(), z = getPlayer():getZ()})
 
+    ---------------
     if MortarUI.instance then
         MortarUI.instance:close()
     end
 
     -- TODO Should be in the middle of the screen
-    local pnl = MortarUI:new(50, 200, 400, 700, coords)
+    local pnl = MortarUI:new(50, 200, 200, 400, coords)
     pnl:initialise()
     pnl:addToUIManager()
     pnl:bringToTop()
     return pnl
 end
 
+--return MortarUI

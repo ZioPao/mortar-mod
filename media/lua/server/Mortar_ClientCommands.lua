@@ -15,7 +15,9 @@ end
 ---Set in the correct global mod data table that the mortar is ready to shoot and reloaded
 ---@param args table Contains instanceID
 ClientCommands.DoReload = function(_, args)
-    local instance = MortarData.GetModData().instances[args.instanceID]
+
+    -- TODO Add timer
+    local instance = MortarData.GetModData()[args.instanceID]
     if instance == nil then return end
     instance.isRoundInChamber = args.check
 

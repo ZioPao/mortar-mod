@@ -57,7 +57,8 @@ function MortarInstance:initializeShot()
 
     -- Checks if spotter is valid
     if self.isSpotterValid and self.isOperatorValid then
-        self:executeShot()
+        self.operator:playEmote("_MortarClick")
+        sendClientCommand(self.operator, MortarCommonVars.MOD_ID, 'SendShot', { spotterID = self.spotter:getOnlineID() })
     elseif self.isOperatorValid then
         self.operator:Say("I can't reach my spotter anymore")
     else
@@ -66,18 +67,8 @@ function MortarInstance:initializeShot()
     end
 end
 
-function MortarInstance:executeShot()
-    self.operator:playEmote("_MortarClick")
-
-    -- TODO Send shot to server
-    sendClientCommand(self.operator, MortarCommonVars.MOD_ID, 'SendShot', {spotterID = self.spotter:getOnlineID()})
-
-
-end
-
 function MortarInstance:reload()
-
+    print("Reloading")
 end
-
 
 return MortarInstance

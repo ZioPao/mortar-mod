@@ -1,8 +1,8 @@
 
 -- TODO Simplify this, we don't need all this stuff here. Just handle it from the UI
 
-local MortarHandler = require("Mortar_ClientHandler")
-
+--local MortarHandler = require("Mortar_ClientHandler")
+local MortarUI = require("Mortar_UI")
 
 -- TODO Move this to the UI. We don't need to deal with this crap from here
 local function SearchAndSetNearbySpotters(spotterMenu, playerInMenu)
@@ -45,7 +45,6 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
         context:addOption(getText("UI_ContextMenu_OperateMortar"), clickedObj, MortarUI.OnOpenPanel({x=mortarX, y=mortarY, z=mortarZ}))
     end
 
-    
 end
 
 Events.OnFillWorldObjectContextMenu.Add(CreateMortarContextMenu)

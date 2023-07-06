@@ -1,132 +1,132 @@
---================================--
---[[ MORTAR MOD - WEAPON HANDLER ]]
-                                    --
---================================--
--- Server Only, this needs to be synced between everyone
+-- --================================--
+-- --[[ MORTAR MOD - WEAPON HANDLER ]]
+--                                     --
+-- --================================--
+-- -- Server Only, this needs to be synced between everyone
 
--- TODO OnPickup or deletion of mortar we should destroy the instance!!!
+-- -- TODO OnPickup or deletion of mortar we should destroy the instance!!!
 
-MortarWeapon = {}
-MortarWeapon.instances = {}
+-- MortarWeapon = {}
+-- MortarWeapon.instances = {}
 
-function MortarWeapon:new(x, y, z)
-    print("Mortar: instancing new mortar weapon")
-    local o = {}
-    setmetatable(o, self)
-    self.__index = self
+-- function MortarWeapon:new(x, y, z)
+--     print("Mortar: instancing new mortar weapon")
+--     local o = {}
+--     setmetatable(o, self)
+--     self.__index = self
 
-    o.tileX = x
-    o.tileY = y
-    o.tileZ = z
+--     o.tileX = x
+--     o.tileY = y
+--     o.tileZ = z
 
-    o.isRoundInChamber = false
-
-
-    local id = MortarCommonFunctions.GenerateUUID()
-
-    --local tempTable = {}
-    --tempTable[id] = o
-
-    MortarWeapon.instances[id] = o
-
-    --table.insert(MortarWeapon.instances, tempTable)
-
-    return o
-end
-
-------------------------------------
--- Setters\Getters
-------------------------------------
-
-function MortarWeapon:setIsRoundInChamber(check)
-    self.isRoundInChamber = check
-end
-
-function MortarWeapon:getIsRoundInChamber()
-    return self.isRoundInChamber
-end
-
------------------------------------
--- Save\Load handling
-------------------------------------
-
-function MortarWeapon.FindInstance(object)
-    local x = object:getX()
-    local y = object:getY()
-    local z = object:getZ()
-
-    if MortarWeapon.instances == nil then
-        print("MortarMod: something wrong is going on in FindInstance, the instances table is nil")
-    end
+--     o.isRoundInChamber = false
 
 
-    for key, table in pairs(MortarWeapon.instances) do
-        if table.tileX == x and table.tileY == y and table.tileZ == z then
-            print("MortarInfo: found MortarWeapon instance in GlobalModData")
-            print("MortarInfo: key " .. tostring(key))
-            return table
-        end
-    end
+--     local id = MortarCommonFunctions.GenerateUUID()
 
-    return nil
-end
+--     --local tempTable = {}
+--     --tempTable[id] = o
 
-function MortarWeapon.TransmitInstances()
+--     MortarWeapon.instances[id] = o
 
-    -- TODO This is unreliable
+--     --table.insert(MortarWeapon.instances, tempTable)
 
-    local mortarModData = ModData.getOrCreate(MortarCommonVars.globalModDataId)
-    --print("Mortar: saving instances")
-    mortarModData["instances"] = MortarWeapon.instances
-    ModData.transmit(MortarCommonVars.globalModDataId)
-end
+--     return o
+-- end
 
-Events.OnServerStarted.Add(function()
-    Events.EveryOneMinute.Add(MortarWeapon.TransmitInstances)
-end)
+-- ------------------------------------
+-- -- Setters\Getters
+-- ------------------------------------
+
+-- function MortarWeapon:setIsRoundInChamber(check)
+--     self.isRoundInChamber = check
+-- end
+
+-- function MortarWeapon:getIsRoundInChamber()
+--     return self.isRoundInChamber
+-- end
+
+-- -----------------------------------
+-- -- Save\Load handling
+-- ------------------------------------
+
+-- function MortarWeapon.FindInstance(object)
+--     local x = object:getX()
+--     local y = object:getY()
+--     local z = object:getZ()
+
+--     if MortarWeapon.instances == nil then
+--         print("MortarMod: something wrong is going on in FindInstance, the instances table is nil")
+--     end
 
 
-function MortarWeapon.TryCreateNewInstance(sq)
-    -- Checks already instanced weapons
-    local x = sq:getX()
-    local y = sq:getY()
-    local z = sq:getZ()
+--     for key, table in pairs(MortarWeapon.instances) do
+--         if table.tileX == x and table.tileY == y and table.tileZ == z then
+--             print("MortarInfo: found MortarWeapon instance in GlobalModData")
+--             print("MortarInfo: key " .. tostring(key))
+--             return table
+--         end
+--     end
 
-    if MortarWeapon.FindInstance(sq) then
-        print("MortarInfo: onLoadGridsquare instace already created before")
-        return
-    end
+--     return nil
+-- end
+
+-- function MortarWeapon.TransmitInstances()
+
+--     -- TODO This is unreliable
+
+--     local mortarModData = ModData.getOrCreate(MortarCommonVars.globalModDataId)
+--     --print("Mortar: saving instances")
+--     mortarModData["instances"] = MortarWeapon.instances
+--     ModData.transmit(MortarCommonVars.globalModDataId)
+-- end
+
+-- Events.OnServerStarted.Add(function()
+--     Events.EveryOneMinute.Add(MortarWeapon.TransmitInstances)
+-- end)
 
 
-    local objects = sq:getObjects()
-    for i = 0, objects:size() - 1 do
-        local obj = objects:get(i)
-        local sprite = obj:getSprite()
+-- function MortarWeapon.TryCreateNewInstance(sq)
+--     -- Checks already instanced weapons
+--     local x = sq:getX()
+--     local y = sq:getY()
+--     local z = sq:getZ()
 
-        if sprite ~= nil then
-            local sprite_name = sprite:getName()
-            local check = MortarCommonFunctions.IsMortarSprite(sprite_name)
-            if check then
-                print("Mortar: found object, instancing new MortarWeapon")
-                MortarWeapon:new(x, y, z)
-                break
-            end
-        end
-    end
-end
+--     if MortarWeapon.FindInstance(sq) then
+--         print("MortarInfo: onLoadGridsquare instace already created before")
+--         return
+--     end
 
-function MortarWeapon.DestroyInstance(object)
-    -- FIXME pretty awful right now, redo it
-    -- TODO Reload status will disappear with this method. We should pass it as modData to the object
-    local instance = MortarWeapon.FindInstance(object)
 
-    if instance then
-        instance.tileX = nil
-        instance.tileY = nil
-        instance.tileZ = nil
-        instance.isRoundInChamber = nil
-    end
-end
+--     local objects = sq:getObjects()
+--     for i = 0, objects:size() - 1 do
+--         local obj = objects:get(i)
+--         local sprite = obj:getSprite()
 
-Events.OnObjectAboutToBeRemoved.Add(MortarWeapon.DestroyInstance)
+--         if sprite ~= nil then
+--             local sprite_name = sprite:getName()
+--             local check = MortarCommonFunctions.IsMortarSprite(sprite_name)
+--             if check then
+--                 print("Mortar: found object, instancing new MortarWeapon")
+--                 MortarWeapon:new(x, y, z)
+--                 break
+--             end
+--         end
+--     end
+-- end
+
+-- function MortarWeapon.DestroyInstance(object)
+--     -- FIXME pretty awful right now, redo it
+--     -- TODO Reload status will disappear with this method. We should pass it as modData to the object
+--     local instance = MortarWeapon.FindInstance(object)
+
+--     if instance then
+--         instance.tileX = nil
+--         instance.tileY = nil
+--         instance.tileZ = nil
+--         instance.isRoundInChamber = nil
+--     end
+-- end
+
+-- Events.OnObjectAboutToBeRemoved.Add(MortarWeapon.DestroyInstance)
 
