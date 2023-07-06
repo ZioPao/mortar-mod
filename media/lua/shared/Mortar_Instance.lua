@@ -44,7 +44,6 @@ function MortarInstance:isReadyToShoot()
     return self.isReloadad and self.isOperatorValid and self.isSpotterValid
 end
 
-
 -- Setters
 
 ---Set operator ID
@@ -61,6 +60,12 @@ end
 
 function MortarInstance:setCoords(coords)
     self.coords = coords
+end
+
+---Set isReloaded value
+---@param val boolean
+function MortarInstance:setIsReloaded(val)
+    self.isReloaded = val
 end
 
 --************************--
@@ -91,9 +96,18 @@ function MortarInstance:initializeShot()
     end
 end
 
+function MortarInstance.HandleReloading()
+    -- 5 secs
+    local cTime = os.time()
+    print("Waiting for reload")
+    if cTime > MortarInstance.current.sTimeReload + 5 then
+        MortarInstance.current:setIsReloaded(true)
+        Events.OnTick.Remove(MortarInstance.HandleReloading)
+    end
+end
+
+---Reload a shell into the mortar. Removes one from the inventory of the player
 function MortarInstance:reloadRound()
-    print("Reloading")
-    
     if self.operatorID == -1 then error("Operator was not set!") end
     local operatorPlayer
     if isClient() then
@@ -101,15 +115,14 @@ function MortarInstance:reloadRound()
     else
         operatorPlayer = getPlayer()
     end
-        
+
     local inv = operatorPlayer:getInventory()
     inv:RemoveOneOf('Mortar.MortarRound')
 
     operatorPlayer:Say("Reloading...")
 
-    -- TODO Add a delay
-    self.isReloaded = true
-
+    self.sTimeReload = os.time()
+    Events.OnTick.Add(MortarInstance.HandleReloading)
 end
 
 return MortarInstance

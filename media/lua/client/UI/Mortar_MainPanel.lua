@@ -112,6 +112,7 @@ function MortarUI:onClick(btn)
     if btn.internal == 'SHOOT' then
         self.mortarInstance:tryStartFiring()
     elseif btn.internal == 'RELOAD' then
+        self.btnReload:setEnable(false)
         self.mortarInstance:reloadRound()
     elseif btn.internal == 'SET_SPOTTER' then
         self.openedPanel = SpottersViewerPanel.Open(self:getRight(), self:getBottom() - self:getHeight())
