@@ -1,164 +1,191 @@
---local MortarClientHandler = require("Mortar_ClientHandler")
-local MortarData = require("Mortar_ClientData")
+require "ISUI/ISPanel"
+require "ISUI/ISScrollingListBox"
 
--- TODO Make it local
 
-MortarSpottersPanel = ISCollapsableWindow:derive("MortarSpottersPanel")
-MortarUI.instance = nil
+--**************--
+-- Various utilities
+local function FetchPlayers()
+    local players
+    if isClient() then
+        players = getOnlinePlayers()
+    else
+        players = ArrayList.new()
+        players:add(getPlayer())
+    end
 
-function MortarUI:new(x, y, width, height, coords)
+    return players
+end
+
+--*****************
+
+local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
+local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
+local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
+
+local HEADER_HGT = FONT_HGT_MEDIUM + 2 * 2
+local ENTRY_HGT = FONT_HGT_MEDIUM + 2 * 2
+
+SpottersViewerPanel = ISCollapsableWindow:derive("SpottersViewerPanel")
+
+function SpottersViewerPanel.Open(x,y)
+    if SpottersViewerPanel.instance then
+        SpottersViewerPanel.instance:close()
+    end
+
+    local modal = SpottersViewerPanel:new(x, y, 350, 500)
+    modal:initialise()
+    modal:addToUIManager()
+    modal.instance:setKeyboardFocus()
+
+    return modal
+end
+
+function SpottersViewerPanel:new(x, y, width, height)
     local o = {}
     o = ISCollapsableWindow:new(x, y, width, height)
     setmetatable(o, self)
     self.__index = self
-
-    o.resizable = false
-
+    o.borderColor = { r = 0.4, g = 0.4, b = 0.4, a = 1 }
+    o.backgroundColor = { r = 0, g = 0, b = 0, a = 1 }
     o.width = width
     o.height = height
+    o.resizable = false
+    o.moveWithMouse = false
+    SpottersViewerPanel.instance = o
 
-    o.variableColor = { r = 0.9, g = 0.55, b = 0.1, a = 1 }
-    o.borderColor = { r = 0.4, g = 0.4, b = 0.4, a = 1 }
-    o.backgroundColor = { r = 0, g = 0, b = 0, a = 1.0 }
-    o.buttonBorderColor = { r = 0.7, g = 0.7, b = 0.7, a = 0.5 }
-    o.moveWithMouse = true
-
-
-    -- TODO Instead of a UUID or crap like that, fetch it from the synced table with a combination of the coordinates.
-    -- X .. Y .. Z or something like this.
-    o.coords = coords
-    o.mortarInstance = MortarData.GetOrCreateInstance(coords)
-
-    MortarUI.instance = o
     return o
 end
 
-function MortarUI:createChildren()
+function SpottersViewerPanel:initialise()
+    local top = 50
+
+    self.panel = ISTabPanel:new(10, top, self.width - 10 * 2, self.height + top - 10)
+    self.panel:initialise()
+    self.panel.borderColor = { r = 0, g = 0, b = 0, a = 0 }
+    self.panel.target = self
+    self.panel.equalTabWidth = false
+    self.panel.tabTransparency = 0
+    self.panel.tabHeight = 0
+    self:addChild(self.panel)
 
 
-    self.panelInfo = ISPanel:new(0, 20, self:getWidth(), self:getHeight()/4)
-    self:addChild(self.panelInfo)
+    self.mainCategory = SpottersScrollingTable:new(0, 0, self.panel.width, self.panel.height, self)
+    self.mainCategory:initialise()
+    self.panel:addView("Players", self.mainCategory)
+    self.panel:activateView("Players")
 
-    self.labelSpotterInfo = ISLabel:new(10, 10, 25, "Spotter: test", 1, 1, 1, 1, UIFont.Small, true)
-    self.labelSpotterInfo:initialise()
-    self.labelSpotterInfo:instantiate()
-    self.panelInfo:addChild(self.labelSpotterInfo)
-
-    self.labelShellInfo = ISLabel:new(10, self.labelSpotterInfo:getBottom() + 10, 25, "Shell: test", 1, 1, 1, 1, UIFont.Small, true)
-    self.labelShellInfo:initialise()
-    self.labelShellInfo:instantiate()
-    self.panelInfo:addChild(self.labelShellInfo)
-
-    -----------------------
-
-    local xPadding = 10
-    local yOffset = self.panelInfo:getBottom() + 10
-
-    local btnWidth = self:getWidth() - xPadding*2
-    local btnHeight = 25
-
-    self.btnShoot = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Shoot', self, self.onClick)
-    self.btnShoot.internal = "SHOOT"
-    self.btnShoot:initialise()
-    self.btnShoot:setEnable(false)
-    self:addChild(self.btnShoot)
-
-    yOffset = yOffset + self.btnShoot:getHeight() + 10
-
-    self.btnReload = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Reload', self, self.onClick )
-    self.btnReload.internal = "RELOAD"
-    self.btnReload:initialise()
-    self.btnReload:setEnable(false)
-    self:addChild(self.btnReload)
-
-    yOffset = yOffset + self.btnReload:getHeight() + 10
-
-    self.btnSetSpotter = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Set spotter', self, self.onClick )
-    self.btnSetSpotter.internal = "SET_SPOTTER"
-    self.btnSetSpotter:initialise()
-    self.btnSetSpotter:setEnable(false)
-    self:addChild(self.btnSetSpotter)
-
-
-
-    self.btnClose = ISButton:new(xPadding, self:getHeight() - btnHeight - 10, btnWidth, btnHeight, 'Close', self, self.onClick)
-    self.btnClose.internal = "EXIT"
-    self.btnClose:initialise()
-    self:addChild(self.btnClose)
-
-    -- TODO Add it later with binos
-    -- local coordinates_label = ISLabel:new(100, 150, 80, "",1, 1, 1, 1, UIFont.Medium, false)
-    -- coordinates_label:initialise()
-    -- self:addChild(coordinates_label)
-
+    local players = FetchPlayers()
+    self.mainCategory:initList(players)
 
 end
 
-function MortarUI:onClick(btn)
-    if btn.internal == 'SHOOT' then
-        self.mortarInstance:tryStartFiring()
-    elseif btn.internal == 'RELOAD' then
-        self.mortarInstance:reloadRound()
-    elseif btn.internal == 'SET_SPOTTER' then
+function SpottersViewerPanel:prerender()
+    local z = 20
+    self:drawRect(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r, self.backgroundColor.g,
+        self.backgroundColor.b)
+    self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g,
+        self.borderColor.b)
 
-    elseif btn.internal == 'EXIT' then
-        self:close()
+    local title = "TEST"
+    self:drawText(title, self.width / 2 - (getTextManager():MeasureStringX(UIFont.Medium, title) / 2), z, 1, 1, 1, 1,
+        UIFont.Medium)
+end
+
+function SpottersViewerPanel:onClick(button)
+   
+    -- todo use double click
+end
+
+function SpottersViewerPanel:setKeyboardFocus()
+    local view = self.panel:getActiveView()
+    if not view then return end
+    Core.UnfocusActiveTextEntryBox()
+    --view.filterWidgetMap.Type:focus()
+end
+
+function SpottersViewerPanel:update()
+    ISCollapsableWindow.update(self)
+    local selection = self.mainCategory.datas.selected
+
+end
+
+function SpottersViewerPanel:close()
+    self:setVisible(false)
+    self:removeFromUIManager()
+end
+
+--************************************************************************--
+
+
+SpottersScrollingTable = ISPanel:derive("SpottersScrollingTable")
+
+function SpottersScrollingTable:new(x, y, width, height, viewer)
+    local o = ISPanel:new(x, y, width, height)
+    setmetatable(o, self)
+
+    o.listHeaderColor = { r = 0.4, g = 0.4, b = 0.4, a = 0.3 }
+    o.borderColor = { r = 0.4, g = 0.4, b = 0.4, a = 0 }
+    o.backgroundColor = { r = 0, g = 0, b = 0, a = 0.0 }
+    o.buttonBorderColor = { r = 0.7, g = 0.7, b = 0.7, a = 0.5 }
+    o.totalResult = 0
+    o.viewer = viewer
+    SpottersScrollingTable.instance = o
+    return o
+end
+
+function SpottersScrollingTable:createChildren()
+    local btnHgt = math.max(25, FONT_HGT_SMALL + 3 * 2)
+    local bottomHgt = 5 + FONT_HGT_SMALL * 2 + 5 + btnHgt + 20 + FONT_HGT_LARGE + HEADER_HGT + ENTRY_HGT
+
+    self.datas = ISScrollingListBox:new(0, HEADER_HGT, self.width, self.height - bottomHgt + 10)
+    self.datas:initialise()
+    self.datas:instantiate()
+    self.datas.itemheight = FONT_HGT_SMALL + 4 * 2
+    self.datas.selected = 0
+    self.datas.joypadParent = self
+    self.datas.font = UIFont.NewSmall
+    self.datas.doDrawItem = self.drawDatas
+    self.datas.drawBorder = true
+    self.datas:addColumn("", 0)
+    self:addChild(self.datas)
+end
+
+function SpottersScrollingTable:initList(module)
+    self.datas:clear()
+    local currPlayer = getPlayer()
+    for i = 0, module:size() - 1 do
+        local pl = module:get(i)
+        local username = pl:getUsername()
+
+        -- TCheck if player is in same faction
+        if MortarCommonFunctions.ArePlayersInSameFaction(currPlayer, pl) then
+            self.datas:addItem(username, pl)
+        end
+    end
+end
+
+function SpottersScrollingTable:update()
+    self.datas.doDrawItem = self.drawDatas
+end
+
+function SpottersScrollingTable:drawDatas(y, item, alt)
+    if y + self:getYScroll() + self.itemheight < 0 or y + self:getYScroll() >= self.height then
+        return y + self.itemheight
+    end
+    local a = 0.9
+
+    if self.selected == item.index then
+        self:drawRect(0, (y), self:getWidth(), self.itemheight, 0.3, 0.7, 0.35, 0.15)
     end
 
-end
-
-function MortarUI:update()
-
-    if self.mortarInstance == nil then
-        -- Check the server and fetch it again
-        self.mortarInstance = MortarData.GetOrCreateInstance(self.coords)
-        return
+    if alt then
+        self:drawRect(0, (y), self:getWidth(), self.itemheight, 0.3, 0.6, 0.5, 0.5)
     end
 
-    -- Check if player has an active radio, then he can set the spotter
-    self.btnSetSpotter:setEnable(MortarCommonFunctions.CheckRadio(getPlayer():getInventory()))
+    self:drawRectBorder(0, (y), self:getWidth(), self.itemheight, a, self.borderColor.r, self.borderColor.g,
+        self.borderColor.b)
 
-    local isReadyToShoot = self.mortarInstance:isReadyToShoot()
-    self.btnShoot:setEnable(isReadyToShoot)
-    self.btnReload:setEnable(not isReadyToShoot)
-
-
-    -----------------
-    -- Check distance from other players
-    local bomber = self.mortarInstance:getBomber()
-    if self.bomber == nil then self:close() end
-
-    local bomberX = bomber:getX()
-    local bomberY = bomber:getY()
-    --local bomberZ = bomber:getZ()
-
-
-    local mortarCoordinates = self.mortarInstance:getTilesLocation()
-
-    if MortarCommonFunctions.GetDistance2D(bomberX, bomberY, mortarCoordinates[1], mortarCoordinates[2]) > MortarCommonVars.distSteps then
-        self:close()
-    end
+    local xOffset = 10
+    self:drawText(item.text, xOffset, y + 4, 1, 1, 1, a, self.font)
+    return y + self.itemheight
 end
-
-function MortarUI:setVisible(visible)
-    self.javaObject:setVisible(visible)
-end
-
-function MortarUI.OnOpenPanel(coords)
-    -------------------------
-    -- MortarUI.OnOpenPanel({x=getPlayer():getX(), y = getPlayer():getY(), z = getPlayer():getZ()})
-
-    ---------------
-    if MortarUI.instance then
-        MortarUI.instance:close()
-    end
-
-    -- TODO Should be in the middle of the screen
-    local pnl = MortarUI:new(50, 200, 200, 400, coords)
-    pnl:initialise()
-    pnl:addToUIManager()
-    pnl:bringToTop()
-    return pnl
-end
-
---return MortarUI

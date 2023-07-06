@@ -6,6 +6,23 @@ local MortarData = require("Mortar_ClientData")
 MortarUI = ISCollapsableWindow:derive("MortarUI")
 MortarUI.instance = nil
 
+function MortarUI.Open(coords)
+    -------------------------
+    -- MortarUI.Open({x=getPlayer():getX(), y = getPlayer():getY(), z = getPlayer():getZ()})
+
+    ---------------
+    if MortarUI.instance then
+        MortarUI.instance:close()
+    end
+
+    -- TODO Should be in the middle of the screen
+    local pnl = MortarUI:new(50, 200, 400, 500, coords)
+    pnl:initialise()
+    pnl:addToUIManager()
+    pnl:bringToTop()
+    return pnl
+end
+
 function MortarUI:new(x, y, width, height, coords)
     local o = {}
     o = ISCollapsableWindow:new(x, y, width, height)
@@ -34,20 +51,17 @@ function MortarUI:new(x, y, width, height, coords)
 end
 
 function MortarUI:createChildren()
+    ISCollapsableWindow.createChildren(self)
 
-
-    self.panelInfo = ISPanel:new(0, 20, self:getWidth(), self:getHeight()/4)
+    self.panelInfo = ISRichTextPanel:new(0, 20, self:getWidth(), self:getHeight()/4)
+    self.panelInfo.autosetheight = false
+    self.panelInfo.background = true
+	self.panelInfo.backgroundColor = {r=0, g=0, b=0, a=0.5}
+    self.panelInfo.borderColor = {r=0.4, g=0.4, b=0.4, a=1}
+    self.panelInfo.marginTop = self.panelInfo:getHeight()/2
+    self.panelInfo:initialise()
+    self.panelInfo:paginate()
     self:addChild(self.panelInfo)
-
-    self.labelSpotterInfo = ISLabel:new(10, 10, 25, "Spotter: test", 1, 1, 1, 1, UIFont.Small, true)
-    self.labelSpotterInfo:initialise()
-    self.labelSpotterInfo:instantiate()
-    self.panelInfo:addChild(self.labelSpotterInfo)
-
-    self.labelShellInfo = ISLabel:new(10, self.labelSpotterInfo:getBottom() + 10, 25, "Shell: test", 1, 1, 1, 1, UIFont.Small, true)
-    self.labelShellInfo:initialise()
-    self.labelShellInfo:instantiate()
-    self.panelInfo:addChild(self.labelShellInfo)
 
     -----------------------
 
@@ -76,7 +90,7 @@ function MortarUI:createChildren()
     self.btnSetSpotter = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Set spotter', self, self.onClick )
     self.btnSetSpotter.internal = "SET_SPOTTER"
     self.btnSetSpotter:initialise()
-    self.btnSetSpotter:setEnable(false)
+    self.btnSetSpotter:setEnable(true)
     self:addChild(self.btnSetSpotter)
 
 
@@ -100,7 +114,7 @@ function MortarUI:onClick(btn)
     elseif btn.internal == 'RELOAD' then
         self.mortarInstance:reloadRound()
     elseif btn.internal == 'SET_SPOTTER' then
-
+        self.openedPanel = SpottersViewerPanel.Open(self:getRight(), self:getBottom() - self:getHeight())
     elseif btn.internal == 'EXIT' then
         self:close()
     end
@@ -108,57 +122,65 @@ function MortarUI:onClick(btn)
 end
 
 function MortarUI:update()
+    ISCollapsableWindow.update(self)
+    print("upd")
 
     if self.mortarInstance == nil then
         -- Check the server and fetch it again
         self.mortarInstance = MortarData.GetOrCreateInstance(self.coords)
+        self.btnSetSpotter:setEnable(false)
+        self.btnShoot:setEnable(false)
+        self.btnReload:setEnable(false)
+
+    
+        self.panelInfo:setText("MORTAR NOT AVAILABLE")
+        self.panelInfo.textDirty = true
         return
     end
 
+    -- Update info panel
+    self.panelInfo:setText("Various infos")
+
+
+
     -- Check if player has an active radio, then he can set the spotter
-    self.btnSetSpotter:setEnable(MortarCommonFunctions.CheckRadio(getPlayer():getInventory()))
+    -- TODO DEBUG ONLY
+    self.btnSetSpotter:setEnable(true)
+    --self.btnSetSpotter:setEnable(MortarCommonFunctions.CheckRadio(getPlayer():getInventory()))
 
     local isReadyToShoot = self.mortarInstance:isReadyToShoot()
     self.btnShoot:setEnable(isReadyToShoot)
     self.btnReload:setEnable(not isReadyToShoot)
 
-
-    -----------------
-    -- Check distance from other players
-    local bomber = self.mortarInstance:getBomber()
-    if self.bomber == nil then self:close() end
-
-    local bomberX = bomber:getX()
-    local bomberY = bomber:getY()
-    --local bomberZ = bomber:getZ()
+    if self.openedPanel then
+        self.openedPanel:setX(self:getRight())
+        self.openedPanel:setY(self:getBottom() - self:getHeight())
+    end
 
 
-    local mortarCoordinates = self.mortarInstance:getTilesLocation()
 
-    if MortarCommonFunctions.GetDistance2D(bomberX, bomberY, mortarCoordinates[1], mortarCoordinates[2]) > MortarCommonVars.distSteps then
+    -------------------
+    -- If player goes away from the mortar, close the window
+    if MortarCommonFunctions.GetDistance2D(self.bomber:getX(), self.bomber:getY(), self.coords.x, self.coords.y) > MortarCommonVars.distSteps then
         self:close()
     end
+
+
+
 end
 
 function MortarUI:setVisible(visible)
     self.javaObject:setVisible(visible)
 end
 
-function MortarUI.OnOpenPanel(coords)
-    -------------------------
-    -- MortarUI.OnOpenPanel({x=getPlayer():getX(), y = getPlayer():getY(), z = getPlayer():getZ()})
-
-    ---------------
-    if MortarUI.instance then
-        MortarUI.instance:close()
+function MortarUI:close()
+    if self.openedPanel then
+        self.openedPanel:close()
     end
-
-    -- TODO Should be in the middle of the screen
-    local pnl = MortarUI:new(50, 200, 200, 400, coords)
-    pnl:initialise()
-    pnl:addToUIManager()
-    pnl:bringToTop()
-    return pnl
+    self:setvisible(false)
+    self:removeFromUIManager()
+    ISCollapsableWindow.close(self)
 end
+
 
 --return MortarUI
