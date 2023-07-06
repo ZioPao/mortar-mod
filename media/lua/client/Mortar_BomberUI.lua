@@ -46,6 +46,14 @@ function MortarUI:createChildren()
     self.btnReload:setEnable(false)
     self:addChild(self.btnReload)
 
+    yOffset = yOffset + self.btnReload:getHeight()
+
+    self.btnSetSpotter = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'SET_SPOTTER', self, self.onClick )
+    self.btnSetSpotter:initialise()
+    self.btnSetSpotter:setEnable(false)
+    self:addChild(self.btnSetSpotter)
+
+
 
     self.btnClose = ISButton:new(xPadding, self:getBottom() + 10, btnWidth, btnHeight, 'EXIT', self, self.onClick)
     self.btnClose:initialise()
@@ -64,6 +72,8 @@ function MortarUI:onClick(btn)
         self.mortarInstance:tryStartFiring()
     elseif btn.internal == 'RELOAD' then
         self.mortarInstance:reloadRound()
+    elseif btn.internal == 'SET_SPOTTER' then
+
     elseif btn.internal == 'EXIT' then
         self:close()
     end
@@ -71,6 +81,10 @@ function MortarUI:onClick(btn)
 end
 
 function MortarUI:update()
+
+    -- Check if player has an active radio, then he can set the spotter
+    self.btnSetSpotter:setEnable(MortarCommonFunctions.CheckRadio(getPlayer():getInventory()))
+
 
     local isReadyToShoot = self.mortarInstance:isReadyToShoot()
 
@@ -91,9 +105,7 @@ function MortarUI:update()
     local mortarCoordinates = self.mortarInstance:getTilesLocation()
 
     if MortarCommonFunctions.GetDistance2D(bomberX, bomberY, mortarCoordinates[1], mortarCoordinates[2]) > MortarCommonVars.distSteps then
-        print("Mortar Info: player too far, closing MortarUI")
-        MortarUI:close()        -- This also unset the bomber, kinda janky
-    
+        self:close()
     end
 end
 

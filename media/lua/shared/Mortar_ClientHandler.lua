@@ -2,6 +2,9 @@
 --[[ MORTAR MOD - BOMBER\SPOTTER HANDLER ]]--
 --=========================================--
 
+-- TODO Rethink this crap
+
+
 local MortarClientHandler = {}
 local instance          -- Single instance of Clienthandler
 

@@ -225,5 +225,6 @@ if MortarCommonVars == nil then
 
 
     MortarCommonVars.globalModDataId = "MORTAR_INFO"
+    MortarCommonVars.MOD_ID = "Mortar"
 
 end

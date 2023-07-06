@@ -2,6 +2,10 @@
 --[[ MORTAR MOD - CONTEXT MENU HANDLING ]]--
 --========================================--
 
+local MortarHandler = require("Mortar_ClientHandler")
+
+
+-- TODO Move this to the UI. We don't need to deal with this crap from here
 local function SearchAndSetNearbySpotters(spotterMenu, playerInMenu)
     -- We're not gonna check for radio here, just players
 
@@ -22,15 +26,13 @@ local function SearchAndSetNearbySpotters(spotterMenu, playerInMenu)
                     local username = pl:getUsername()
                     print(username)
 
-                    spotterMenu:addOption(username, _, function() MortarClientHandler.GetInstance():setSpotter(pl) end)
+                    spotterMenu:addOption(username, _, function() MortarHandler.GetInstance():setSpotter(pl) end)
                 end
             end
         end
     end
 
 end
-
--------------------------
 
 local function CreateMortarContextMenu(playerId, context, worldObjects, _)
     for _, v in pairs(worldObjects) do
@@ -46,7 +48,7 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
         if v:getSprite() and MortarCommonFunctions.IsMortarSprite(v:getSprite():getName()) and distanceCheck then
 
             -- We need to search the server for an active MortarWeapon. if there is none, we'll have to create one
-            local weaponInstance = MortarClientHandler.SetWeaponInstance(v)
+            local weaponInstance = MortarHandler.SetWeaponInstance(v)
 
             -- This will run JUST when OnLoadgridsquare failed.
             if weaponInstance == nil then
@@ -55,7 +57,7 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
                     y = v:getY(),
                     z = v:getZ()
                 })
-                weaponInstance = MortarClientHandler.SetWeaponInstance(v)
+                weaponInstance = MortarHandler.SetWeaponInstance(v)
             end
 
 
@@ -65,7 +67,7 @@ local function CreateMortarContextMenu(playerId, context, worldObjects, _)
                 context:getNew(context)
                 if MortarCommonFunctions.IsBomberValid(playerObj) then
 
-                    local clientHandler = MortarClientHandler.GetInstance()
+                    local clientHandler = MortarHandler.GetInstance()
 
                     if clientHandler:getBomber() == playerObj then
                         context:addOption(getText("UI_ContextMenu_StopOperatingMortar"), worldObjects, function()

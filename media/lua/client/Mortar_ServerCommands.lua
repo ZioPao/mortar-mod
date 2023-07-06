@@ -4,14 +4,14 @@
 
 
 local ServerCommands = {}
-
+local MortarHandler = require("Mortar_ClientHandler")
 
 
 --------------------------
 -- Reset Client Handlers
 --------------------------
 ServerCommands.resetClientHandler = function(args)
-    local clientHandlerInstance = MortarClientHandler:GetInstance()
+    local clientHandlerInstance = MortarHandler:GetInstance()
     clientHandlerInstance:delete()
 
 end
@@ -32,7 +32,7 @@ ServerCommands.updateBomberStatus = function(args)
         end
     end
 
-    local clientHandlerInstance = MortarClientHandler:GetInstance()
+    local clientHandlerInstance = MortarHandler:GetInstance()
 
      -- Updates the MortarClientHandler on this side
     clientHandlerInstance:setIsBomberValid(isValid)
@@ -56,7 +56,7 @@ ServerCommands.updateSpotterStatus = function(args)
     end
 
 
-    local clientHandlerInstance = MortarClientHandler:GetInstance()
+    local clientHandlerInstance = MortarHandler:GetInstance()
 
     -- Updates the MortarClientHandler on this side
     clientHandlerInstance:setIsSpotterValid(isValid)
@@ -68,13 +68,13 @@ end
 
 ServerCommands.setUpdatedBomberValidation = function(args)
     -- This will be run on the spotter client
-    local clientHandlerInstance = MortarClientHandler:GetInstance()
+    local clientHandlerInstance = MortarHandler:GetInstance()
     clientHandlerInstance:setIsBomberValid(args.isValid)
 end
 
 ServerCommands.setUpdatedSpotterValidation = function(args)
     -- This will be run on the bomber client
-    local clientHandlerInstance = MortarClientHandler:GetInstance()
+    local clientHandlerInstance = MortarHandler:GetInstance()
     clientHandlerInstance:setIsSpotterValid(args.isValid)
 end
 
@@ -84,7 +84,7 @@ end
 -------------------------
 
 ServerCommands.receiveMortarShot = function(args)
-    local clientHandlerInstance = MortarClientHandler:GetInstance()
+    local clientHandlerInstance = MortarHandler:GetInstance()
     clientHandlerInstance:startShooting()
 end
 

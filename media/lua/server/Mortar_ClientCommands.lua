@@ -1,7 +1,66 @@
---==================================--
---[[ MORTAR MOD - CLIENT COMMANDS ]]--
---==================================--
 local ClientCommands = {}
+local MortarData = require("Mortar_Data")
+
+
+--* Operator only methods *--
+
+---Send a shot to the spotter client
+---@param args table Contains spotterID
+ClientCommands.SendShot = function(_, args)
+    local spotter = getPlayerByOnlineID(args.spotterID)
+    if spotter == nil then return end
+    sendServerCommand(spotter, MortarCommonVars.MOD_ID, 'DoMortarShot', {})
+end
+
+---Set in the correct global mod data table that the mortar is ready to shoot and reloaded
+---@param args table Contains instanceID
+ClientCommands.DoReload = function(_, args)
+    local instance = MortarData.GetModData().instances[args.instanceID]
+    if instance == nil then return end
+    instance.isRoundInChamber = args.check
+
+    -- Exec a sync
+    MortarData.SyncTable()
+end
+
+
+
+
+
+
+
+
+
+
+--* Spotter only methods *--
+
+
+
+
+
+
+
+
+---------------------------------------
+--* Status updates *--
+---Sent by the operator
+---@param operator IsoPlayer
+---@param args any
+ClientCommands.SendOperatorStatus = function(operator, args)
+
+end
+
+
+---Sent by the spotter
+---@param spotter IsoPlayer
+---@param args any
+ClientCommands.SendSpotterStatus = function(spotter, args)
+
+end
+
+
+
+
 
 
 
@@ -9,17 +68,10 @@ local ClientCommands = {}
 --------------------------
 -- Reset Client Handlers
 --------------------------
-ClientCommands.sendResetSpotterClientHandler = function(player, args)
 
-    local playerId = args.playerId
-
-    if playerId then
-        local player = getPlayerByOnlineID(playerId)
-        sendServerCommand(player, 'Mortar', 'resetClientHandler', {})
-    end
-
-
-
+ -- Wut
+ClientCommands.ResetSpotterClientHandler = function(player, _)
+    sendServerCommand(player, MortarCommonVars.MOD_ID, 'ResetClientHandler', {} )
 end
 
 
@@ -29,13 +81,11 @@ end
 -- Weapon instance handling
 --------------------------
 ClientCommands.generateMortarWeaponInstance = function(player, args)
-
     local x = args.x
     local y = args.y
     local z = args.z
     local sq = getCell():getGridSquare(x, y, z)
     MortarWeapon.TryCreateNewInstance(sq)
-
 end
 
 
@@ -44,15 +94,13 @@ end
 --------------------
 
 ClientCommands.checkValidationStatus = function(player, args)
-
     local bomberId = args.bomberId
     local spotterId = args.spotterId
     local bomberPlayer = getPlayerByOnlineID(bomberId)
     local spotterPlayer = getPlayerByOnlineID(spotterId)
 
-    sendServerCommand(bomberPlayer, 'Mortar', 'updateBomberStatus', {spotterId = spotterId})
-    sendServerCommand(spotterPlayer, 'Mortar', 'updateSpotterStatus', {bomberId = bomberId})
-
+    sendServerCommand(bomberPlayer, MortarCommonVars.MOD_ID, 'updateBomberStatus', { spotterId = spotterId })
+    sendServerCommand(spotterPlayer, MortarCommonVars.MOD_ID, 'updateSpotterStatus', { bomberId = bomberId })
 end
 
 ClientCommands.sendUpdatedBomberStatus = function(player, args)
@@ -60,7 +108,7 @@ ClientCommands.sendUpdatedBomberStatus = function(player, args)
     local check = args.isValid
     local spotterPlayer = getPlayerByOnlineID(args.spotterId)
 
-    sendServerCommand(spotterPlayer, 'Mortar', 'setUpdatedBomberValidation', {isValid = check})
+    sendServerCommand(spotterPlayer, MortarCommonVars.MOD_ID, 'setUpdatedBomberValidation', { isValid = check })
 end
 
 ClientCommands.sendUpdatedSpotterStatus = function(player, args)
@@ -68,19 +116,15 @@ ClientCommands.sendUpdatedSpotterStatus = function(player, args)
     local check = args.isValid
     local bomberPlayer = getPlayerByOnlineID(args.bomberId)
 
-    sendServerCommand(bomberPlayer, 'Mortar', 'setUpdatedSpotterValidation', {isValid = check})
-
-
+    sendServerCommand(bomberPlayer, MortarCommonVars.MOD_ID, 'setUpdatedSpotterValidation', { isValid = check })
 end
 
 --------------------
 -- Shooting
 -------------------
 ClientCommands.sendMortarShot = function(player, args)
-
     local spotterPlayer = getPlayerByOnlineID(args.spotterId)
-    sendServerCommand(spotterPlayer, 'Mortar', 'receiveMortarShot', {})
-
+    sendServerCommand(spotterPlayer, MortarCommonVars.MOD_ID, 'receiveMortarShot', {})
 end
 
 
@@ -98,7 +142,6 @@ ClientCommands.updateReloadStatus = function(player, args)
             print("Checking this uuid: " .. uuid)
             if uuid == weaponInstanceId then
                 correctInstance = v
-
             end
         end
 
@@ -121,24 +164,21 @@ end
 ---------------
 
 ClientCommands.sendMuzzleFlash = function(player, args)
-    sendServerCommand('Mortar', 'acceptMuzzleFlash', {bomberId = args.bomberId})
-
+    sendServerCommand(MortarCommonVars.MOD_ID, 'acceptMuzzleFlash', { bomberId = args.bomberId })
 end
 
 ClientCommands.sendBoomSound = function(player, args)
-
-    sendServerCommand('Mortar', 'receiveBoomSound', {x = args.sqX, y = args.sqY, z = args.sqZ})
-
+    sendServerCommand(MortarCommonVars.MOD_ID, 'receiveBoomSound', { x = args.sqX, y = args.sqY, z = args.sqZ })
 end
 
 ------------------------------------------------
 
-local onClientCommand = function(module, command, player_obj, args)
+local OnClientCommand = function(module, command, playerObj, args)
     --print("Mortar: Received command " .. command)
-    if module == "Mortar" and ClientCommands[command] then
-        ClientCommands[command](player_obj, args)
+    if module == MortarCommonVars.MOD_ID and ClientCommands[command] then
+        ClientCommands[command](playerObj, args)
     end
 end
 
 
-Events.OnClientCommand.Add(onClientCommand)
+Events.OnClientCommand.Add(OnClientCommand)

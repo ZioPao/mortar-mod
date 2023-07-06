@@ -1,21 +1,16 @@
 --================================--
---[[ MORTAR MOD - WEAPON HANDLER ]]--
+--[[ MORTAR MOD - WEAPON HANDLER ]]
+                                    --
 --================================--
 -- Server Only, this needs to be synced between everyone
 
 -- TODO OnPickup or deletion of mortar we should destroy the instance!!!
 
-if MortarWeapon == nil then
-    MortarWeapon = {}
-    MortarWeapon.instances = {}
-end
+MortarWeapon = {}
+MortarWeapon.instances = {}
 
-
-------------------------------------
 function MortarWeapon:new(x, y, z)
-
     print("Mortar: instancing new mortar weapon")
-
     local o = {}
     setmetatable(o, self)
     self.__index = self
@@ -51,14 +46,11 @@ function MortarWeapon:getIsRoundInChamber()
     return self.isRoundInChamber
 end
 
-
-
 -----------------------------------
 -- Save\Load handling
 ------------------------------------
 
 function MortarWeapon.FindInstance(object)
-	
     local x = object:getX()
     local y = object:getY()
     local z = object:getZ()
@@ -74,20 +66,21 @@ function MortarWeapon.FindInstance(object)
             print("MortarInfo: key " .. tostring(key))
             return table
         end
-        
     end
-    
+
     return nil
 end
 
-
 function MortarWeapon.TransmitInstances()
+
+    -- TODO This is unreliable
+
     local mortarModData = ModData.getOrCreate(MortarCommonVars.globalModDataId)
     --print("Mortar: saving instances")
     mortarModData["instances"] = MortarWeapon.instances
     ModData.transmit(MortarCommonVars.globalModDataId)
-
 end
+
 Events.OnServerStarted.Add(function()
     Events.EveryOneMinute.Add(MortarWeapon.TransmitInstances)
 end)
@@ -104,10 +97,9 @@ function MortarWeapon.TryCreateNewInstance(sq)
         return
     end
 
-    
-    local objects = sq:getObjects()
-    for i=0, objects:size() - 1 do
 
+    local objects = sq:getObjects()
+    for i = 0, objects:size() - 1 do
         local obj = objects:get(i)
         local sprite = obj:getSprite()
 
@@ -116,20 +108,14 @@ function MortarWeapon.TryCreateNewInstance(sq)
             local check = MortarCommonFunctions.IsMortarSprite(sprite_name)
             if check then
                 print("Mortar: found object, instancing new MortarWeapon")
-                MortarWeapon:new(x,y,z)
+                MortarWeapon:new(x, y, z)
                 break
             end
         end
-
     end
-
-
-
 end
 
-
 function MortarWeapon.DestroyInstance(object)
-
     -- FIXME pretty awful right now, redo it
     -- TODO Reload status will disappear with this method. We should pass it as modData to the object
     local instance = MortarWeapon.FindInstance(object)
@@ -144,33 +130,3 @@ end
 
 Events.OnObjectAboutToBeRemoved.Add(MortarWeapon.DestroyInstance)
 
------------------------------------------------
-local function initGlobalModData()
-    local modData = ModData.getOrCreate(MortarCommonVars.globalModDataId)
-    MortarWeapon.instances = modData['instances']
-
-    if MortarWeapon.instances == nil then
-        MortarWeapon.instances = {}
-    end
-
-    if modData['instances'] == nil then
-        return      -- This means it wasn't initialized before, so let's get back
-    end
-
-    print("MortarInfo: checking mod data received")
-
-    for key,v in pairs(modData['instances']) do
-        print("MortarInfo: loading " .. tostring(key))
-        print(v.tileX)
-        print(v.tileY)
-        print(v.tileZ)
-        print(v.isRoundInChamber)
-  
-    end
-
-    print("MortarInfo: finished loading mod data")
-
-    Events.LoadGridsquare.Add(MortarWeapon.TryCreateNewInstance)
-
-end
-Events.OnInitGlobalModData.Add(initGlobalModData)
