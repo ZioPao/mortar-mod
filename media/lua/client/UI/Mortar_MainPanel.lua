@@ -58,7 +58,7 @@ function MortarUI:createChildren()
     self.panelInfo.background = true
     self.panelInfo.backgroundColor = { r = 0, g = 0, b = 0, a = 0.5 }
     self.panelInfo.borderColor = { r = 0.4, g = 0.4, b = 0.4, a = 1 }
-    self.panelInfo.marginTop = self.panelInfo:getHeight() / 2
+    self.panelInfo.marginTop = 20
     self.panelInfo:initialise()
     self.panelInfo:paginate()
     self:addChild(self.panelInfo)
@@ -98,7 +98,7 @@ function MortarUI:createChildren()
     self.btnSwitchMode = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Switch Mode', self, self.onClick)
     self.btnSwitchMode.internal = "SWITCH_MODE"
     self.btnSwitchMode:initialise()
-    self.btnSwitchMode:setTooltip("Spot Mode")
+    --self.btnSwitchMode:setTooltip("Spot Mode")
     self.btnSwitchMode:setEnable(true)
     self:addChild(self.btnSwitchMode)
 
@@ -130,10 +130,10 @@ function MortarUI:onClick(btn)
     elseif btn.internal == 'SWITCH_MODE' then
         if self.mode == 'SOLO' then
             self.mode = 'SPOT'
-            self.btnSwitchMode:setTooltip("Spot Mode")
+            --self.btnSwitchMode:setTooltip("Spot Mode")
         else
             self.mode = 'SOLO'
-            self.btnSwitchMode:setTooltip("Solo Mode")
+            --self.btnSwitchMode:setTooltip("Solo Mode")
         end
     elseif btn.internal == 'EXIT' then
         self:close()
@@ -143,7 +143,7 @@ end
 function MortarUI:updateShootButton()
     if self.mode == 'SOLO' then
         self.btnShoot:setEnable(self.mortarInstance:getIsReloaded())
-        self.btnShoot:setTooltip("")
+        self.btnShoot:setTooltip(nil)
     else
         local spotterID = self.mortarInstance:getSpotterID()
         local isReadyToShoot = self.mortarInstance:isReadyToShoot()
@@ -203,6 +203,30 @@ function MortarUI:updateCloseButton()
 
 end
 
+function MortarUI:updateInfoPanel(pl, shellsAmount)
+
+    local operatorInfo = " <CENTRE> <SIZE:medium> Operator: <SIZE:small> %s"
+    operatorInfo = string.format(operatorInfo, pl:getUsername())
+
+    local shellsInfo = " <CENTRE> <SIZE:medium> Shells Left: %d"
+    shellsInfo = string.format(shellsInfo, shellsAmount)
+
+    local modeInfo = " <CENTRE> <SIZE:medium> Mode: %s"
+    modeInfo = string.format(modeInfo, self.mode)
+
+
+    local info = string.format("%s <LINE> %s <LINE> %s <LINE>", operatorInfo, shellsInfo, modeInfo)
+
+    -- Update info panel
+    if self.mortarInstance:getIsMidReloading() then
+        info = "<SIZE:large> <CENTRE> <RED> RELOADING! <LINE> " .. info
+    end
+
+    self.panelInfo:setText(info)
+    self.panelInfo.textDirty = true
+
+end
+
 function MortarUI:update()
     ISCollapsableWindow.update(self)
 
@@ -228,10 +252,10 @@ function MortarUI:update()
     -- Set operator again
     self.mortarInstance:setOperator(plID)
 
-    -- Update info panel
-    local info = string.format(" <CENTRE> Operator: %s \n <CENTRE> Shells Left: %d", pl:getUsername(), shellsAmount)
-    self.panelInfo:setText(info)
-    self.panelInfo.textDirty = true
+
+    -- Updates Info Panel
+    self:updateInfoPanel(pl, shellsAmount)
+
 
     -- Check if player has an active radio, then he can set the spotter
     self:updateSetSpotterButton(inv)
