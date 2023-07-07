@@ -1,8 +1,9 @@
-name=Mortar Mod
+name=Mortars
 id=Mortar
+author=Pao
 description=When you really want to blow up something... or someone.
 poster=poster.png
 tiledef=mortar 2701
 pack=mortar
-modversion=0.1.3
+modversion=1.0
 pzversion=41.65

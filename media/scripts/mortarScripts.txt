@@ -1,10 +1,8 @@
-
 module Base {
 
     sound MortarBlast1 {  category = Improvised, clip { file = media/sound/mortarSFX1.ogg,  }  } 
     sound MortarBlast2 {  category = Improvised, clip { file = media/sound/mortarSFX2.ogg,  }  } 
     sound MortarBlast3 {  category = Improvised, clip { file = media/sound/mortarSFX3.ogg,  }  } 
-
 
     model Binoculars
     {
@@ -13,9 +11,8 @@ module Base {
         scale = 0.6,
     }
 
-
-
 }
+
 module Mortar { 
     imports { Base }
 	
@@ -25,7 +22,7 @@ module Mortar {
         Weight	=	0.1,
         Type	=	Normal,
 		DisplayCategory = Explosives,
-        DisplayName	=	Mortar Ammo,
+        DisplayName	=	Mortar Shell,
         Icon	=	mortarammo_ico,
     }
 
@@ -40,7 +37,4 @@ module Mortar {
 		WorldObjectSprite	= mortar_56,
 	}
 
-
 }
-
-

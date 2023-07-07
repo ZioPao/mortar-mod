@@ -13,7 +13,6 @@ function MortarClientData.InitializeInstance(coords)
         sendClientCommand(getPlayer(), MortarCommonVars.MOD_ID, "UpdateInstances ",
         { data = MortarClientData.table[id], id = id })
     end
-
 end
 
 function MortarClientData.SyncData(id)
@@ -40,6 +39,24 @@ function MortarClientData.GetOrCreateInstance(coords)
     end
 end
 
+
+function MortarClientData.GetInstance(id)
+    if MortarClientData.table[id] then
+        return MortarClientData.table[id]
+    end
+
+    return nil
+end
+
+function MortarClientData.DestroyInstance(id)
+    ModData.request(MortarCommonVars.MOD_ID)
+    local syncedTable = ModData.get(MortarCommonVars.MOD_ID)
+    syncedTable[id] = nil
+    if isClient() then
+        sendClientCommand(getPlayer(), MortarCommonVars.MOD_ID, "UpdateInstances ",
+        { data = MortarClientData.table[id], id = id })
+    end
+end
 
 
 ---------------------

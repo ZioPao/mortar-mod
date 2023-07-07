@@ -13,6 +13,10 @@ function MortarCommonFunctions.GetHitCoords(pl)
     return hitCoords
 end
 
+function MortarCommonFunctions.GetAssembledID(coords)
+    return tostring(coords.x) .. tostring(coords.y) .. tostring(coords.z)
+
+end
 
 MortarCommonFunctions.GetDistance2D = function(x1, y1, x2, y2)
     return math.sqrt(math.abs(x2 - x1)^2 + math.abs(y2 - y1)^2)
