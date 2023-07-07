@@ -21,11 +21,10 @@ end
 local FONT_HGT_SMALL = getTextManager():getFontHeight(UIFont.Small)
 local FONT_HGT_MEDIUM = getTextManager():getFontHeight(UIFont.Medium)
 local FONT_HGT_LARGE = getTextManager():getFontHeight(UIFont.Large)
-
 local HEADER_HGT = FONT_HGT_MEDIUM + 2 * 2
 local ENTRY_HGT = FONT_HGT_MEDIUM + 2 * 2
 
-SpottersViewerPanel = ISCollapsableWindow:derive("SpottersViewerPanel")
+local SpottersViewerPanel = ISCollapsableWindow:derive("SpottersViewerPanel")
 
 function SpottersViewerPanel.Open(x, y)
     if SpottersViewerPanel.instance then
@@ -191,3 +190,5 @@ function SpottersScrollingTable:drawDatas(y, item, alt)
     self:drawText(item.text, xOffset, y + 4, 1, 1, 1, a, self.font)
     return y + self.itemheight
 end
+
+return SpottersViewerPanel

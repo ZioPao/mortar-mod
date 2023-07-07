@@ -1,4 +1,4 @@
---local MortarUI = require("Mortar_MainPanel")
+local MortarUI = require("Mortar_MainPanel")
 
 local function OpenMortarPanel(clickedObj)
     local mortarX = clickedObj:getX()

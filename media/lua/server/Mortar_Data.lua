@@ -1,5 +1,3 @@
-
-
 local MortarData = {}
 
 function MortarData.GetModData()

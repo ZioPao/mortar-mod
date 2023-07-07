@@ -1,7 +1,7 @@
+local MortarInstance = require("Mortar_Instance")
 
 local MortarClientData = {}
 MortarClientData.table = {}
-local MortarInstance = require("Mortar_Instance")
 
 ---Sync client global mod data with the server
 ---@param id string

@@ -1,6 +1,4 @@
---===================================--
---[[ MORTAR MOD - COMMON FUNCTIONS ]]--
---===================================--
+-- TODO Clean this crap
 
 if MortarCommonFunctions == nil then
     MortarCommonFunctions = {}

@@ -1,6 +1,5 @@
 require "Items/Distributions"
-require "Items/table.insert(ProceduralDistributions"
-require"SuburbsDistributions"
+require "SuburbsDistributions"
 
 
 local locations = {
@@ -9,7 +8,6 @@ local locations = {
   "ArmyStorageAmmunition",
   "ArmyStorageElectronics",
   "ArmyStorageGuns",
-  --"ArmyStorageMedical",
   "ArmyStorageOutfit",
   "ArmySurplusBackpacks",
   "ArmySurplusFootwear",

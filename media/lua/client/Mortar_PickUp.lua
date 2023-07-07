@@ -1,6 +1,6 @@
--- When we pick up a mortar, we need to get its shell (if it has any) and delete its instance in Global Mod Data
 local MortarClientData = require("Mortar_ClientData")
 
+--- When we pick up a mortar, we need to get its shell (if it has any) and delete its instance in Global Mod Data
 ---@param obj IsoObject
 local function HandleRemovedMortar(obj)
     if not MortarCommonFunctions.IsMortarSprite(obj:getSprite()) then return end
@@ -20,6 +20,5 @@ local function HandleRemovedMortar(obj)
         MortarClientData.DestroyInstance(id)
     end
 end
-
 
 Events.OnTileRemoved.Add(HandleRemovedMortar)

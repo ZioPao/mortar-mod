@@ -1,12 +1,7 @@
-local MODES = { 'SOLO', 'SPOT' }
-
-
---local MortarClientHandler = require("Mortar_ClientHandler")
 local MortarData = require("Mortar_ClientData")
+local SpottersViewerPanel = require("Mortar_SpottersPanel")
 
--- TODO Make it local
-
-MortarUI = ISCollapsableWindow:derive("MortarUI")
+local MortarUI = ISCollapsableWindow:derive("MortarUI")
 MortarUI.instance = nil
 
 function MortarUI.Open(coords)
@@ -259,4 +254,4 @@ function MortarUI:close()
     ISCollapsableWindow.close(self)
 end
 
---return MortarUI
+return MortarUI
