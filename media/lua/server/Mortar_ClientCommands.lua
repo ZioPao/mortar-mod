@@ -161,7 +161,7 @@ end
 ---------------
 
 ClientCommands.sendMuzzleFlash = function(player, args)
-    sendServerCommand(MortarCommonVars.MOD_ID, 'acceptMuzzleFlash', { bomberId = args.bomberId })
+    sendServerCommand(MortarCommonVars.MOD_ID, 'acceptMuzzleFlash', { operatorID = args.operatorID })
 end
 
 ClientCommands.sendBoomSound = function(player, args)

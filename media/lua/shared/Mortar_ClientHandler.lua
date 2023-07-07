@@ -16,11 +16,6 @@ local MortarClientHandler = {}
 local instance -- Single instance of Clienthandler
 
 
-if MortarSyncedWeapons == nil then
-    MortarSyncedWeapons = {}
-end
-
-
 ------------------------------------
 function MortarClientHandler:new()
     print("Mortar: instancing new client handler")

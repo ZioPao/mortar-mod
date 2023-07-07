@@ -87,7 +87,7 @@ end
 ----------------
 
 ServerCommands.acceptMuzzleFlash = function(args)
-    local pl = getPlayerByOnlineID(args.bomberId)
+    local pl = getPlayerByOnlineID(args.operatorID)
     if pl then
         pl:startMuzzleFlash()
     end

@@ -51,7 +51,7 @@ function MortarUI:new(x, y, width, height, coords)
 end
 
 function MortarUI:createChildren()
-    ISCollapsableWindow.createChildren(self)
+    --ISCollapsableWindow.createChildren(self)
 
     self.panelInfo = ISRichTextPanel:new(0, 20, self:getWidth(), self:getHeight() / 4)
     self.panelInfo.autosetheight = false
@@ -142,10 +142,8 @@ end
 
 function MortarUI:updateShootButton()
     if self.mode == 'SOLO' then
-        if self.mortarInstance:getIsReloaded() then
-            self.btnShoot:setEnable(true)
-            self.btnShoot:setTooltip("Ready to shoot")
-        end
+        self.btnShoot:setEnable(self.mortarInstance:getIsReloaded())
+        self.btnShoot:setTooltip("")
     else
         local spotterID = self.mortarInstance:getSpotterID()
         local isReadyToShoot = self.mortarInstance:isReadyToShoot()
@@ -194,6 +192,17 @@ function MortarUI:updateReloadButton(shellsAmount)
     end
 end
 
+function MortarUI:updateCloseButton()
+    local isMidReloading = self.mortarInstance:getIsMidReloading()
+
+    if isMidReloading then
+        self.btnClose:setEnable(false)
+    else
+        self.btnClose:setEnable(true)
+    end
+
+end
+
 function MortarUI:update()
     ISCollapsableWindow.update(self)
 
@@ -228,6 +237,7 @@ function MortarUI:update()
     self:updateSetSpotterButton(inv)
     self:updateShootButton()
     self:updateReloadButton(shellsAmount)
+    self:updateCloseButton()
 
     -- Handle the spotters panel position. It needs to stick to the main panel!
     if self.openedPanel then
@@ -235,7 +245,6 @@ function MortarUI:update()
         self.openedPanel:setY(self:getBottom() - self:getHeight())
     end
 
-    MortarDataHandler.SyncData(self.id)     -- TODO Maybe sync it in a less aggressive way
     -- If player goes away from the mortar, close the window
     if MortarCommonFunctions.GetDistance2D(pl:getX(), pl:getY(), self.coords.x, self.coords.y) > MortarCommonVars.distSteps then
         self:close()

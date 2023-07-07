@@ -54,7 +54,7 @@ function MortarShotHandler.Fire(mortarPos, hitCoords)
     --self:generateShot(coords.x, coords.y, z, finalRad)
 
     local cell = getWorld():getCell()
-    sendClientCommand(getPlayer(), MortarCommonVars.MOD_ID, 'sendMuzzleFlash', { mortarPos = mortarPos })
+    sendClientCommand(getPlayer(), MortarCommonVars.MOD_ID, 'sendMuzzleFlash', { operatorID = getPlayer():getOnlineID() })
 
     for x = hitCoords.x - rad, hitCoords.x + rad + 1 do
         for y = hitCoords.y - rad, hitCoords.y + rad + 1 do

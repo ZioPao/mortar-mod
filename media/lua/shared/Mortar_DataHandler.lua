@@ -5,36 +5,44 @@ local MODULE = 'Mortar-Data'
 
 -- Server only, client only, common
 MortarDataHandler = {}
-MortarDataHandler.table = {}
+
+MORTAR_DATA_TABLE = {}
+
 
 ---Sync client global mod data with the server
 ---@param coords table
+---@return MortarInstance
 function MortarDataHandler.InitializeInstance(coords)
     print("Initialize instance")
     local id = MortarCommonFunctions.GetAssembledID(coords)
 
-    local newData = {operatorID = -1, spotterID = -1, coords = coords}
-    MortarDataHandler.table[id] = MortarInstance:new(newData)
+    local newData = {operatorID = -1, spotterID = -1, position = {x=coords.x, y=coords.y, z=coords.z}}
+    MORTAR_DATA_TABLE[id] = newData
+    local instance MortarInstance:new(MORTAR_DATA_TABLE[id])
     if isClient() then
         sendClientCommand(getPlayer(), MODULE, "UpdateInstances",
-            { data = MortarDataHandler.table[id], id = id })
+            { data = MORTAR_DATA_TABLE[id], id = id })
     end
-end
 
+    return instance
+end
+---Sync data with client and server. Modification from the client will be sent to the server
+---@param id any
 function MortarDataHandler.SyncData(id)
+    print("Syncing Data for instance " .. tostring(id))
     ModData.request(MortarCommonVars.MOD_ID)
     local syncedTable = ModData.get(MortarCommonVars.MOD_ID)
-    syncedTable[id] = MortarDataHandler.table[id]
+    syncedTable[id] = MORTAR_DATA_TABLE[id]
     if isClient() then
         sendClientCommand(getPlayer(), MODULE, "UpdateInstances",
-            { data = MortarDataHandler.table[id], id = id })
+            { data = syncedTable[id], id = id })
     end
 end
 
 -- Gets the updated table from the server
 function MortarDataHandler.ForceSync()
     ModData.request(MortarCommonVars.MOD_ID)
-    MortarDataHandler.table = ModData.get(MortarCommonVars.MOD_ID)
+    MORTAR_DATA_TABLE = ModData.get(MortarCommonVars.MOD_ID)
 end
 
 ---If it returns nil, it means that we need to wait a bit in the UI before showing everything.
@@ -42,21 +50,26 @@ end
 ---@return table?
 function MortarDataHandler.GetOrCreateInstance(coords)
     -- Fetch from global mod data
-    local id = tostring(coords.x) .. tostring(coords.y) .. tostring(coords.z)
-    if MortarDataHandler.table[id] then
-        -- We need to wrap it with MortarInstance
-        return MortarInstance.WrapData(MortarDataHandler.table[id])
+    local id = MortarCommonFunctions.GetAssembledID(coords)
 
-        --return MortarDataHandler.table[id]
+    local modDataRef = MORTAR_DATA_TABLE
+    local instance
+    if modDataRef[id] then
+        local dataTable = modDataRef[id]
+        print("Found instance from Global Mod Data")
+        -- We need to wrap it with MortarInstance
+        instance = MortarInstance:new(dataTable)
     else
-        MortarDataHandler.InitializeInstance(coords)
-        return nil
+        print("Initializing new instance")
+        instance = MortarDataHandler.InitializeInstance(coords)
     end
+
+    return instance
 end
 
 function MortarDataHandler.GetInstance(id)
-    if MortarDataHandler.table[id] then
-        return MortarInstance:new(MortarDataHandler.table[id])
+    if MORTAR_DATA_TABLE[id] then
+        return MortarInstance:new(MORTAR_DATA_TABLE[id])
     end
 
     return nil
@@ -68,7 +81,7 @@ function MortarDataHandler.DestroyInstance(id)
     syncedTable[id] = nil
     if isClient() then
         sendClientCommand(getPlayer(), MODULE, "UpdateInstances",
-            { data = MortarDataHandler.table[id], id = id })
+            { data = MORTAR_DATA_TABLE[id], id = id })
     end
 end
 
@@ -91,11 +104,11 @@ local function ReceiveGlobalModData(key, data)
     print("Received global mod data")
     if key == MortarCommonVars.MOD_ID then
         --Creating a deep copy of recieved data and storing it in local store CLIENT_GLOBALMODDATA table
-        CopyTable(MortarDataHandler.table, data)
+        CopyTable(MORTAR_DATA_TABLE, data)
     end
 
     --Update global mod data with local table (from global_mod_data.bin)
-    ModData.add(MortarCommonVars.MOD_ID, MortarDataHandler.table)
+    ModData.add(MortarCommonVars.MOD_ID, MORTAR_DATA_TABLE)
 end
 
 Events.OnReceiveGlobalModData.Add(ReceiveGlobalModData)

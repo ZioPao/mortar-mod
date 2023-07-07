@@ -3,29 +3,21 @@ local ShotHandler = require("Mortar_ShotHandler")
 
 local MortarInstance = {}
 
+
+-- TODO Time to do it again :) 
+-----------------------------------------------------------
+
+
 ---Creates a new instance for a mortar
----@param operatorID number
----@param spotterID number
----@param position table Used even for ID creation
+---@param dataTable table Reference of the synced table
 ---@return table
-function MortarInstance:new(data)
+function MortarInstance:new(dataTable)
     local o = {}
     setmetatable(o, self)
     self.__index = self
 
-    o.data = data       -- reference it
-
-    -- o.operatorID = operatorID
-    -- o.spotterID = spotterID
-    -- o.position = position
-
-    -- o.isOperatorValid = false
-    -- o.isSpotterValid = false
-
-    -- o.isReloaded = false
-    -- o.isMidReloading = false
-
-    o.id = tostring(data.position.x) .. tostring(data.position.y) .. tostring(data.position.z)
+    o.dataTable = dataTable       -- reference it
+    o.id = tostring(dataTable.position.x) .. tostring(dataTable.position.y) .. tostring(dataTable.position.z)
 
     MortarInstance.current = o
     return o
@@ -47,27 +39,27 @@ end
 --************************--
 -- Getters
 function MortarInstance:getOperatorID()
-    return self.data.operatorID
+    return self.dataTable.operatorID
 end
 
 function MortarInstance:getSpotterID()
-    return self.data.spotterID
+    return self.dataTable.spotterID
 end
 
 function MortarInstance:getPosition()
-    return self.data.position
+    return self.dataTable.position
 end
 
 function MortarInstance:getIsReloaded()
-    return self.data.isReloaded
+    return self.dataTable.isReloaded
 end
 
 function MortarInstance:getIsMidReloading()
-    return self.data.isMidReloading
+    return self.dataTable.isMidReloading
 end
 
 function MortarInstance:isReadyToShoot()
-    return self.data.isReloadad and self.data.isOperatorValid and self.data.isSpotterValid
+    return self.dataTable.isReloadad and self.dataTable.isOperatorValid and self.dataTable.isSpotterValid
 end
 
 --************************--
@@ -76,29 +68,29 @@ end
 ---Set operator ID
 ---@param operatorID number
 function MortarInstance:setOperator(operatorID)
-    self.data.operatorID = operatorID
+    self.dataTable.operatorID = operatorID
 end
 
 --- Set spotter ID
 ---@param spotterID number
 function MortarInstance:setSpotter(spotterID)
-    self.data.spotterID = spotterID
+    self.dataTable.spotterID = spotterID
 end
 
 function MortarInstance:setPosition(position)
-    self.data.position = position
+    self.dataTable.position = position
 end
 
 ---Set isReloaded value
 ---@param val boolean
 function MortarInstance:setIsReloaded(val)
-    self.data.isReloaded = val
+    self.dataTable.isReloaded = val
 end
 
 ---Set isMidReloading value
 ---@param val boolean
 function MortarInstance:setIsMidReloading(val)
-    self.data.isMidReloading = val
+    self.dataTable.isMidReloading = val
 end
 
 --************************--
@@ -108,23 +100,24 @@ function MortarInstance:initializeSoloShot()
     local operatorPlayer
 
     if isClient() then
-        operatorPlayer = getPlayerByOnlineID(self.data.operatorID)
-        sendClientCommand(operatorPlayer, MortarCommonVars.MOD_ID, 'SendShot', { spotterID = self.data.operatorID })
+        operatorPlayer = getPlayerByOnlineID(self.dataTable.operatorID)
+        sendClientCommand(operatorPlayer, MortarCommonVars.MOD_ID, 'SendShot', { spotterID = self.dataTable.operatorID })
     else
         operatorPlayer = getPlayer()
         local hitCoords = MortarCommonFunctions.GetHitCoords(operatorPlayer)
-        ShotHandler.Fire(self.data.position, hitCoords)
-        self.isReloaded = false
+        ShotHandler.Fire(self.dataTable.position, hitCoords)
     end
 
+    self:setIsReloaded(false)
     MortarDataHandler.SyncData(self.id)
+    
 end
 
 function MortarInstance:initializeSpotShot()
     print("Mortar: Trying to fire")
 
-    local spotterPlayer = getPlayerByOnlineID(self.data.spotterID)
-    local operatorPlayer = getPlayerByOnlineID(self.data.operatorID)
+    local spotterPlayer = getPlayerByOnlineID(self.dataTable.spotterID)
+    local operatorPlayer = getPlayerByOnlineID(self.dataTable.operatorID)
 
     -- Check if spotter exists
     if spotterPlayer == nil then
@@ -134,11 +127,12 @@ function MortarInstance:initializeSpotShot()
     end
 
     -- Checks if spotter is valid
-    if self.data.isSpotterValid and self.data.isOperatorValid then
+    if self.dataTable.isSpotterValid and self.dataTable.isOperatorValid then
         operatorPlayer:playEmote("_MortarClick")
         sendClientCommand(operatorPlayer, MortarCommonVars.MOD_ID, 'SendShot', { spotterID = self.spotterID })
+        self:setIsReloaded(false)
         MortarDataHandler.SyncData(self.id)
-    elseif self.data.isOperatorValid then
+    elseif self.dataTable.isOperatorValid then
         operatorPlayer:Say("I can't reach my spotter anymore")
     else
         -- Not even the bomber is valid
@@ -150,10 +144,12 @@ function MortarInstance.HandleReloading()
     -- 5 secs
     local cTime = os.time()
     --print("Waiting for reload")
-    if cTime > MortarInstance.current.data.sTimeReload + 5 then
+    if cTime > MortarInstance.current.sTimeReload + 5 then
+        print("Reloaded!")
         MortarInstance.current:setIsReloaded(true)
         MortarInstance.current:setIsMidReloading(false)
-        --MortarDataHandler.SetIsReloaded()
+        getPlayer():setBlockMovement(false)
+
         MortarDataHandler.SyncData(MortarInstance.current.id)
         Events.OnTick.Remove(MortarInstance.HandleReloading)
     end
@@ -161,10 +157,10 @@ end
 
 ---Reload a shell into the mortar. Removes one from the inventory of the player
 function MortarInstance:reloadRound()
-    if self.data.operatorID == -1 then error("Operator was not set!") end
+    if self.dataTable.operatorID == -1 then error("Operator was not set!") end
     local operatorPlayer
     if isClient() then
-        operatorPlayer = getPlayerByOnlineID(self.data.operatorID)
+        operatorPlayer = getPlayerByOnlineID(self.dataTable.operatorID)
     else
         operatorPlayer = getPlayer()
     end
@@ -173,6 +169,7 @@ function MortarInstance:reloadRound()
     inv:RemoveOneOf('Mortar.MortarRound')
 
     operatorPlayer:Say("Reloading...")
+    operatorPlayer:setBlockMovement(true)
 
     self.sTimeReload = os.time()
     self:setIsMidReloading(true) -- Local only.. Could be a problem, but it shouldn't be
