@@ -1,5 +1,4 @@
 local ClientCommands = {}
-local MortarData = require("Mortar_Data")
 
 
 --* Operator only methods *--
@@ -12,17 +11,14 @@ ClientCommands.SendShot = function(_, args)
     sendServerCommand(spotter, MortarCommonVars.MOD_ID, 'DoMortarShot', {})
 end
 
----Set in the correct global mod data table that the mortar is ready to shoot and reloaded
----@param args table Contains instanceID
-ClientCommands.DoReload = function(_, args)
-    -- TODO Add timer
-    local instance = MortarData.GetModData()[args.instanceID]
-    if instance == nil then return end
-    instance.isRoundInChamber = args.check
-
-    -- Exec a sync
-    MortarData.SyncTable()
-end
+-- ---Set in the correct global mod data table that the mortar is ready to shoot and reloaded
+-- ---@param args table Contains instanceID
+-- ClientCommands.DoReload = function(_, args)
+--     -- TODO Add timer
+--     local instance = MortarDataHandler.GetModData()[args.instanceID]
+--     if instance == nil then return end
+--     instance.isReloaded = args.check
+-- end
 
 
 
@@ -61,16 +57,7 @@ end
 
 
 
---* Global Mod Data syncing *--
-ClientCommands.UpdateInstances = function(playerObj, args)
-    print("Running update instances")
-    if MortarData == nil then return end
-    if MortarData.GetModData() == nil then return end
 
-    MortarData.GetModData()[args.id] = args.data
-    ModData.add(MortarCommonVars.MOD_ID, MortarData.GetModData())
-    ModData.transmit(MortarCommonVars.MOD_ID)
-end
 
 
 

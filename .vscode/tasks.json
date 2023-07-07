@@ -50,6 +50,24 @@
             "problemMatcher": [
                 "$eslint-stylish"
             ]
+        },
+        {
+            "label": "Run Zomboid Test Server",
+            "options": {"statusbar": {"label": "$(run) Zomboid Server (Custom)"}},
+            "type": "shell",
+            "command":"\"${config:zomboid_server_folder}\\StartServer64_nosteam_custom.bat\" ${input:servername}",
+            "problemMatcher": [
+                "$eslint-stylish"
+            ]
+        }
+    ],
+
+    "inputs": [
+        {
+            "id" : "servername",
+            "description": "Server name",
+            "default": "mortar",
+            "type": "promptString"
         }
     ]
 }

@@ -1,19 +1,46 @@
-local MortarData = {}
+-- The server will contain a table containing the currently instanced mortars
+local MODULE = 'Mortar-Data'
+local MortarServerData = {}
 
-function MortarData.GetModData()
-    return MortarData.modData
+function MortarServerData.GetModData()
+    return MortarServerData.modData
 end
 
-function MortarData.SyncTable()
+function MortarServerData.SyncTable()
     ModData.transmit(MortarCommonVars.MOD_ID)
 end
+
+local OnUpdateGlobalModData = function(module, command, playerObj, args)
+    --print("Mortar: Received command " .. command)
+    if module ~= MODULE then return end
+    
+    if command == 'UpdateInstances' then
+        --print("Running update instances")
+        if MortarServerData == nil then return end
+        if MortarServerData.GetModData() == nil then return end
+        MortarServerData.GetModData()[args.id] = args.data
+        ModData.add(MortarCommonVars.MOD_ID, MortarServerData.GetModData())
+        ModData.transmit(MortarCommonVars.MOD_ID)
+
+    end
+end
+
+
+Events.OnClientCommand.Add(OnUpdateGlobalModData)
+
+
+
+
+
+
+
 
 -----------------------------
 
 local function OnInitGlobalModData()
-    MortarData.modData = ModData.getOrCreate(MortarCommonVars.MOD_ID)
-    if MortarData.modData then
-        for key, v in pairs(MortarData.modData) do
+    MortarServerData.modData = ModData.getOrCreate(MortarCommonVars.MOD_ID)
+    if MortarServerData.modData then
+        for key, v in pairs(MortarServerData.modData) do
             print("MortarInfo: loading " .. tostring(key))
             print(v.tileX)
             print(v.tileY)
@@ -21,10 +48,10 @@ local function OnInitGlobalModData()
             print(v.isRoundInChamber)
         end
     else
-        MortarData.modData = {}
+        MortarServerData.modData = {}
     end
 end
 
 Events.OnInitGlobalModData.Add(OnInitGlobalModData)
 
-return MortarData
+return MortarServerData

@@ -1,4 +1,4 @@
-local MortarData = require("Mortar_ClientData")
+--local MortarData = require("Mortar_ClientData")
 local SpottersViewerPanel = require("Mortar_SpottersPanel")
 
 local MortarUI = ISCollapsableWindow:derive("MortarUI")
@@ -42,8 +42,9 @@ function MortarUI:new(x, y, width, height, coords)
     -- TODO Instead of a UUID or crap like that, fetch it from the synced table with a combination of the coordinates.
     -- X .. Y .. Z or something like this.
     o.coords = coords
+    o.id = MortarCommonFunctions.GetAssembledID(coords)
     o.mode = 'SPOT'
-    o.mortarInstance = MortarData.GetOrCreateInstance(coords)
+    o.mortarInstance = MortarDataHandler.GetOrCreateInstance(coords)
 
     MortarUI.instance = o
     return o
@@ -198,7 +199,7 @@ function MortarUI:update()
 
     if self.mortarInstance == nil then
         -- Check the server and fetch it again
-        self.mortarInstance = MortarData.GetOrCreateInstance(self.coords)
+        self.mortarInstance = MortarDataHandler.GetOrCreateInstance(self.coords)
         self.btnSetSpotter:setEnable(false)
         self.btnShoot:setEnable(false)
         self.btnReload:setEnable(false)
@@ -234,7 +235,7 @@ function MortarUI:update()
         self.openedPanel:setY(self:getBottom() - self:getHeight())
     end
 
-
+    MortarDataHandler.SyncData(self.id)     -- TODO Maybe sync it in a less aggressive way
     -- If player goes away from the mortar, close the window
     if MortarCommonFunctions.GetDistance2D(pl:getX(), pl:getY(), self.coords.x, self.coords.y) > MortarCommonVars.distSteps then
         self:close()
