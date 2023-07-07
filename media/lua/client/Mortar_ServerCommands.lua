@@ -1,5 +1,6 @@
 --==================================--
---[[ MORTAR MOD - SERVER COMMANDS ]]--
+--[[ MORTAR MOD - SERVER COMMANDS ]]
+                                     --
 --==================================--
 
 
@@ -12,7 +13,6 @@ local MortarShotHandler = require("Mortar_ShotHandler")
 --* Player Actions *--
 
 ServerCommands.DoMortarShot = function(args)
-
     -- TODO This doesn't make any fucking sense. We're from the spotter. We don't need to handle it from there
 
     -- local clientHandlerInstance = MortarHandler:GetInstance()
@@ -29,7 +29,6 @@ end
 -- Validation
 -------------------
 ServerCommands.updateBomberStatus = function(args)
-
     local player = getPlayer()
     local isValid = false
 
@@ -41,16 +40,14 @@ ServerCommands.updateBomberStatus = function(args)
 
     local clientHandlerInstance = MortarHandler:GetInstance()
 
-     -- Updates the MortarClientHandler on this side
+    -- Updates the MortarClientHandler on this side
     clientHandlerInstance:setIsBomberValid(isValid)
     clientHandlerInstance:setBomber(player)
     clientHandlerInstance:setSpotter(getPlayerByOnlineID(args.spotterId))
-    sendClientCommand(player, 'Mortar', 'sendUpdatedBomberStatus', {spotterId = args.spotterId, isValid = isValid})
-
+    sendClientCommand(player, 'Mortar', 'sendUpdatedBomberStatus', { spotterId = args.spotterId, isValid = isValid })
 end
 
 ServerCommands.updateSpotterStatus = function(args)
-
     -- We should resend AGAIN the status to the other player
     local player = getPlayer()
     local isValid = false
@@ -69,8 +66,7 @@ ServerCommands.updateSpotterStatus = function(args)
     clientHandlerInstance:setIsSpotterValid(isValid)
     clientHandlerInstance:setBomber(getPlayerByOnlineID(args.bomberId))
     clientHandlerInstance:setSpotter(player)
-    sendClientCommand(player, 'Mortar', 'sendUpdatedSpotterStatus', {bomberId = args.bomberId, isValid = isValid} )
-
+    sendClientCommand(player, 'Mortar', 'sendUpdatedSpotterStatus', { bomberId = args.bomberId, isValid = isValid })
 end
 
 ServerCommands.setUpdatedBomberValidation = function(args)
@@ -91,7 +87,6 @@ end
 ----------------
 
 ServerCommands.acceptMuzzleFlash = function(args)
-
     local pl = getPlayerByOnlineID(args.bomberId)
     if pl then
         pl:startMuzzleFlash()
@@ -99,15 +94,13 @@ ServerCommands.acceptMuzzleFlash = function(args)
 end
 
 ServerCommands.receiveBoomSound = function(args)
-
     local x = args.x
     local y = args.y
     local z = args.z
 
 
     local sq = getCell():getGridSquare(x, y, z)
-    getSoundManager():PlayWorldSound(tostring(MortarCommonVars.sounds[ZombRand(1,4)]), sq, 0, 5, 5, false)
-
+    getSoundManager():PlayWorldSound(tostring(MortarCommonVars.sounds[ZombRand(1, 4)]), sq, 0, 5, 5, false)
 end
 
 ----------------------------------------------

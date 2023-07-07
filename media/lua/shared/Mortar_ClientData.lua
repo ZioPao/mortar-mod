@@ -11,7 +11,7 @@ function MortarClientData.InitializeInstance(coords)
     MortarClientData.table[id] = MortarInstance:new(-1, -1, coords)
     if isClient() then
         sendClientCommand(getPlayer(), MortarCommonVars.MOD_ID, "UpdateInstances ",
-        { data = MortarClientData.table[id], id = id })
+            { data = MortarClientData.table[id], id = id })
     end
 end
 
@@ -21,7 +21,7 @@ function MortarClientData.SyncData(id)
     syncedTable[id] = MortarClientData.table[id]
     if isClient() then
         sendClientCommand(getPlayer(), MortarCommonVars.MOD_ID, "UpdateInstances ",
-        { data = MortarClientData.table[id], id = id })
+            { data = MortarClientData.table[id], id = id })
     end
 end
 
@@ -39,7 +39,6 @@ function MortarClientData.GetOrCreateInstance(coords)
     end
 end
 
-
 function MortarClientData.GetInstance(id)
     if MortarClientData.table[id] then
         return MortarClientData.table[id]
@@ -54,10 +53,9 @@ function MortarClientData.DestroyInstance(id)
     syncedTable[id] = nil
     if isClient() then
         sendClientCommand(getPlayer(), MortarCommonVars.MOD_ID, "UpdateInstances ",
-        { data = MortarClientData.table[id], id = id })
+            { data = MortarClientData.table[id], id = id })
     end
 end
-
 
 ---------------------
 local function CopyTable(tableA, tableB)

@@ -12,7 +12,7 @@ local function CreateMortarContextMenu(_, context, worldObjects, _)
     if worldObjects[1] == nil then return end
     local clickedObj = worldObjects[1]
     if clickedObj:getSprite() and MortarCommonFunctions.IsMortarSprite(clickedObj:getSprite():getName()) then
-        context:addOption(getText("UI_ContextMenu_OperateMortar"), clickedObj,OpenMortarPanel)
+        context:addOption(getText("UI_ContextMenu_OperateMortar"), clickedObj, OpenMortarPanel)
     end
 end
 

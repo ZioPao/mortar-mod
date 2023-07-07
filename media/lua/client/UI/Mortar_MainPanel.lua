@@ -120,7 +120,6 @@ function MortarUI:onClick(btn)
             self.mortarInstance:initializeSoloShot()
         else
             self.mortarInstance:initializeSpotShot()
-
         end
     elseif btn.internal == 'RELOAD' then
         self.btnReload:setEnable(false)

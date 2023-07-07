@@ -1,5 +1,6 @@
 --=========================================--
---[[ MORTAR MOD - BOMBER\SPOTTER HANDLER ]]--
+--[[ MORTAR MOD - BOMBER\SPOTTER HANDLER ]]
+                                            --
 --=========================================--
 
 
@@ -12,7 +13,7 @@
 
 
 local MortarClientHandler = {}
-local instance          -- Single instance of Clienthandler
+local instance -- Single instance of Clienthandler
 
 
 if MortarSyncedWeapons == nil then
@@ -22,7 +23,6 @@ end
 
 ------------------------------------
 function MortarClientHandler:new()
-
     print("Mortar: instancing new client handler")
 
     local o = {}
@@ -47,22 +47,18 @@ function MortarClientHandler:new()
 end
 
 function MortarClientHandler:instantiate(player, weaponInstance)
-
-    self.bomber = player      -- Set the bomber
+    self.bomber = player -- Set the bomber
     self.weaponInstance = weaponInstance
 
     Events.OnTick.Add(MortarClientHandler.ValidationCheckUpdate)
-
 end
 
-
 function MortarClientHandler:delete()
-
     print("MortarClientHandler: destroying instance")
     Events.OnTick.Remove(MortarClientHandler.ValidationCheckUpdate)
 
     if self.spotter then
-        sendClientCommand(getPlayer(), 'Mortar', 'sendResetSpotterClientHandler', {playerId = self.spotter:getOnlineID()})
+        sendClientCommand(getPlayer(), 'Mortar', 'sendResetSpotterClientHandler', { playerId = self.spotter:getOnlineID() })
     end
 
 
@@ -75,12 +71,12 @@ function MortarClientHandler:delete()
     self.tileX = nil
     self.tileY = nil
     self.tileZ = nil
-    
+
     self.weaponInstanceId = nil
 
     self.isBomberValid = false
     self.isSpotterValid = false
-    
+
     self.coordinates = nil
 
 
@@ -92,13 +88,11 @@ end
 --- Get or creates a new instance
 ---@return MortarClientHandler
 function MortarClientHandler.GetInstance()
-
     if instance then
         return instance
     else
         return MortarClientHandler:new()
     end
-
 end
 
 ------------------------------------
@@ -120,8 +114,8 @@ function MortarClientHandler:getSpotter()
     return self.spotter
 end
 
-function MortarClientHandler:setCoordinates(x,y)
-    self.coordinates = {x,y}
+function MortarClientHandler:setCoordinates(x, y)
+    self.coordinates = { x, y }
 end
 
 function MortarClientHandler:setWeaponInstance(weaponInstance)
@@ -129,16 +123,13 @@ function MortarClientHandler:setWeaponInstance(weaponInstance)
 end
 
 function MortarClientHandler:getTilesLocation()
-
-    return {self.tileX, self.tileY, self.tileZ}
-
+    return { self.tileX, self.tileY, self.tileZ }
 end
 
 -----------------------------------------
 -- Validation
 
 function MortarClientHandler:setIsBomberValid(check)
-
     self.isBomberValid = check
 end
 
@@ -147,7 +138,6 @@ function MortarClientHandler:setIsSpotterValid(check)
 end
 
 function MortarClientHandler.ValidationCheckUpdate()
-
     -- Agnostic, we don't care if it's the bomber or the spotter
 
     --print("Mortar: checking validation status")
@@ -166,40 +156,29 @@ function MortarClientHandler.ValidationCheckUpdate()
 end
 
 function MortarClientHandler:isAvailable()
-
     if self.bomber == nil then
         return true
     end
 
     return false
-
 end
 
-
-
-
-
-
 function MortarClientHandler.SpawnDebris(sq)
-
-    local dug = IsoObject.new(sq, "mortar_" .. ZombRand(63)-8, "", false)
+    local dug = IsoObject.new(sq, "mortar_" .. ZombRand(63) - 8, "", false)
     sq:AddTileObject(dug)
     if isClient() then
         dug:transmitCompleteItemToServer()
     end
-    
 end
-
 
 MortarClientHandler.explosionsTable = {
     count = 2,
-    tickDiff = 6,           -- TODO Make this a constant somewhere and make a func to "recreate" this table instead of just recreating it manually
+    tickDiff = 6, -- TODO Make this a constant somewhere and make a func to "recreate" this table instead of just recreating it manually
     objects = {}
 }
 
 
 function MortarClientHandler.SpawnExplosionTile(sq)
-
     -- Generate a NEW tile
     local explosionObject = IsoObject.new(sq, MortarCommonVars.burstTiles[1], "", false)
     sq:AddTileObject(explosionObject)
@@ -209,26 +188,17 @@ function MortarClientHandler.SpawnExplosionTile(sq)
 
     -- TODO This is not working ocrrectly, only one object gets added
     table.insert(MortarClientHandler.explosionsTable.objects, explosionObject)
-
 end
 
-
-
-
-
-
 function MortarClientHandler.UpdateExplosionTiles(_)
-
-
     MortarClientHandler.explosionsTable.tickDiff = MortarClientHandler.explosionsTable.tickDiff - 1
     local count = MortarClientHandler.explosionsTable.count
 
 
     if MortarClientHandler.explosionsTable.tickDiff <= 0 then
         for _, v in pairs(MortarClientHandler.explosionsTable.objects) do
-
             if count > 15 then
-                MortarCommonFunctions.DestroyTile(v)        -- FIXME Doesn't seem to work
+                MortarCommonFunctions.DestroyTile(v) -- FIXME Doesn't seem to work
             else
                 --print("MortarInfo: updating sprite for explosion, count " .. tostring(count))
                 local newTile = MortarCommonVars.burstTiles[count]
@@ -239,7 +209,6 @@ function MortarClientHandler.UpdateExplosionTiles(_)
 
                 v:transmitUpdatedSpriteToServer()
                 v:transmitUpdatedSpriteToClients()
-
             end
         end
         -- Update count and reset tickDiff
@@ -258,18 +227,10 @@ function MortarClientHandler.UpdateExplosionTiles(_)
             objects = {}
         }
     end
-
-
 end
 
-
-
-
 function TestMortarInstances()
-
     for uuid, weaponInstance in pairs(MortarSyncedWeapons) do
         print(uuid)
     end
-
 end
-

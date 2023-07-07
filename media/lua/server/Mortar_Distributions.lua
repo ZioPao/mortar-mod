@@ -18,11 +18,10 @@ local locations = {
 }
 --print(type(locations[1]))
 for i = 1, #locations do
-	table.insert(ProceduralDistributions.list[locations[i]].items, "MortarRound")
-	table.insert(ProceduralDistributions.list[locations[i]].items,  0.4)
-	-- table.insert(ProceduralDistributions.list[locations[i]].items, "MortarBinoculars")
-	-- table.insert(ProceduralDistributions.list[locations[i]].items,  0.1)
-	table.insert(ProceduralDistributions.list[locations[i]].items, "MortarWeapon")
-	table.insert(ProceduralDistributions.list[locations[i]].items,  0.08)
+  table.insert(ProceduralDistributions.list[locations[i]].items, "MortarRound")
+  table.insert(ProceduralDistributions.list[locations[i]].items, 0.4)
+  -- table.insert(ProceduralDistributions.list[locations[i]].items, "MortarBinoculars")
+  -- table.insert(ProceduralDistributions.list[locations[i]].items,  0.1)
+  table.insert(ProceduralDistributions.list[locations[i]].items, "MortarWeapon")
+  table.insert(ProceduralDistributions.list[locations[i]].items, 0.08)
 end
-

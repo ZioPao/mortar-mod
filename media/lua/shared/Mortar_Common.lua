@@ -7,29 +7,25 @@ end
 function MortarCommonFunctions.GetHitCoords(pl)
     local directions = MortarCommonVars.directions[tostring(pl:getDir())]
     local dist = ZombRand(MortarCommonVars.distMin, MortarCommonVars.distMax)
-    local hitCoords = {x = math.floor(pl:getX() + (directions[1] * dist)), y = math.floor(pl:getY() + (directions[2] * dist))}
+    local hitCoords = { x = math.floor(pl:getX() + (directions[1] * dist)),
+        y = math.floor(pl:getY() + (directions[2] * dist)) }
     return hitCoords
 end
 
 function MortarCommonFunctions.GetAssembledID(coords)
     return tostring(coords.x) .. tostring(coords.y) .. tostring(coords.z)
-
 end
 
 MortarCommonFunctions.GetDistance2D = function(x1, y1, x2, y2)
-    return math.sqrt(math.abs(x2 - x1)^2 + math.abs(y2 - y1)^2)
-
+    return math.sqrt(math.abs(x2 - x1) ^ 2 + math.abs(y2 - y1) ^ 2)
 end
 MortarCommonFunctions.RollChance = function(chance)
-
     local r = ZombRand(1, 101)
     if r <= chance then
         return true
     end
-    
+
     return false
-
-
 end
 MortarCommonFunctions.IsMortarSprite = function(spriteName)
     for _, v in pairs(MortarCommonVars.tiles) do
@@ -41,27 +37,24 @@ MortarCommonFunctions.IsMortarSprite = function(spriteName)
 end
 
 MortarCommonFunctions.GetHighestZ = function(cx, cy)
-	local cz = 8
-	for i = 0, 8-1  do
-		cz=cz-1
-		local check = getCell():getGridSquare(cx, cy, cz )
+    local cz = 8
+    for i = 0, 8 - 1 do
+        cz = cz - 1
+        local check = getCell():getGridSquare(cx, cy, cz)
 
-		if check and check:isSolidFloor() then
-			print(cz); print(check:isSolidFloor())
-			return cz
-		end
-	end
+        if check and check:isSolidFloor() then
+            print(cz); print(check:isSolidFloor())
+            return cz
+        end
+    end
 end
 
 MortarCommonFunctions.DestroyTile = function(tile)
-
     if isClient() then
-		sledgeDestroy(tile)
-	else
-		tile:getSquare():transmitRemoveItemFromSquare(tile)
-	end
-
-
+        sledgeDestroy(tile)
+    else
+        tile:getSquare():transmitRemoveItemFromSquare(tile)
+    end
 end
 -------------------------------------
 -- Validation checks
@@ -91,30 +84,28 @@ MortarCommonFunctions.CheckRadio = function(player_inventory)
         end
     end
     return false
-
 end
 
 
 MortarCommonFunctions.IsBomberValid = function(player)
     if player:isDriving() or player:getVehicle() then return false end
-    if player:HasTrait('ShortSighted')  then return false end
+    if player:HasTrait('ShortSighted') then return false end
     if not player:isOutside() then return false end
     if player:HasTrait('Deaf') then return false end
 
     if not player:isAsleep() then
         if MortarCommonFunctions.CheckRadio(player:getInventory()) then
             return true
-       end
+        end
     end
 
     return false
 end
 
 MortarCommonFunctions.IsSpotterValid = function(player)
-
     -- Should check traits AND inventory
     if player:isDriving() or player:getVehicle() then return false end
-    if player:HasTrait('ShortSighted')  then return false end
+    if player:HasTrait('ShortSighted') then return false end
 
 
     if not player:isAsleep() then
@@ -130,14 +121,12 @@ end
 ---@param pl1 IsoPlayer
 ---@param pl2 IsoPlayer
 MortarCommonFunctions.ArePlayersInSameFaction = function(pl1, pl2)
-
     local factions = Faction:getFactions()
 
     local pl1Username = pl1:getUsername()
     local pl2Username = pl2:getUsername()
 
-    for i=0, factions:size() - 1 do
-        
+    for i = 0, factions:size() - 1 do
         local faction = factions:get(i)
 
         if faction:isMember(pl1Username) or faction:isOwner(pl1Username) then
@@ -145,12 +134,9 @@ MortarCommonFunctions.ArePlayersInSameFaction = function(pl1, pl2)
                 return true
             end
         end
-
     end
 
     return false
-
-
 end
 
 --------------------------------
@@ -159,47 +145,44 @@ end
 function MortarCommonFunctions.GenerateUUID()
     -- Based on Aiteron's code
 
-    local seed = {'e','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'}
+    local seed = { 'e', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' }
 
     local tb = {}
-    for i=1, 32 do
-        table.insert(tb, seed[ZombRand(16)+1])
+    for i = 1, 32 do
+        table.insert(tb, seed[ZombRand(16) + 1])
     end
 
     local sid = table.concat(tb)
-    return string.format('%s-%s-%s-%s-%s', string.sub(sid, 1, 8), string.sub(sid,9,12),string.sub(sid,13,16),string.sub(sid,17,20),string.sub(sid,21,32))
-
+    return string.format('%s-%s-%s-%s-%s', string.sub(sid, 1, 8), string.sub(sid, 9, 12), string.sub(sid, 13, 16),
+        string.sub(sid, 17, 20), string.sub(sid, 21, 32))
 end
-
 
 --------------------------------------
 
 
 if MortarCommonVars == nil then
-
-
     MortarCommonVars = {}
-    
+
     MortarCommonVars.directions = {
-        ["N"] = {0, -1},
-        ["NE"] = {math.sqrt(2) / 2, -math.sqrt(2) / 2},
-        ["E"] = {1, 0},
-        ["SE"] = {math.sqrt(2) / 2, math.sqrt(2) / 2},
-        ["S"] = {0, 1},
-        ["SW"] = {-math.sqrt(2) / 2, math.sqrt(2) / 2},
-        ["W"] = {-1, 0},
-        ["NW"] = {-math.sqrt(2) / 2, -math.sqrt(2) / 2}
+        ["N"] = { 0, -1 },
+        ["NE"] = { math.sqrt(2) / 2, -math.sqrt(2) / 2 },
+        ["E"] = { 1, 0 },
+        ["SE"] = { math.sqrt(2) / 2, math.sqrt(2) / 2 },
+        ["S"] = { 0, 1 },
+        ["SW"] = { -math.sqrt(2) / 2, math.sqrt(2) / 2 },
+        ["W"] = { -1, 0 },
+        ["NW"] = { -math.sqrt(2) / 2, -math.sqrt(2) / 2 }
     }
 
     MortarCommonVars.tiles = {
-            ["N"] = "mortar_56",
-            ["NE"] = "mortar_57",
-            ["E"] = "mortar_58",
-            ["SE"] = "mortar_59",
-            ["S"] = "mortar_60",
-            ["SW"] = "mortar_61",
-            ["W"] = "mortar_62",
-            ["NW"] = "mortar_63",
+        ["N"] = "mortar_56",
+        ["NE"] = "mortar_57",
+        ["E"] = "mortar_58",
+        ["SE"] = "mortar_59",
+        ["S"] = "mortar_60",
+        ["SW"] = "mortar_61",
+        ["W"] = "mortar_62",
+        ["NW"] = "mortar_63",
     }
 
     MortarCommonVars.distMin = 12
@@ -212,28 +195,27 @@ if MortarCommonVars == nil then
         ['MortarBlast2'] = true,
         ['MortarBlast3'] = true,
     }
-    
+
 
     MortarCommonVars.burstTiles = {
-                "mortarburst_0",
-                "mortarburst_1",
-                "mortarburst_2",
-                "mortarburst_3",
-                "mortarburst_4",
-                "mortarburst_5",
-                "mortarburst_6",
-                "mortarburst_7",
-                "mortarburst_8",
-                "mortarburst_9",
-                "mortarburst_10",
-                "mortarburst_11",
-                "mortarburst_12",
-                "mortarburst_13",
-                "mortarburst_14"
+        "mortarburst_0",
+        "mortarburst_1",
+        "mortarburst_2",
+        "mortarburst_3",
+        "mortarburst_4",
+        "mortarburst_5",
+        "mortarburst_6",
+        "mortarburst_7",
+        "mortarburst_8",
+        "mortarburst_9",
+        "mortarburst_10",
+        "mortarburst_11",
+        "mortarburst_12",
+        "mortarburst_13",
+        "mortarburst_14"
     }
 
 
     MortarCommonVars.globalModDataId = "MORTAR_INFO"
     MortarCommonVars.MOD_ID = "Mortar"
-
 end

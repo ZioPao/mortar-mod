@@ -15,7 +15,6 @@ end
 ---Set in the correct global mod data table that the mortar is ready to shoot and reloaded
 ---@param args table Contains instanceID
 ClientCommands.DoReload = function(_, args)
-
     -- TODO Add timer
     local instance = MortarData.GetModData()[args.instanceID]
     if instance == nil then return end
@@ -80,9 +79,9 @@ end
 -- Reset Client Handlers
 --------------------------
 
- -- Wut
+-- Wut
 ClientCommands.ResetSpotterClientHandler = function(player, _)
-    sendServerCommand(player, MortarCommonVars.MOD_ID, 'ResetClientHandler', {} )
+    sendServerCommand(player, MortarCommonVars.MOD_ID, 'ResetClientHandler', {})
 end
 
 
