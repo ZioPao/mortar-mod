@@ -1,18 +1,19 @@
+local ShotHandler = require("Mortar_ShotHandler")
 local MortarInstance = {}
 
 ---comment
 ---@param operatorID number
 ---@param spotterID number
----@param coords table
+---@param position table
 ---@return table
-function MortarInstance:new(operatorID, spotterID, coords)
+function MortarInstance:new(operatorID, spotterID, position)
     local o = {}
     setmetatable(o, self)
     self.__index = self
 
     o.operatorID = operatorID
     o.spotterID = spotterID
-    o.coords = coords
+    o.position = position
 
     o.isOperatorValid = false
     o.isSpotterValid = false
@@ -34,8 +35,8 @@ function MortarInstance:getSpotterID()
     return self.spotterID
 end
 
-function MortarInstance:getCoords()
-    return self.coords
+function MortarInstance:getPosition()
+    return self.position
 end
 
 function MortarInstance:getIsReloaded()
@@ -64,8 +65,8 @@ function MortarInstance:setSpotter(spotterID)
     self.spotterID = spotterID
 end
 
-function MortarInstance:setCoords(coords)
-    self.coords = coords
+function MortarInstance:setPosition(position)
+    self.position = position
 end
 
 ---Set isReloaded value
@@ -82,7 +83,23 @@ end
 --************************--
 -- Actions
 
-function MortarInstance:initializeShot()
+function MortarInstance:initializeSoloShot()
+
+    local operatorPlayer
+
+    if isClient() then
+        operatorPlayer = getPlayerByOnlineID(self.operatorID)
+        sendClientCommand(operatorPlayer, MortarCommonVars.MOD_ID, 'SendShot', { spotterID = self.spotterID })
+    else
+        operatorPlayer = getPlayer()
+        local hitCoords = MortarCommonFunctions.GetHitCoords(operatorPlayer)
+        ShotHandler.Fire(self.coords, hitCoords)
+    end
+
+
+end
+
+function MortarInstance:initializeSpotShot()
     print("Mortar: Trying to fire")
 
     local spotterPlayer = getPlayerByOnlineID(self.spotterID)

@@ -6,6 +6,13 @@ if MortarCommonFunctions == nil then
     MortarCommonFunctions = {}
 end
 
+function MortarCommonFunctions.GetHitCoords(pl)
+    local directions = MortarCommonVars.directions[tostring(pl:getDir())]
+    local dist = ZombRand(MortarCommonVars.distMin, MortarCommonVars.distMax)
+    local hitCoords = {x = math.floor(pl:getX() + (directions[1] * dist)), y = math.floor(pl:getY() + (directions[2] * dist))}
+    return hitCoords
+end
+
 
 MortarCommonFunctions.GetDistance2D = function(x1, y1, x2, y2)
     return math.sqrt(math.abs(x2 - x1)^2 + math.abs(y2 - y1)^2)

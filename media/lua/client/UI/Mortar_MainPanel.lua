@@ -1,4 +1,4 @@
-local MODES = {'SOLO', 'SPOT'}
+local MODES = { 'SOLO', 'SPOT' }
 
 
 --local MortarClientHandler = require("Mortar_ClientHandler")
@@ -57,12 +57,12 @@ end
 function MortarUI:createChildren()
     ISCollapsableWindow.createChildren(self)
 
-    self.panelInfo = ISRichTextPanel:new(0, 20, self:getWidth(), self:getHeight()/4)
+    self.panelInfo = ISRichTextPanel:new(0, 20, self:getWidth(), self:getHeight() / 4)
     self.panelInfo.autosetheight = false
     self.panelInfo.background = true
-	self.panelInfo.backgroundColor = {r=0, g=0, b=0, a=0.5}
-    self.panelInfo.borderColor = {r=0.4, g=0.4, b=0.4, a=1}
-    self.panelInfo.marginTop = self.panelInfo:getHeight()/2
+    self.panelInfo.backgroundColor = { r = 0, g = 0, b = 0, a = 0.5 }
+    self.panelInfo.borderColor = { r = 0.4, g = 0.4, b = 0.4, a = 1 }
+    self.panelInfo.marginTop = self.panelInfo:getHeight() / 2
     self.panelInfo:initialise()
     self.panelInfo:paginate()
     self:addChild(self.panelInfo)
@@ -72,7 +72,7 @@ function MortarUI:createChildren()
     local xPadding = 10
     local yOffset = self.panelInfo:getBottom() + 10
 
-    local btnWidth = self:getWidth() - xPadding*2
+    local btnWidth = self:getWidth() - xPadding * 2
     local btnHeight = 25
 
     self.btnShoot = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Shoot', self, self.onClick)
@@ -83,7 +83,7 @@ function MortarUI:createChildren()
 
     yOffset = yOffset + self.btnShoot:getHeight() + 10
 
-    self.btnReload = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Reload', self, self.onClick )
+    self.btnReload = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Reload', self, self.onClick)
     self.btnReload.internal = "RELOAD"
     self.btnReload:initialise()
     self.btnReload:setEnable(false)
@@ -91,7 +91,7 @@ function MortarUI:createChildren()
 
     yOffset = yOffset + self.btnReload:getHeight() + 10
 
-    self.btnSetSpotter = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Set spotter', self, self.onClick )
+    self.btnSetSpotter = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Set spotter', self, self.onClick)
     self.btnSetSpotter.internal = "SET_SPOTTER"
     self.btnSetSpotter:initialise()
     self.btnSetSpotter:setEnable(true)
@@ -99,14 +99,16 @@ function MortarUI:createChildren()
 
     yOffset = yOffset + self.btnSetSpotter:getHeight() + 10
 
-    self.btnSwitchMode = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Switch Mode', self, self.onClick )
+    self.btnSwitchMode = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Switch Mode', self, self.onClick)
     self.btnSwitchMode.internal = "SWITCH_MODE"
     self.btnSwitchMode:initialise()
+    self.btnSwitchMode:setTooltip("Spot Mode")
     self.btnSwitchMode:setEnable(true)
     self:addChild(self.btnSwitchMode)
 
 
-    self.btnClose = ISButton:new(xPadding, self:getHeight() - btnHeight - 10, btnWidth, btnHeight, 'Close', self, self.onClick)
+    self.btnClose = ISButton:new(xPadding, self:getHeight() - btnHeight - 10, btnWidth, btnHeight, 'Close', self,
+        self.onClick)
     self.btnClose.internal = "EXIT"
     self.btnClose:initialise()
     self:addChild(self.btnClose)
@@ -115,13 +117,11 @@ function MortarUI:createChildren()
     -- local coordinates_label = ISLabel:new(100, 150, 80, "",1, 1, 1, 1, UIFont.Medium, false)
     -- coordinates_label:initialise()
     -- self:addChild(coordinates_label)
-
-
 end
 
 function MortarUI:onClick(btn)
     if btn.internal == 'SHOOT' then
-        self.mortarInstance:tryStartFiring()
+        self.mortarInstance:initializeShot()
     elseif btn.internal == 'RELOAD' then
         self.btnReload:setEnable(false)
         self.mortarInstance:reloadRound()
@@ -130,28 +130,26 @@ function MortarUI:onClick(btn)
     elseif btn.internal == 'SWITCH_MODE' then
         if self.mode == 'SOLO' then
             self.mode = 'SPOT'
+            self.btnSwitchMode:setTooltip("Spot Mode")
         else
             self.mode = 'SOLO'
+            self.btnSwitchMode:setTooltip("Solo Mode")
         end
     elseif btn.internal == 'EXIT' then
         self:close()
     end
-
 end
 
-
 function MortarUI:updateShootButton()
-
     if self.mode == 'SOLO' then
         if self.mortarInstance:getIsReloaded() then
             self.btnShoot:setEnable(true)
             self.btnShoot:setTooltip("Ready to shoot")
         end
-
     else
         local spotterID = self.mortarInstance:getSpotterID()
         local isReadyToShoot = self.mortarInstance:isReadyToShoot()
-    
+
         if spotterID == -1 then
             self.btnShoot:setEnable(false)
             self.btnShoot:setTooltip("You didn't set a spotter")
@@ -159,7 +157,6 @@ function MortarUI:updateShootButton()
             self.btnShoot:setEnable(isReadyToShoot)
         end
     end
-
 end
 
 function MortarUI:updateSetSpotterButton(plInv)
@@ -170,7 +167,6 @@ function MortarUI:updateSetSpotterButton(plInv)
         else
             self.btnSetSpotter:setEnable(false)
             self.btnSetSpotter:setTooltip("You don't have a radio to comunicate with spotters")
-    
         end
     else
         self.btnSetSpotter:setEnable(false)
@@ -181,7 +177,7 @@ end
 function MortarUI:updateReloadButton(shellsAmount)
     local isReloaded = self.mortarInstance:getIsReloaded()
     local isMidReloading = self.mortarInstance:getIsMidReloading()
-    local isShellInInventory = shellsAmount > 1
+    local isShellInInventory = shellsAmount > 0
 
     if isMidReloading then
         self.btnReload:setEnable(false)
@@ -189,17 +185,14 @@ function MortarUI:updateReloadButton(shellsAmount)
     elseif not isReloaded and isShellInInventory then
         self.btnReload:setEnable(true)
         self.btnReload:setTooltip("You've got %d shells in your inventory.")
-
-    elseif not isReloaded and not isShellInInventory  then
+    elseif not isReloaded and not isShellInInventory then
         self.btnReload:setEnable(false)
         self.btnReload:setTooltip(" <RED> You've got no shells left!")
-
     else
         self.btnReload:setEnable(false)
         self.btnReload:setTooltip(" <GREEN> Shell is in the mortar")
     end
 end
-
 
 function MortarUI:update()
     ISCollapsableWindow.update(self)
@@ -247,9 +240,6 @@ function MortarUI:update()
     if MortarCommonFunctions.GetDistance2D(pl:getX(), pl:getY(), self.coords.x, self.coords.y) > MortarCommonVars.distSteps then
         self:close()
     end
-
-
-
 end
 
 function MortarUI:setVisible(visible)
@@ -263,6 +253,5 @@ function MortarUI:close()
     self:removeFromUIManager()
     ISCollapsableWindow.close(self)
 end
-
 
 --return MortarUI

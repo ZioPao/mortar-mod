@@ -18,9 +18,8 @@ ServerCommands.DoMortarShot = function(args)
     -- local clientHandlerInstance = MortarHandler:GetInstance()
     -- clientHandlerInstance:startShooting()
     local pl = getPlayer()
-    local plCoords = {x = pl:getX(), y = pl:getY(), z = pl:getZ()}
-
-    MortarShotHandler.Fire(args.mortarPos, plCoords)
+    local hitCoords = MortarCommonFunctions.GetHitCoords(pl)
+    MortarShotHandler.Fire(args.mortarPos, hitCoords)
 end
 
 ----------------------------------
