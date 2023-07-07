@@ -94,6 +94,7 @@ function MortarInstance:initializeSoloShot()
         operatorPlayer = getPlayer()
         local hitCoords = MortarCommonFunctions.GetHitCoords(operatorPlayer)
         ShotHandler.Fire(self.coords, hitCoords)
+        self.isReloaded = false
     end
 
 

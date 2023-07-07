@@ -121,7 +121,12 @@ end
 
 function MortarUI:onClick(btn)
     if btn.internal == 'SHOOT' then
-        self.mortarInstance:initializeShot()
+        if self.mode == 'SOLO' then
+            self.mortarInstance:initializeSoloShot()
+        else
+            self.mortarInstance:initializeSpotShot()
+
+        end
     elseif btn.internal == 'RELOAD' then
         self.btnReload:setEnable(false)
         self.mortarInstance:reloadRound()
