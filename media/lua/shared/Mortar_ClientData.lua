@@ -16,6 +16,16 @@ function MortarClientData.InitializeInstance(coords)
 
 end
 
+function MortarClientData.SyncData(id)
+    ModData.request(MortarCommonVars.MOD_ID)
+    local syncedTable = ModData.get(MortarCommonVars.MOD_ID)
+    syncedTable[id] = MortarClientData.table[id]
+    if isClient() then
+        sendClientCommand(getPlayer(), MortarCommonVars.MOD_ID, "UpdateInstances ",
+        { data = MortarClientData.table[id], id = id })
+    end
+end
+
 ---If it returns nil, it means that we need to wait a bit in the UI before showing everything.
 ---@param coords any
 ---@return table?

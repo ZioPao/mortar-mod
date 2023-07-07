@@ -1,10 +1,12 @@
 local ShotHandler = require("Mortar_ShotHandler")
+local DataHandler = require("Mortar_ClientData")
+
 local MortarInstance = {}
 
----comment
+---Creates a new instance for a mortar
 ---@param operatorID number
 ---@param spotterID number
----@param position table
+---@param position table Used even for ID creation
 ---@return table
 function MortarInstance:new(operatorID, spotterID, position)
     local o = {}
@@ -20,6 +22,8 @@ function MortarInstance:new(operatorID, spotterID, position)
 
     o.isReloaded = false
     o.isMidReloading = false
+
+    o.id = tostring(position.x) .. tostring(position.y) .. tostring(position.z)
 
     MortarInstance.current = o
     return o
@@ -51,6 +55,7 @@ function MortarInstance:isReadyToShoot()
     return self.isReloadad and self.isOperatorValid and self.isSpotterValid
 end
 
+--************************--
 -- Setters
 
 ---Set operator ID
@@ -80,11 +85,11 @@ end
 function MortarInstance:setIsMidReloading(val)
     self.isMidReloading = val
 end
+
 --************************--
 -- Actions
 
 function MortarInstance:initializeSoloShot()
-
     local operatorPlayer
 
     if isClient() then
@@ -97,7 +102,7 @@ function MortarInstance:initializeSoloShot()
         self.isReloaded = false
     end
 
-
+    DataHandler.SyncData(self.id)
 end
 
 function MortarInstance:initializeSpotShot()
@@ -117,6 +122,7 @@ function MortarInstance:initializeSpotShot()
     if self.isSpotterValid and self.isOperatorValid then
         operatorPlayer:playEmote("_MortarClick")
         sendClientCommand(operatorPlayer, MortarCommonVars.MOD_ID, 'SendShot', { spotterID = self.spotterID })
+        DataHandler.SyncData(self.id)
     elseif self.isOperatorValid then
         operatorPlayer:Say("I can't reach my spotter anymore")
     else
@@ -132,6 +138,7 @@ function MortarInstance.HandleReloading()
     if cTime > MortarInstance.current.sTimeReload + 5 then
         MortarInstance.current:setIsReloaded(true)
         MortarInstance.current:setIsMidReloading(false)
+        DataHandler.SyncData(MortarInstance.current.id)
         Events.OnTick.Remove(MortarInstance.HandleReloading)
     end
 end
@@ -152,8 +159,10 @@ function MortarInstance:reloadRound()
     operatorPlayer:Say("Reloading...")
 
     self.sTimeReload = os.time()
-    self:setIsMidReloading(true)
+    self:setIsMidReloading(true) -- Local only.. Could be a problem, but it shouldn't be
     Events.OnTick.Add(MortarInstance.HandleReloading)
 end
+
+--************************--
 
 return MortarInstance

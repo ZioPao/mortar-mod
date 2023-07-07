@@ -25,23 +25,6 @@ end
 ----------------------------------
 
 
-
-
-
-
-
-
---------------------------
--- Reset Client Handlers
---------------------------
-ServerCommands.resetClientHandler = function(args)
-    local clientHandlerInstance = MortarHandler:GetInstance()
-    clientHandlerInstance:delete()
-
-end
-
-
-
 -------------------
 -- Validation
 -------------------
@@ -101,13 +84,6 @@ ServerCommands.setUpdatedSpotterValidation = function(args)
     local clientHandlerInstance = MortarHandler:GetInstance()
     clientHandlerInstance:setIsSpotterValid(args.isValid)
 end
-
-
---------------------------
--- Shooting logic
--------------------------
-
-
 
 
 ----------------
