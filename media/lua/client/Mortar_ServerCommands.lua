@@ -1,11 +1,142 @@
---==================================--
---[[ MORTAR MOD - SERVER COMMANDS ]]
-                                     --
---==================================--
+local SpotterCommands = {}
+
+function SpotterCommands.ReceiveNotification(args)
+    -- Start a loop to check if the player is
+
+    -- TODO Check if notification is already active.
+end
+
+function SpotterCommands.SendUpdatedStatus(args)
+    local spotter = getPlayer()
+    local status = MortarCommonFunctions.IsSpotterValid(spotter) and MortarCommonFunctions.CheckRadio(spotter:getInventory())
+    --print("Sending updated status = " .. tostring(status))
+
+    local operatorID = args.operatorID
+    sendClientCommand(spotter, MRT_COMMON.SERVER_SPOTTER_COMMAND, "RouteSpotterStatusToOperator",{ operatorID = operatorID, status = status })
+end
+
+--******************************************************--
+
+local OperatorCommands = {}
+local MortarUI = require("UI/Mortar_MainPanel")
+
+function OperatorCommands.NotifySelectedSpotter(args)
+    --print("Notify spotter command")
+    local operator = getPlayer()
+    local spotterID = args.spotterID
+
+    sendClientCommand(operator, MRT_COMMON.SERVER_COMMON_COMMAND, "RouteNotificationToSpotter", { spotterID = spotterID })
+end
+
+---Set the status of the spotter in MortarUI
+---@param args table status=boolean
+function OperatorCommands.ReceiveSpotterUpdate(args)
+    local status = args.status
+    --print("MortarUI: received updatate from spotter =" .. tostring(status))
+    if MortarUI and MortarUI.instance then
+        MortarUI.instance:setIsSpotterReady(args.status)
+    end
+end
+
+--******************************************************--
+
+local CommonCommands = {}
+local MortarShotHandler = require("Mortar_ShotHandler")
+
+---Sent to the operator or spotter, depending on the selected mode
+---@param _ any
+function CommonCommands.DoMortarShot(_)
+    local pl = getPlayer()
+    local hitCoords = MortarCommonFunctions.GetHitCoords(pl)
+    MortarShotHandler.Fire(hitCoords)
+end
+
+---Spawns muzzle flash in the operator position
+---@param args table
+function CommonCommands.ReceiveMuzzleFlash(args)
+    local pl = getPlayerByOnlineID(args.operatorID)
+    if pl then
+        pl:startMuzzleFlash()
+    end
+end
+
+---Start sound from mortar position
+---@param args table
+function CommonCommands.ReceiveBoomSound(args)
+    local x = args.x
+    local y = args.y
+    local z = args.z
+    local sq = getCell():getGridSquare(x, y, z)
+    getSoundManager():PlayWorldSound(tostring(MRT_COMMON.SOUNDS[ZombRand(1, 4)]), sq, 0, 5, 5, false)
+end
+
+
+-----------
+
+local function OnServerCommand(module, command, args)
+    args = args or {}
+
+    if module == MRT_COMMON.SPOTTER_COMMAND then
+        if SpotterCommands[command] then
+            SpotterCommands[command](args)
+        end
+    elseif module == MRT_COMMON.OPERATOR_COMMAND then
+        if OperatorCommands[command] then
+            OperatorCommands[command](args)
+        end
+    elseif module == MRT_COMMON.COMMON_COMMAND then
+        if CommonCommands[command] then
+            CommonCommands[command](args)
+        end
+    end
+end
+
+Events.OnServerCommand.Add(OnServerCommand)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 local ServerCommands = {}
-local MortarShotHandler = require("Mortar_ShotHandler")
 --local MortarHandler = require("Mortar_ClientHandler")
 
 
@@ -23,6 +154,12 @@ ServerCommands.DoMortarShot = function(args)
 end
 
 ----------------------------------
+
+
+ServerCommands.UpdateSpotterStatus = function(args)
+
+end
+
 
 
 -------------------
@@ -100,17 +237,17 @@ ServerCommands.receiveBoomSound = function(args)
 
 
     local sq = getCell():getGridSquare(x, y, z)
-    getSoundManager():PlayWorldSound(tostring(MortarCommonVars.sounds[ZombRand(1, 4)]), sq, 0, 5, 5, false)
+    getSoundManager():PlayWorldSound(tostring(MRT_COMMON.SOUNDS[ZombRand(1, 4)]), sq, 0, 5, 5, false)
 end
 
 ----------------------------------------------
-local function onServerCommand(module, command, args)
-    if module == 'Mortar' then
-        if ServerCommands[command] then
-            args = args or {}
-            ServerCommands[command](args)
-        end
-    end
-end
+-- local function onServerCommand(module, command, args)
+--     if module == 'Mortar' then
+--         if ServerCommands[command] then
+--             args = args or {}
+--             ServerCommands[command](args)
+--         end
+--     end
+-- end
 
-Events.OnServerCommand.Add(onServerCommand)
+-- Events.OnServerCommand.Add(onServerCommand)

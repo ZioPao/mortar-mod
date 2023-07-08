@@ -1,4 +1,3 @@
---local MortarData = require("Mortar_ClientData")
 local SpottersViewerPanel = require("UI/Mortar_SpottersPanel")
 
 local MortarUI = ISCollapsableWindow:derive("MortarUI")
@@ -43,12 +42,41 @@ function MortarUI:new(x, y, width, height, coords)
     -- X .. Y .. Z or something like this.
     o.coords = coords
     o.id = MortarCommonFunctions.GetAssembledID(coords)
-    o.mode = 'SPOT'
+    o.mode = MRT_COMMON.SPOT_MODE
     o.mortarInstance = MortarDataHandler.GetOrCreateInstance(coords)
+
+
+    -- Spotter related stuff
+    o.isSPotterReady = false
+    o.isOperatorReady = false
+
 
     MortarUI.instance = o
     return o
 end
+
+--------------------------------
+
+--* Getters *--
+function MortarUI:getIsOperatorReady()
+    return self.isOperatorReady
+end
+
+function MortarUI:getIsSpotterReady()
+    return self.isSpotterReady
+end
+
+--* Setters *--
+
+function MortarUI:setIsOperatorReady(isOperatorReady)
+    self.isOperatorReady = isOperatorReady
+end
+
+function MortarUI:setIsSpotterReady(isSpotterReady)
+    self.isSpotterReady = isSpotterReady
+end
+
+-------------------------------
 
 function MortarUI:createChildren()
     --ISCollapsableWindow.createChildren(self)
@@ -117,7 +145,7 @@ end
 
 function MortarUI:onClick(btn)
     if btn.internal == 'SHOOT' then
-        if self.mode == 'SOLO' then
+        if self.mode == MRT_COMMON.SOLO_MODE then
             self.mortarInstance:initializeSoloShot()
         else
             self.mortarInstance:initializeSpotShot()
@@ -126,14 +154,18 @@ function MortarUI:onClick(btn)
         self.btnReload:setEnable(false)
         self.mortarInstance:reloadRound()
     elseif btn.internal == 'SET_SPOTTER' then
-        self.openedPanel = SpottersViewerPanel.Open(self:getRight(), self:getBottom() - self:getHeight(),
-            self.mortarInstance)
+        if instanceof(self.openedPanel, 'ISCollapsableWindow') then
+            self.openedPanel:close()
+        else
+            self.openedPanel = SpottersViewerPanel.Open(self:getRight(), self:getBottom() - self:getHeight(),
+                self.mortarInstance)
+        end
     elseif btn.internal == 'SWITCH_MODE' then
-        if self.mode == 'SOLO' then
-            self.mode = 'SPOT'
+        if self.mode == MRT_COMMON.SOLO_MODE then
+            self.mode = MRT_COMMON.SPOT_MODE
             --self.btnSwitchMode:setTooltip("Spot Mode")
         else
-            self.mode = 'SOLO'
+            self.mode = MRT_COMMON.SOLO_MODE
             --self.btnSwitchMode:setTooltip("Solo Mode")
         end
     elseif btn.internal == 'EXIT' then
@@ -142,19 +174,19 @@ function MortarUI:onClick(btn)
 end
 
 function MortarUI:updateShootButton()
-    if self.mode == 'SOLO' then
+    if self.mode == MRT_COMMON.SOLO_MODE then
         self.btnShoot:setEnable(self.mortarInstance:getIsReloaded())
         self.btnShoot:setTooltip(nil)
     else
         local spotterID = self.mortarInstance:getSpotterID()
-        local isReadyToShoot = self.mortarInstance:isReadyToShoot()
 
         if spotterID == -1 then
             self.btnShoot:setEnable(false)
             self.btnShoot:setTooltip("You didn't set a spotter")
         else
-            self.btnShoot:setEnable(isReadyToShoot)
-            if not isReadyToShoot then
+            local isReady = self.mortarInstance:getIsReloaded() and self:getIsOperatorReady() and self:getIsSpotterReady()
+            self.btnShoot:setEnable(isReady)
+            if not isReady then
                 self.btnShoot:setTooltip("Spotter not ready or no shell in the mortar")
             else
                 self.btnShoot:setTooltip(nil)
@@ -163,9 +195,9 @@ function MortarUI:updateShootButton()
     end
 end
 
-function MortarUI:updateSetSpotterButton(plInv)
-    if self.mode == 'SPOT' then
-        if MortarCommonFunctions.CheckRadio(plInv) then
+function MortarUI:updateSetSpotterButton()
+    if self.mode == MRT_COMMON.SPOT_MODE then
+        if self:getIsOperatorReady() then
             self.btnSetSpotter:setEnable(true)
             self.btnSetSpotter:setTooltip("Select the spotter. They must be in your same faction")
         else
@@ -198,6 +230,27 @@ function MortarUI:updateReloadButton(shellsAmount)
     end
 end
 
+function MortarUI:updateOperatorStatus(opInventory)
+    -- Check if he has a radio, if it's in SPOT mode
+
+    if self.mode == MRT_COMMON.SPOT_MODE then
+        self:setIsOperatorReady(MortarCommonFunctions.CheckRadio(opInventory))
+    else
+        self:setIsOperatorReady(true)
+    end
+end
+
+function MortarUI:updateSpotterStatus()
+    local spotterID = self.mortarInstance:getSpotterID()
+    if spotterID == -1 then
+        -- TODO Set no spotter
+        self:setIsSpotterReady(false)
+    else
+        -- TODO This should be run every once in a while, not constantly
+        sendClientCommand(getPlayer(), MRT_COMMON.SERVER_OPERATOR_COMMAND, 'AskSpotterStatus', {spotterID = spotterID})
+    end
+end
+
 function MortarUI:updateCloseButton()
     local isMidReloading = self.mortarInstance:getIsMidReloading()
 
@@ -214,7 +267,7 @@ function MortarUI:updateInfoPanel(shellsAmount)
     local info = ""
 
 
-    if self.mode == 'SPOT' then
+    if self.mode == MRT_COMMON.SPOT_MODE then
         local spotterUsername = "-------"
         local spotterID = self.mortarInstance:getSpotterID()
         if spotterID ~= -1 then
@@ -222,8 +275,8 @@ function MortarUI:updateInfoPanel(shellsAmount)
             spotterUsername = spotterPl:getUsername()
         end
 
-        local spotterInfo = " <CENTRE> <SIZE:medium> Spotter: %s"
-        spotterInfo = string.format(spotterInfo, spotterUsername)
+        local spotterInfo = " <CENTRE> <SIZE:medium> Spotter: %s <LINE> <CENTRE> Spotter Status: %s"
+        spotterInfo = string.format(spotterInfo, spotterUsername, tostring(self:getIsSpotterReady()))
 
         info = spotterInfo .. " <LINE> "
     end
@@ -271,14 +324,17 @@ function MortarUI:update()
 
     -- Set operator again
     self.mortarInstance:setOperator(plID)
+    self:updateOperatorStatus(inv)
 
+    -- Update spotter status
+    self:updateSpotterStatus()
 
     -- Updates Info Panel
     self:updateInfoPanel(shellsAmount)
 
 
     -- Check if player has an active radio, then he can set the spotter
-    self:updateSetSpotterButton(inv)
+    self:updateSetSpotterButton()
     self:updateShootButton()
     self:updateReloadButton(shellsAmount)
     self:updateCloseButton()
@@ -290,7 +346,7 @@ function MortarUI:update()
     end
 
     -- If player goes away from the mortar, close the window
-    if MortarCommonFunctions.GetDistance2D(pl:getX(), pl:getY(), self.coords.x, self.coords.y) > MortarCommonVars.distSteps then
+    if MortarCommonFunctions.GetDistance2D(pl:getX(), pl:getY(), self.coords.x, self.coords.y) > MRT_COMMON.DIST_STEPS then
         self:close()
     end
 end

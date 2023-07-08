@@ -58,10 +58,6 @@ function MortarInstance:getIsMidReloading()
     return self.dataTable.isMidReloading
 end
 
-function MortarInstance:isReadyToShoot()
-    return self.dataTable.isReloadad and self.dataTable.isOperatorValid and self.dataTable.isSpotterValid
-end
-
 --************************--
 -- Setters
 
@@ -125,19 +121,11 @@ function MortarInstance:initializeSpotShot()
         operatorPlayer:Say("I don't have a spotter right now")
         return
     end
+    operatorPlayer:playEmote("_MortarClick")
+    sendClientCommand(operatorPlayer, MortarCommonVars.MOD_ID, 'SendShot', { spotterID = self.spotterID })
+    self:setIsReloaded(false)
+    MortarDataHandler.SyncData(self.id)
 
-    -- Checks if spotter is valid
-    if self.dataTable.isSpotterValid and self.dataTable.isOperatorValid then
-        operatorPlayer:playEmote("_MortarClick")
-        sendClientCommand(operatorPlayer, MortarCommonVars.MOD_ID, 'SendShot', { spotterID = self.spotterID })
-        self:setIsReloaded(false)
-        MortarDataHandler.SyncData(self.id)
-    elseif self.dataTable.isOperatorValid then
-        operatorPlayer:Say("I can't reach my spotter anymore")
-    else
-        -- Not even the bomber is valid
-        operatorPlayer:Say("I think I'm missing something")
-    end
 end
 
 function MortarInstance.HandleReloading()

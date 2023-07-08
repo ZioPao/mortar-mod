@@ -1,15 +1,92 @@
-local ClientCommands = {}
+local SpotterCommands = {}
 
+function SpotterCommands.RouteSpotterStatusToOperator(_, args)
+    --print("Received spotter status, = " .. tostring(args.status))
+    --print(args.operatorID)
+    local operatorID = args.operatorID
+    local status = args.status
+    local operatorPl = getPlayerByOnlineID(operatorID)
+    sendServerCommand(operatorPl, MRT_COMMON.OPERATOR_COMMAND, 'ReceiveSpotterUpdate', { status = status })
+end
+
+--******************************************************--
+
+local OperatorCommands = {}
+
+---comment
+---@param operatorObj IsoPlayer
+---@param args any
+function OperatorCommands.AskSpotterStatus(operatorObj, args)
+    --print("Asking spotter status")
+    local spotterID = args.spotterID
+    local operatorID = operatorObj:getOnlineID()
+    local spotterPl = getPlayerByOnlineID(spotterID)
+    sendServerCommand(spotterPl, MRT_COMMON.SPOTTER_COMMAND, 'SendUpdatedStatus', {operatorID = operatorID})
+end
+
+function OperatorCommands.RouteNotificationToSpotter(_, args)
+    local spotterID = args.spotterID
+    local spotterPl = getPlayerByOnlineID(spotterID)
+    sendServerCommand(spotterPl, MRT_COMMON.SPOTTER_COMMAND, 'ReceiveNotification', {})
+end
+
+---Send the shot to the correct player, who may be a spotter or the operator
+---@param args table Contains spotterID, mode
+OperatorCommands.SendShot = function(playerObj, args)
+    local mode = args.mode
+    if mode == MRT_COMMON.SOLO_MODE then
+        sendServerCommand(playerObj, MRT_COMMON.COMMON_COMMAND, 'DoMortarShot', {})
+    else
+        local spotter = getPlayerByOnlineID(args.spotterID)
+        sendServerCommand(spotter, MRT_COMMON.COMMON_COMMAND, 'DoMortarShot', {})
+    end
+end
+
+--******************************************************--
+
+
+local CommonCommands = {}
+
+---Send to every client a muzzle flash, coming from the operator
+---@param args table contains operatorID
+function CommonCommands.SendMuzzleFlash(_, args)
+    sendServerCommand(MRT_COMMON.COMMON_COMMAND, 'AcceptMuzzleFlash', { operatorID = args.operatorID })
+end
+
+------------
+
+local OnClientCommand = function(module, command, playerObj, args)
+    if module == MRT_COMMON.SERVER_SPOTTER_COMMAND then
+        if SpotterCommands[command] then
+            SpotterCommands[command](playerObj, args)
+        end
+    elseif module == MRT_COMMON.SERVER_OPERATOR_COMMAND then
+        if OperatorCommands[command] then
+            OperatorCommands[command](playerObj, args)
+        end
+    elseif module == MRT_COMMON.SERVER_COMMON_COMMAND then
+        if CommonCommands[command] then
+            CommonCommands[command](playerObj, args)
+        end
+    end
+end
+
+
+Events.OnClientCommand.Add(OnClientCommand)
+
+
+
+
+
+
+-------------------------------------------------
+
+local ClientCommands = {}
 
 --* Operator only methods *--
 
 ---Send a shot to the spotter client
----@param args table Contains spotterID
-ClientCommands.SendShot = function(_, args)
-    local spotter = getPlayerByOnlineID(args.spotterID)
-    if spotter == nil then return end
-    sendServerCommand(spotter, MortarCommonVars.MOD_ID, 'DoMortarShot', {})
-end
+
 
 -- ---Set in the correct global mod data table that the mortar is ready to shoot and reloaded
 -- ---@param args table Contains instanceID
@@ -23,72 +100,20 @@ end
 
 
 
-
-
-
-
-
-
---* Spotter only methods *--
-
-
-
-
-
-
-
-
----------------------------------------
---* Status updates *--
----Sent by the operator
----@param operator IsoPlayer
----@param args any
-ClientCommands.SendOperatorStatus = function(operator, args)
-
-end
-
-
----Sent by the spotter
----@param spotter IsoPlayer
----@param args any
-ClientCommands.SendSpotterStatus = function(spotter, args)
-
-end
-
-
-
-
-
-
-
-
---------------------------
--- Reset Client Handlers
---------------------------
-
--- Wut
-ClientCommands.ResetSpotterClientHandler = function(player, _)
-    sendServerCommand(player, MortarCommonVars.MOD_ID, 'ResetClientHandler', {})
-end
-
-
-
-
---------------------------
--- Weapon instance handling
---------------------------
-ClientCommands.generateMortarWeaponInstance = function(player, args)
-    local x = args.x
-    local y = args.y
-    local z = args.z
-    local sq = getCell():getGridSquare(x, y, z)
-    MortarWeapon.TryCreateNewInstance(sq)
-end
-
-
 --------------------
 -- Validation checks
 --------------------
+
+ClientCommands.AskSpotterStatus = function(playerObj, args)
+    local spotterID = args.spotterID
+    local operatorID = args.operatorID
+    local spotterPl = getPlayerByOnlineID(spotterID)
+    sendServerCommand(spotterPl, MortarCommonVars.MOD_ID, "UpdateSpotterStatus", { operatorID = operatorID })
+end
+
+
+
+
 
 ClientCommands.checkValidationStatus = function(player, args)
     local bomberId = args.bomberId
@@ -125,37 +150,6 @@ ClientCommands.sendMortarShot = function(player, args)
 end
 
 
---------------------
--- Reload
--------------------
-ClientCommands.updateReloadStatus = function(player, args)
-    print("Mortar: updating reload status")
-    local weaponInstanceId = args.instanceId
-    print("Weapon Instance id: " .. weaponInstanceId)
-    local correctInstance
-
-    if weaponInstanceId then
-        for uuid, v in pairs(MortarWeapon.instances) do
-            print("Checking this uuid: " .. uuid)
-            if uuid == weaponInstanceId then
-                correctInstance = v
-            end
-        end
-
-
-        if correctInstance ~= nil then
-            correctInstance.isRoundInChamber = args.check
-            print("Updated instance")
-        else
-            print("Couldnt find WeaponInstance")
-        end
-    else
-        print("Weapon instance id is null, cant reload")
-    end
-end
-
-
-
 ----------------
 -- Cosmetic stuff
 ---------------
@@ -169,13 +163,3 @@ ClientCommands.sendBoomSound = function(player, args)
 end
 
 ------------------------------------------------
-
-local OnClientCommand = function(module, command, playerObj, args)
-    --print("Mortar: Received command " .. command)
-    if module == MortarCommonVars.MOD_ID and ClientCommands[command] then
-        ClientCommands[command](playerObj, args)
-    end
-end
-
-
-Events.OnClientCommand.Add(OnClientCommand)

@@ -5,8 +5,8 @@ if MortarCommonFunctions == nil then
 end
 
 function MortarCommonFunctions.GetHitCoords(pl)
-    local directions = MortarCommonVars.directions[tostring(pl:getDir())]
-    local dist = ZombRand(MortarCommonVars.distMin, MortarCommonVars.distMax)
+    local directions = MRT_COMMON.DIRECTIONS[tostring(pl:getDir())]
+    local dist = ZombRand(MRT_COMMON.DIST_MIN, MRT_COMMON.DIST_MAX)
     local hitCoords = { x = math.floor(pl:getX() + (directions[1] * dist)),
         y = math.floor(pl:getY() + (directions[2] * dist)) }
     return hitCoords
@@ -139,26 +139,81 @@ MortarCommonFunctions.ArePlayersInSameFaction = function(pl1, pl2)
     return false
 end
 
---------------------------------
--- Various
--------------------------------
-function MortarCommonFunctions.GenerateUUID()
-    -- Based on Aiteron's code
-
-    local seed = { 'e', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' }
-
-    local tb = {}
-    for i = 1, 32 do
-        table.insert(tb, seed[ZombRand(16) + 1])
-    end
-
-    local sid = table.concat(tb)
-    return string.format('%s-%s-%s-%s-%s', string.sub(sid, 1, 8), string.sub(sid, 9, 12), string.sub(sid, 13, 16),
-        string.sub(sid, 17, 20), string.sub(sid, 21, 32))
-end
 
 --------------------------------------
 
+MRT_COMMON = {
+
+    DIRECTIONS = {
+        ["N"] = { 0, -1 },
+        ["NE"] = { math.sqrt(2) / 2, -math.sqrt(2) / 2 },
+        ["E"] = { 1, 0 },
+        ["SE"] = { math.sqrt(2) / 2, math.sqrt(2) / 2 },
+        ["S"] = { 0, 1 },
+        ["SW"] = { -math.sqrt(2) / 2, math.sqrt(2) / 2 },
+        ["W"] = { -1, 0 },
+        ["NW"] = { -math.sqrt(2) / 2, -math.sqrt(2) / 2 }
+    },
+
+    TILES = {
+        ["N"] = "mortar_56",
+        ["NE"] = "mortar_57",
+        ["E"] = "mortar_58",
+        ["SE"] = "mortar_59",
+        ["S"] = "mortar_60",
+        ["SW"] = "mortar_61",
+        ["W"] = "mortar_62",
+        ["NW"] = "mortar_63",
+    },
+
+    BURST_TILES = {
+        "mortarburst_0",
+        "mortarburst_1",
+        "mortarburst_2",
+        "mortarburst_3",
+        "mortarburst_4",
+        "mortarburst_5",
+        "mortarburst_6",
+        "mortarburst_7",
+        "mortarburst_8",
+        "mortarburst_9",
+        "mortarburst_10",
+        "mortarburst_11",
+        "mortarburst_12",
+        "mortarburst_13",
+        "mortarburst_14"
+    },
+
+    DIST_MIN = 12,
+    DIST_MAX = 30,
+    DIST_STEPS = 2,
+    RAD = 8,
+
+
+    SOUNDS = {
+        ['MortarBlast1'] = true,
+        ['MortarBlast2'] = true,
+        ['MortarBlast3'] = true,
+    },
+
+
+    SOLO_MODE = 'SOLO',
+    SPOT_MODE = 'SPOT',
+
+    MOD_ID = 'Mortar',
+    SPOTTER_COMMAND = 'Mortar-Spotter',
+    OPERATOR_COMMAND = 'Mortar-Operator',
+    COMMON_COMMAND = 'Mortar-Common',
+
+    SERVER_COMMON_COMMAND = 'Mortar-Common-Server',
+    SERVER_SPOTTER_COMMAND = 'Mortar-Spotter-Server',
+    SERVER_OPERATOR_COMMAND = 'Mortar-Operator-Server',
+
+
+}
+
+
+-- TODO Refactor this
 
 if MortarCommonVars == nil then
     MortarCommonVars = {}
@@ -218,4 +273,16 @@ if MortarCommonVars == nil then
 
     MortarCommonVars.globalModDataId = "MORTAR_INFO"
     MortarCommonVars.MOD_ID = "Mortar"
+
+
+
+
+    MortarCommonVars.SPOTTER_COMMAND = MortarCommonVars.MOD_ID .. "-Spotter"
+    MortarCommonVars.OPERATOR_COMMAND = MortarCommonVars.MOD_ID .. "-Operator"
+    MortarCommonVars.COMMON_COMMAND = MortarCommonVars.MOD_ID .. '-Common'
+
+    MortarCommonVars.SERVER_COMMON_COMMAND = MortarCommonVars.COMMON_COMMAND .. '-Server'
+    MortarCommonVars.SERVER_SPOTTER_COMMAND = MortarCommonVars.SPOTTER_COMMAND .. '-Server'
+    MortarCommonVars.SERVER_OPERATOR_COMMAND = MortarCommonVars.OPERATOR_COMMAND .. '-Server'
+
 end

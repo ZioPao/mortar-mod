@@ -45,16 +45,16 @@ function MortarShotHandler.CheckExplosionRad(ogCoords, currCoords, rad)
 end
 
 ---Main function which handles shooting from a mortar.
----@param mortarPos table x,y,z
 ---@param hitCoords table x,y,z
-function MortarShotHandler.Fire(mortarPos, hitCoords)
+function MortarShotHandler.Fire(hitCoords)
     local rad = ZombRand(3, MortarCommonVars.rad)
     local z = MortarCommonFunctions.GetHighestZ(hitCoords.x, hitCoords.y)
 
     --self:generateShot(coords.x, coords.y, z, finalRad)
 
     local cell = getWorld():getCell()
-    sendClientCommand(getPlayer(), MortarCommonVars.MOD_ID, 'sendMuzzleFlash', { operatorID = getPlayer():getOnlineID() })
+    local pl = getPlayer()
+    sendClientCommand(pl, MRT_COMMON.SERVER_COMMON_COMMAND, 'SendMuzzleFlash', {operatorID = pl:getOnlineID() })
 
     for x = hitCoords.x - rad, hitCoords.x + rad + 1 do
         for y = hitCoords.y - rad, hitCoords.y + rad + 1 do
