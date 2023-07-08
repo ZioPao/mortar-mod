@@ -6,13 +6,19 @@ function SpotterCommands.ReceiveNotification(args)
     -- TODO Check if notification is already active.
 end
 
+---Send an updated status from the Spotter to the server
+---@param args table operatorID=number
 function SpotterCommands.SendUpdatedStatus(args)
-    local spotter = getPlayer()
-    local status = MortarCommonFunctions.IsSpotterValid(spotter) and MortarCommonFunctions.CheckRadio(spotter:getInventory())
-    --print("Sending updated status = " .. tostring(status))
-
+    local spotterObj = getPlayer()
     local operatorID = args.operatorID
-    sendClientCommand(spotter, MRT_COMMON.SERVER_SPOTTER_COMMAND, "RouteSpotterStatusToOperator",{ operatorID = operatorID, status = status })
+    local operatorObj = getPlayerByOnlineID(operatorID)
+
+    local distanceCheck = MortarCommon.CheckDistance(spotterObj, operatorObj)
+    local isSpotterValid = MortarCommon.IsSpotterValid(spotterObj)
+    local radioCheck = MortarCommon.CheckRadio(spotterObj:getInventory())
+
+    local status = distanceCheck and isSpotterValid and radioCheck
+    sendClientCommand(spotterObj, MRT_COMMON.SERVER_SPOTTER_COMMAND, "RouteSpotterStatusToOperator",{ operatorID = operatorID, status = status })
 end
 
 --******************************************************--
@@ -47,7 +53,7 @@ local MortarShotHandler = require("Mortar_ShotHandler")
 ---@param _ any
 function CommonCommands.DoMortarShot(_)
     local pl = getPlayer()
-    local hitCoords = MortarCommonFunctions.GetHitCoords(pl)
+    local hitCoords = MortarCommon.GetHitCoords(pl)
     MortarShotHandler.Fire(hitCoords)
 end
 
@@ -149,7 +155,7 @@ ServerCommands.DoMortarShot = function(args)
     -- local clientHandlerInstance = MortarHandler:GetInstance()
     -- clientHandlerInstance:startShooting()
     local pl = getPlayer()
-    local hitCoords = MortarCommonFunctions.GetHitCoords(pl)
+    local hitCoords = MortarCommon.GetHitCoords(pl)
     MortarShotHandler.Fire(args.mortarPos, hitCoords)
 end
 
@@ -169,8 +175,8 @@ ServerCommands.updateBomberStatus = function(args)
     local player = getPlayer()
     local isValid = false
 
-    if MortarCommonFunctions.IsBomberValid(player) then
-        if MortarCommonFunctions.CheckRadio(player:getInventory()) then
+    if MortarCommon.IsBomberValid(player) then
+        if MortarCommon.CheckRadio(player:getInventory()) then
             isValid = true
         end
     end
@@ -190,8 +196,8 @@ ServerCommands.updateSpotterStatus = function(args)
     local isValid = false
 
 
-    if MortarCommonFunctions.IsSpotterValid(player) then
-        if MortarCommonFunctions.CheckRadio(player:getInventory()) then
+    if MortarCommon.IsSpotterValid(player) then
+        if MortarCommon.CheckRadio(player:getInventory()) then
             isValid = true
         end
     end

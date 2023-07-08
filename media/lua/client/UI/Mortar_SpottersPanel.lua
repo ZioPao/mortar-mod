@@ -159,7 +159,7 @@ function SpottersScrollingTable:initList(module)
     for i = 0, module:size() - 1 do
         local pl = module:get(i)
         local username = pl:getUsername()
-        if pl ~= currPlayer and MortarCommonFunctions.ArePlayersInSameFaction(currPlayer, pl) then
+        if pl ~= currPlayer and MortarCommon.ArePlayersInSameFaction(currPlayer, pl) then
             self.datas:addItem(username, pl)
         end
     end

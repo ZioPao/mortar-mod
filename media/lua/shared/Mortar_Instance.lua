@@ -100,7 +100,7 @@ function MortarInstance:initializeSoloShot()
         sendClientCommand(operatorPlayer, MortarCommonVars.SERVER_OPERATOR_COMMAND, 'SendShot', { shooterID = self.dataTable.operatorID })
     else
         operatorPlayer = getPlayer()
-        local hitCoords = MortarCommonFunctions.GetHitCoords(operatorPlayer)
+        local hitCoords = MortarCommon.GetHitCoords(operatorPlayer)
         ShotHandler.Fire(hitCoords)
     end
 

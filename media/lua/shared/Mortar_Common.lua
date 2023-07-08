@@ -1,10 +1,10 @@
 -- TODO Clean this crap
 
-if MortarCommonFunctions == nil then
-    MortarCommonFunctions = {}
+if MortarCommon == nil then
+    MortarCommon = {}
 end
 
-function MortarCommonFunctions.GetHitCoords(pl)
+function MortarCommon.GetHitCoords(pl)
     local directions = MRT_COMMON.DIRECTIONS[tostring(pl:getDir())]
     local dist = ZombRand(MRT_COMMON.DIST_MIN, MRT_COMMON.DIST_MAX)
     local hitCoords = { x = math.floor(pl:getX() + (directions[1] * dist)),
@@ -12,14 +12,22 @@ function MortarCommonFunctions.GetHitCoords(pl)
     return hitCoords
 end
 
-function MortarCommonFunctions.GetAssembledID(coords)
+---Check if the distance between spotter and operator is acceptable
+---@param player1 IsoPlayer
+---@param player2 IsoPlayer
+---@return boolean
+function MortarCommon.CheckDistance(player1, player2)
+    return player1:getDistanceSq(player2) < MRT_COMMON.WALKIE_TALKIE_RANGE
+end
+
+function MortarCommon.GetAssembledID(coords)
     return tostring(coords.x) .. tostring(coords.y) .. tostring(coords.z)
 end
 
-MortarCommonFunctions.GetDistance2D = function(x1, y1, x2, y2)
+MortarCommon.GetDistance2D = function(x1, y1, x2, y2)
     return math.sqrt(math.abs(x2 - x1) ^ 2 + math.abs(y2 - y1) ^ 2)
 end
-MortarCommonFunctions.RollChance = function(chance)
+MortarCommon.RollChance = function(chance)
     local r = ZombRand(1, 101)
     if r <= chance then
         return true
@@ -27,7 +35,7 @@ MortarCommonFunctions.RollChance = function(chance)
 
     return false
 end
-MortarCommonFunctions.IsMortarSprite = function(spriteName)
+MortarCommon.IsMortarSprite = function(spriteName)
     for _, v in pairs(MortarCommonVars.tiles) do
         if tostring(spriteName) == v then
             return true
@@ -36,7 +44,7 @@ MortarCommonFunctions.IsMortarSprite = function(spriteName)
     return false
 end
 
-MortarCommonFunctions.GetHighestZ = function(cx, cy)
+MortarCommon.GetHighestZ = function(cx, cy)
     local cz = 8
     for i = 0, 8 - 1 do
         cz = cz - 1
@@ -49,7 +57,7 @@ MortarCommonFunctions.GetHighestZ = function(cx, cy)
     end
 end
 
-MortarCommonFunctions.DestroyTile = function(tile)
+MortarCommon.DestroyTile = function(tile)
     if isClient() then
         sledgeDestroy(tile)
     else
@@ -60,7 +68,7 @@ end
 -- Validation checks
 
 
-MortarCommonFunctions.CheckRadio = function(player_inventory)
+MortarCommon.CheckRadio = function(player_inventory)
     local items = player_inventory:getItems()
 
     local radio
@@ -87,14 +95,14 @@ MortarCommonFunctions.CheckRadio = function(player_inventory)
 end
 
 
-MortarCommonFunctions.IsBomberValid = function(player)
+MortarCommon.IsBomberValid = function(player)
     if player:isDriving() or player:getVehicle() then return false end
     if player:HasTrait('ShortSighted') then return false end
     if not player:isOutside() then return false end
     if player:HasTrait('Deaf') then return false end
 
     if not player:isAsleep() then
-        if MortarCommonFunctions.CheckRadio(player:getInventory()) then
+        if MortarCommon.CheckRadio(player:getInventory()) then
             return true
         end
     end
@@ -102,14 +110,14 @@ MortarCommonFunctions.IsBomberValid = function(player)
     return false
 end
 
-MortarCommonFunctions.IsSpotterValid = function(player)
+MortarCommon.IsSpotterValid = function(player)
     -- Should check traits AND inventory
     if player:isDriving() or player:getVehicle() then return false end
     if player:HasTrait('ShortSighted') then return false end
 
 
     if not player:isAsleep() then
-        if MortarCommonFunctions.CheckRadio(player:getInventory()) then
+        if MortarCommon.CheckRadio(player:getInventory()) then
             return true
         end
     end
@@ -120,7 +128,7 @@ end
 --- Check if both the players are in the same faction
 ---@param pl1 IsoPlayer
 ---@param pl2 IsoPlayer
-MortarCommonFunctions.ArePlayersInSameFaction = function(pl1, pl2)
+MortarCommon.ArePlayersInSameFaction = function(pl1, pl2)
     local factions = Faction:getFactions()
 
     local pl1Username = pl1:getUsername()
@@ -189,6 +197,7 @@ MRT_COMMON = {
     DIST_STEPS = 2,
     RAD = 8,
 
+    WALKIE_TALKIE_RANGE = 300,
 
     SOUNDS = {
         ['MortarBlast1'] = true,

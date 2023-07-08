@@ -3,10 +3,10 @@ local DataHandler = require("Mortar_DataHandler")
 --- When we pick up a mortar, we need to get its shell (if it has any) and delete its instance in Global Mod Data
 ---@param obj IsoObject
 local function HandleRemovedMortar(obj)
-    if not MortarCommonFunctions.IsMortarSprite(obj:getSprite():getName()) then return end
+    if not MortarCommon.IsMortarSprite(obj:getSprite():getName()) then return end
 
     local coords = { x = obj:getX(), y = obj:getY(), z = obj:getZ() }
-    local id = MortarCommonFunctions.GetAssembledID(coords)
+    local id = MortarCommon.GetAssembledID(coords)
 
     local instance = DataHandler.GetInstance(id)
 

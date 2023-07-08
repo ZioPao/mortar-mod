@@ -28,7 +28,7 @@ end
 ---@return string
 function MortarShotHandler.GetRandomCommand()
     local vanillaCommand = 'addFireOnSquare'
-    if MortarCommonFunctions.RollChance(20) then
+    if MortarCommon.RollChance(20) then
         vanillaCommand = 'addSmokeOnSquare'
     end
 
@@ -48,7 +48,7 @@ end
 ---@param hitCoords table x,y,z
 function MortarShotHandler.Fire(hitCoords)
     local rad = ZombRand(3, MortarCommonVars.rad)
-    local z = MortarCommonFunctions.GetHighestZ(hitCoords.x, hitCoords.y)
+    local z = MortarCommon.GetHighestZ(hitCoords.x, hitCoords.y)
 
     --self:generateShot(coords.x, coords.y, z, finalRad)
 
@@ -72,12 +72,12 @@ function MortarShotHandler.Fire(hitCoords)
 
             -- Fire or smoke
             local command = MortarShotHandler.GetRandomCommand()
-            if MortarCommonFunctions.RollChance(60) then
+            if MortarCommon.RollChance(60) then
                 sendClientCommand(getPlayer(), 'object', command, { x = x, y = y, z = z })
             end
 
             -- Debris and explosions spawning
-            if MortarCommonFunctions.RollChance(40) then
+            if MortarCommon.RollChance(40) then
                 MortarShotHandler.SpawnDebris(sq)
                 -- TODO Add explosion thing
             end

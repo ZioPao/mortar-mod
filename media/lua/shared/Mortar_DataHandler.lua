@@ -14,7 +14,7 @@ MORTAR_DATA_TABLE = {}
 ---@return MortarInstance
 function MortarDataHandler.InitializeInstance(coords)
     print("Initialize instance")
-    local id = MortarCommonFunctions.GetAssembledID(coords)
+    local id = MortarCommon.GetAssembledID(coords)
 
     local newData = {operatorID = -1, spotterID = -1, position = {x=coords.x, y=coords.y, z=coords.z}}
     MORTAR_DATA_TABLE[id] = newData
@@ -50,7 +50,7 @@ end
 ---@return table?
 function MortarDataHandler.GetOrCreateInstance(coords)
     -- Fetch from global mod data
-    local id = MortarCommonFunctions.GetAssembledID(coords)
+    local id = MortarCommon.GetAssembledID(coords)
 
     local modDataRef = MORTAR_DATA_TABLE
     local instance

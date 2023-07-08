@@ -41,7 +41,7 @@ function MortarUI:new(x, y, width, height, coords)
     -- TODO Instead of a UUID or crap like that, fetch it from the synced table with a combination of the coordinates.
     -- X .. Y .. Z or something like this.
     o.coords = coords
-    o.id = MortarCommonFunctions.GetAssembledID(coords)
+    o.id = MortarCommon.GetAssembledID(coords)
     o.mode = MRT_COMMON.SPOT_MODE
     o.mortarInstance = MortarDataHandler.GetOrCreateInstance(coords)
 
@@ -234,7 +234,7 @@ function MortarUI:updateOperatorStatus(opInventory)
     -- Check if he has a radio, if it's in SPOT mode
 
     if self.mode == MRT_COMMON.SPOT_MODE then
-        self:setIsOperatorReady(MortarCommonFunctions.CheckRadio(opInventory))
+        self:setIsOperatorReady(MortarCommon.CheckRadio(opInventory))
     else
         self:setIsOperatorReady(true)
     end
@@ -346,7 +346,7 @@ function MortarUI:update()
     end
 
     -- If player goes away from the mortar, close the window
-    if MortarCommonFunctions.GetDistance2D(pl:getX(), pl:getY(), self.coords.x, self.coords.y) > MRT_COMMON.DIST_STEPS then
+    if MortarCommon.GetDistance2D(pl:getX(), pl:getY(), self.coords.x, self.coords.y) > MRT_COMMON.DIST_STEPS then
         self:close()
     end
 end
