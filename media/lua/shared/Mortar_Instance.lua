@@ -97,11 +97,11 @@ function MortarInstance:initializeSoloShot()
 
     if isClient() then
         operatorPlayer = getPlayerByOnlineID(self.dataTable.operatorID)
-        sendClientCommand(operatorPlayer, MortarCommonVars.MOD_ID, 'SendShot', { spotterID = self.dataTable.operatorID })
+        sendClientCommand(operatorPlayer, MortarCommonVars.SERVER_OPERATOR_COMMAND, 'SendShot', { shooterID = self.dataTable.operatorID })
     else
         operatorPlayer = getPlayer()
         local hitCoords = MortarCommonFunctions.GetHitCoords(operatorPlayer)
-        ShotHandler.Fire(self.dataTable.position, hitCoords)
+        ShotHandler.Fire(hitCoords)
     end
 
     self:setIsReloaded(false)
@@ -122,7 +122,7 @@ function MortarInstance:initializeSpotShot()
         return
     end
     operatorPlayer:playEmote("_MortarClick")
-    sendClientCommand(operatorPlayer, MortarCommonVars.MOD_ID, 'SendShot', { spotterID = self.spotterID })
+    sendClientCommand(operatorPlayer, MRT_COMMON.SERVER_OPERATOR_COMMAND, 'SendShot', { shooterID = self.dataTable.spotterID })
     self:setIsReloaded(false)
     MortarDataHandler.SyncData(self.id)
 

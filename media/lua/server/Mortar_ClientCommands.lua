@@ -31,15 +31,11 @@ function OperatorCommands.RouteNotificationToSpotter(_, args)
 end
 
 ---Send the shot to the correct player, who may be a spotter or the operator
----@param args table Contains spotterID, mode
-OperatorCommands.SendShot = function(playerObj, args)
-    local mode = args.mode
-    if mode == MRT_COMMON.SOLO_MODE then
-        sendServerCommand(playerObj, MRT_COMMON.COMMON_COMMAND, 'DoMortarShot', {})
-    else
-        local spotter = getPlayerByOnlineID(args.spotterID)
-        sendServerCommand(spotter, MRT_COMMON.COMMON_COMMAND, 'DoMortarShot', {})
-    end
+---@param args table Contains shooterID
+function OperatorCommands.SendShot(_, args)
+    local shooterID = args.shooterID
+    local shooterPl = getPlayerByOnlineID(shooterID)
+    sendServerCommand(shooterPl, MRT_COMMON.COMMON_COMMAND, 'DoMortarShot', {})
 end
 
 --******************************************************--
@@ -56,6 +52,7 @@ end
 ------------
 
 local OnClientCommand = function(module, command, playerObj, args)
+    args = args or {}
     if module == MRT_COMMON.SERVER_SPOTTER_COMMAND then
         if SpotterCommands[command] then
             SpotterCommands[command](playerObj, args)
