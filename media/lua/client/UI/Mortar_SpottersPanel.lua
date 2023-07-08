@@ -26,10 +26,12 @@ local ENTRY_HGT = FONT_HGT_MEDIUM + 2 * 2
 
 local SpottersViewerPanel = ISCollapsableWindow:derive("SpottersViewerPanel")
 
+local isOpen = false
+
 function SpottersViewerPanel.Open(x, y, instance)
-    if SpottersViewerPanel.instance then
+    if isOpen then
         SpottersViewerPanel.instance:close()
-        return      -- Force close it if it already exists
+        return
     end
 
     local modal = SpottersViewerPanel:new(x, y, 350, 500)
@@ -37,6 +39,7 @@ function SpottersViewerPanel.Open(x, y, instance)
     modal:addToUIManager()
     modal:setMortarInstance(instance)
     modal.instance:setKeyboardFocus()
+    isOpen = true
 
 
     return modal
@@ -57,6 +60,7 @@ function SpottersViewerPanel:new(x, y, width, height)
 
     return o
 end
+
 
 function SpottersViewerPanel:setMortarInstance(instance)
     self.mortarInstance = instance
@@ -113,6 +117,7 @@ function SpottersViewerPanel:update()
 end
 
 function SpottersViewerPanel:close()
+    isOpen = false
     self:setVisible(false)
     self:removeFromUIManager()
 end

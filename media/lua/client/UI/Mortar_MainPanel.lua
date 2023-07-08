@@ -109,7 +109,7 @@ function MortarUI:createChildren()
     self.panelLeftInfo:paginate()
     self:addChild(self.panelLeftInfo)
 
-    self.panelRightInfo = ISRichTextPanel:new(0, self:getWidth()/2, self:getWidth()/2, self:getHeight() / 4)
+    self.panelRightInfo = ISRichTextPanel:new(self:getWidth()/2, 20, self:getWidth()/2, self:getHeight() / 4)
     self.panelRightInfo.autosetheight = false
     self.panelRightInfo.background = true
     self.panelRightInfo.backgroundColor = { r = 0, g = 0, b = 0, a = 0.5 }
@@ -122,7 +122,7 @@ function MortarUI:createChildren()
     -----------------------
 
     local xPadding = 10
-    local yOffset = self.panelInfo:getBottom() + 10
+    local yOffset = self.panelLeftInfo:getBottom() + 10
 
     local btnWidth = self:getWidth() - xPadding * 2
     local btnHeight = 25
@@ -322,7 +322,7 @@ function MortarUI:updateInfoPanel(shellsAmount)
 
     --* RIGHT PANEL *--
 
-    local rightText = "<SIZE:large> <CENTRE> "
+    local rightText = "<SIZE:large> "
 
     if self.mortarInstance:getIsMidReloading() then
         rightText = rightText .. "<RED> RELOADING!"
@@ -333,10 +333,10 @@ function MortarUI:updateInfoPanel(shellsAmount)
 
     if self.mode == MRT_COMMON.SPOT_MODE then
 
-        if self.mortarInstance:getIsSpotterReady() then
-            rightText = rightText .. "<LINE> SPOTTER READY"
+        if self:getIsSpotterReady() then
+            rightText = rightText .. "<BR> <GREEN> SPOTTER READY"
         else
-            rightText = rightText .. "<LINE> SPOTTER NOT READY"
+            rightText = rightText .. "<BR> <RED> SPOTTER NOT READY"
 
         end
     end
@@ -390,8 +390,8 @@ function MortarUI:update()
         self.btnShoot:setEnable(false)
         self.btnReload:setEnable(false)
 
-        self.panelInfo:setText(" <CENTRE> <RED> MORTAR NOT AVAILABLE")
-        self.panelInfo.textDirty = true
+        self.panelRightInfo:setText(" <CENTRE> <RED> MORTAR NOT AVAILABLE")
+        self.panelRightInfo.textDirty = true
         return
     end
 

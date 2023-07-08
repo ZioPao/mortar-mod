@@ -197,7 +197,7 @@ MRT_COMMON = {
     DIST_STEPS = 2,
     RAD = 8,
 
-    WALKIE_TALKIE_RANGE = 300,
+    WALKIE_TALKIE_RANGE = 30000,        -- it's not in sq... not sure why
 
     SOUNDS = {
         ['MortarBlast1'] = true,
