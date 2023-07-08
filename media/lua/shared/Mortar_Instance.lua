@@ -74,6 +74,7 @@ end
 --************************--
 -- Actions
 
+---Handles the delayed shot after the click has happened
 function MortarInstance.HandleShotDelay()
     local sTime = MortarInstance.current.sTimeShot
     local timeToLand = MortarInstance.current.timeToLand
@@ -95,6 +96,8 @@ function MortarInstance.HandleShotDelay()
     end
 end
 
+---Main function to handle shots
+---@param mode string
 function MortarInstance:initializeShot(mode)
     self:setIsReloaded(false)
     MortarDataHandler.SyncData(self.id)
@@ -114,6 +117,7 @@ function MortarInstance:initializeShot(mode)
     Events.OnTick.Add(MortarInstance.HandleShotDelay)
 end
 
+---Handle a solo shot
 function MortarInstance:initializeSoloShot()
     local operatorPlayer
 
@@ -128,6 +132,7 @@ function MortarInstance:initializeSoloShot()
     end
 end
 
+---Handle a spot shot
 function MortarInstance:initializeSpotShot()
     --print("Mortar: Trying to fire")
 
@@ -145,6 +150,9 @@ function MortarInstance:initializeSpotShot()
         { shooterID = self.dataTable.spotterID })
 end
 
+---------------------------
+
+---Handle the loop to reload a mortar
 function MortarInstance.HandleReloading()
     -- 5 secs
     local cTime = os.time()
@@ -177,6 +185,7 @@ function MortarInstance:reloadRound()
 
     operatorPlayer:Say("Reloading...")
     operatorPlayer:setBlockMovement(true)
+    operatorPlayer:setVariable("EmotePlaying", true) -- Mistake by Umbrella
     operatorPlayer:playEmote("MortalReload")
 
     self.sTimeReload = os.time()

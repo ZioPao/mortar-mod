@@ -3,8 +3,6 @@ local DataHandler = require("Mortar_DataHandler")
 --- When we pick up a mortar, we need to get its shell (if it has any) and delete its instance in Global Mod Data
 ---@param obj IsoObject
 local function HandleRemovedMortar(obj)
-    if not MortarCommon.IsMortarSprite(obj:getSprite():getName()) then return end
-
     local coords = { x = obj:getX(), y = obj:getY(), z = obj:getZ() }
     local id = MortarCommon.GetAssembledID(coords)
 
@@ -18,21 +16,18 @@ local function HandleRemovedMortar(obj)
         end
 
         DataHandler.DestroyInstance(id)
-    else
-        print("Didn't found instance")
     end
 end
 
 local ogISMoveableSpritePropsPickUpMoveable = ISMoveableSpriteProps.pickUpMoveable
 
 function ISMoveableSpriteProps:pickUpMoveable(_character, _square, _createItem, _forceAllow)
-    print("Pick Up Moveable")
     if self.isMoveable and instanceof(_character, "IsoGameCharacter") and instanceof(_square, "IsoGridSquare") then
-        local obj, sprInstance = self:findOnSquare(_square, self.spriteName)
-        HandleRemovedMortar(obj)
+        local obj, _ = self:findOnSquare(_square, self.spriteName)
+        if obj ~= nil and MortarCommon.IsMortarSprite(obj:getSprite():getName()) then
+            HandleRemovedMortar(obj)
+        end
     end
 
     ogISMoveableSpritePropsPickUpMoveable(self, _character, _square, _createItem, _forceAllow)
 end
-
---Events.OnTileRemoved.Add(HandleRemovedMortar)
