@@ -37,7 +37,7 @@ MortarCommon.RollChance = function(chance)
 end
 
 MortarCommon.IsMortarSprite = function(spriteName)
-    for _, v in pairs(MortarCommonVars.tiles) do
+    for _, v in pairs(MRT_COMMON.tiles) do
         if tostring(spriteName) == v then
             return true
         end
@@ -220,76 +220,3 @@ MRT_COMMON = {
 
 
 }
-
-
-if MortarCommonVars == nil then
-    MortarCommonVars = {}
-
-    MortarCommonVars.directions = {
-        ["N"] = { 0, -1 },
-        ["NE"] = { math.sqrt(2) / 2, -math.sqrt(2) / 2 },
-        ["E"] = { 1, 0 },
-        ["SE"] = { math.sqrt(2) / 2, math.sqrt(2) / 2 },
-        ["S"] = { 0, 1 },
-        ["SW"] = { -math.sqrt(2) / 2, math.sqrt(2) / 2 },
-        ["W"] = { -1, 0 },
-        ["NW"] = { -math.sqrt(2) / 2, -math.sqrt(2) / 2 }
-    }
-
-    MortarCommonVars.tiles = {
-        ["N"] = "mortar_56",
-        ["NE"] = "mortar_57",
-        ["E"] = "mortar_58",
-        ["SE"] = "mortar_59",
-        ["S"] = "mortar_60",
-        ["SW"] = "mortar_61",
-        ["W"] = "mortar_62",
-        ["NW"] = "mortar_63",
-    }
-
-    MortarCommonVars.distMin = 12
-    MortarCommonVars.distMax = 30
-    MortarCommonVars.distSteps = 2
-    MortarCommonVars.rad = 8
-
-    MortarCommonVars.sounds = {
-        ['MortarBlast1'] = true,
-        ['MortarBlast2'] = true,
-        ['MortarBlast3'] = true,
-    }
-
-
-    MortarCommonVars.burstTiles = {
-        "mortarburst_0",
-        "mortarburst_1",
-        "mortarburst_2",
-        "mortarburst_3",
-        "mortarburst_4",
-        "mortarburst_5",
-        "mortarburst_6",
-        "mortarburst_7",
-        "mortarburst_8",
-        "mortarburst_9",
-        "mortarburst_10",
-        "mortarburst_11",
-        "mortarburst_12",
-        "mortarburst_13",
-        "mortarburst_14"
-    }
-
-
-    MortarCommonVars.globalModDataId = "MORTAR_INFO"
-    MortarCommonVars.MOD_ID = "Mortar"
-
-
-
-
-    MortarCommonVars.SPOTTER_COMMAND = MortarCommonVars.MOD_ID .. "-Spotter"
-    MortarCommonVars.OPERATOR_COMMAND = MortarCommonVars.MOD_ID .. "-Operator"
-    MortarCommonVars.COMMON_COMMAND = MortarCommonVars.MOD_ID .. '-Common'
-
-    MortarCommonVars.SERVER_COMMON_COMMAND = MortarCommonVars.COMMON_COMMAND .. '-Server'
-    MortarCommonVars.SERVER_SPOTTER_COMMAND = MortarCommonVars.SPOTTER_COMMAND .. '-Server'
-    MortarCommonVars.SERVER_OPERATOR_COMMAND = MortarCommonVars.OPERATOR_COMMAND .. '-Server'
-
-end

@@ -190,10 +190,8 @@ function MortarUI:onClick(btn)
     elseif btn.internal == 'SWITCH_MODE' then
         if self.mode == MRT_COMMON.SOLO_MODE then
             self.mode = MRT_COMMON.SPOT_MODE
-            --self.btnSwitchMode:setTooltip("Spot Mode")
         else
             self.mode = MRT_COMMON.SOLO_MODE
-            --self.btnSwitchMode:setTooltip("Solo Mode")
         end
     elseif btn.internal == 'EXIT' then
         self:close()
@@ -222,6 +220,7 @@ function MortarUI:updateShootButton()
     end
 end
 
+--- Check if player has an active radio, then he can set the spotter
 function MortarUI:updateSetSpotterButton()
     if self.mode == MRT_COMMON.SPOT_MODE then
         if self:getIsOperatorReady() then
@@ -411,7 +410,7 @@ function MortarUI:update()
     self:updateInfoPanel(shellsAmount)
 
 
-    -- Check if player has an active radio, then he can set the spotter
+    -- Updates the various buttons
     self:updateSetSpotterButton()
     self:updateShootButton()
     self:updateReloadButton(shellsAmount)

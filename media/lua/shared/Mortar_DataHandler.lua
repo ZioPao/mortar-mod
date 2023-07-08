@@ -30,8 +30,8 @@ end
 ---@param id any
 function MortarDataHandler.SyncData(id)
     print("Syncing Data for instance " .. tostring(id))
-    ModData.request(MortarCommonVars.MOD_ID)
-    local syncedTable = ModData.get(MortarCommonVars.MOD_ID)
+    ModData.request(MRT_COMMON.MOD_ID)
+    local syncedTable = ModData.get(MRT_COMMON.MOD_ID)
     syncedTable[id] = MORTAR_DATA_TABLE[id]
     if isClient() then
         sendClientCommand(getPlayer(), MODULE, "UpdateInstances",
@@ -41,8 +41,8 @@ end
 
 -- Gets the updated table from the server
 function MortarDataHandler.ForceSync()
-    ModData.request(MortarCommonVars.MOD_ID)
-    MORTAR_DATA_TABLE = ModData.get(MortarCommonVars.MOD_ID)
+    ModData.request(MRT_COMMON.MOD_ID)
+    MORTAR_DATA_TABLE = ModData.get(MRT_COMMON.MOD_ID)
 end
 
 ---If it returns nil, it means that we need to wait a bit in the UI before showing everything.
@@ -76,8 +76,8 @@ function MortarDataHandler.GetInstance(id)
 end
 
 function MortarDataHandler.DestroyInstance(id)
-    ModData.request(MortarCommonVars.MOD_ID)
-    local syncedTable = ModData.get(MortarCommonVars.MOD_ID)
+    ModData.request(MRT_COMMON.MOD_ID)
+    local syncedTable = ModData.get(MRT_COMMON.MOD_ID)
     syncedTable[id] = nil
     if isClient() then
         sendClientCommand(getPlayer(), MODULE, "UpdateInstances",
@@ -104,13 +104,13 @@ end
 
 local function ReceiveGlobalModData(key, data)
     print("Received global mod data")
-    if key == MortarCommonVars.MOD_ID then
+    if key == MRT_COMMON.MOD_ID then
         --Creating a deep copy of recieved data and storing it in local store CLIENT_GLOBALMODDATA table
         CopyTable(MORTAR_DATA_TABLE, data)
     end
 
     --Update global mod data with local table (from global_mod_data.bin)
-    ModData.add(MortarCommonVars.MOD_ID, MORTAR_DATA_TABLE)
+    ModData.add(MRT_COMMON.MOD_ID, MORTAR_DATA_TABLE)
 end
 
 Events.OnReceiveGlobalModData.Add(ReceiveGlobalModData)

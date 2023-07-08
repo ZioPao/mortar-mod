@@ -7,7 +7,7 @@ function MortarServerData.GetModData()
 end
 
 function MortarServerData.SyncTable()
-    ModData.transmit(MortarCommonVars.MOD_ID)
+    ModData.transmit(MRT_COMMON.MOD_ID)
 end
 
 local OnUpdateGlobalModData = function(module, command, playerObj, args)
@@ -19,8 +19,8 @@ local OnUpdateGlobalModData = function(module, command, playerObj, args)
         if MortarServerData == nil then return end
         if MortarServerData.GetModData() == nil then return end
         MortarServerData.GetModData()[args.id] = args.data
-        ModData.add(MortarCommonVars.MOD_ID, MortarServerData.GetModData())
-        ModData.transmit(MortarCommonVars.MOD_ID)
+        ModData.add(MRT_COMMON.MOD_ID, MortarServerData.GetModData())
+        ModData.transmit(MRT_COMMON.MOD_ID)
     end
 end
 
@@ -37,7 +37,7 @@ Events.OnClientCommand.Add(OnUpdateGlobalModData)
 -----------------------------
 
 local function OnInitGlobalModData()
-    MortarServerData.modData = ModData.getOrCreate(MortarCommonVars.MOD_ID)
+    MortarServerData.modData = ModData.getOrCreate(MRT_COMMON.MOD_ID)
     if MortarServerData.modData then
         for key, v in pairs(MortarServerData.modData) do
             print("MortarInfo: loading " .. tostring(key))

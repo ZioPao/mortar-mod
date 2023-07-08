@@ -138,7 +138,7 @@ function MortarInstance:initializeSoloShot()
 
     if isClient() then
         operatorPlayer = getPlayerByOnlineID(self.dataTable.operatorID)
-        sendClientCommand(operatorPlayer, MortarCommonVars.SERVER_OPERATOR_COMMAND, 'SendShot',
+        sendClientCommand(operatorPlayer, MRT_COMMON.SERVER_OPERATOR_COMMAND, 'SendShot',
             { shooterID = self.dataTable.operatorID })
     else
         operatorPlayer = getPlayer()
