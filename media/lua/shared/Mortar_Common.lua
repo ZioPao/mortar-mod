@@ -209,7 +209,8 @@ MRT_COMMON = {
     SOLO_MODE = 'SOLO',
     SPOT_MODE = 'SPOT',
 
-    MOD_ID = 'Mortar',
+    GLOBAL_MOD_DATA = 'Mortar-Data',
+
     SPOTTER_COMMAND = 'Mortar-Spotter',
     OPERATOR_COMMAND = 'Mortar-Operator',
     COMMON_COMMAND = 'Mortar-Common',

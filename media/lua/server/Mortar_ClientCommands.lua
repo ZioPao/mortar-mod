@@ -1,8 +1,9 @@
 local SpotterCommands = {}
 
+---Send the status received from the spotter to the operator
+---@param _ any
+---@param args table operatorID=number, status=boolean
 function SpotterCommands.RouteSpotterStatusToOperator(_, args)
-    --print("Received spotter status, = " .. tostring(args.status))
-    --print(args.operatorID)
     local operatorID = args.operatorID
     local status = args.status
     local operatorPl = getPlayerByOnlineID(operatorID)
@@ -13,9 +14,9 @@ end
 
 local OperatorCommands = {}
 
----comment
+---Operator sends a request to the spotter for an updated status
 ---@param operatorObj IsoPlayer
----@param args any
+---@param args table spotterID=number
 function OperatorCommands.AskSpotterStatus(operatorObj, args)
     --print("Asking spotter status")
     local spotterID = args.spotterID
