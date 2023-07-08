@@ -16,7 +16,8 @@ function SpotterCommands.SendUpdatedStatus(args)
     local distanceCheck = MortarCommon.CheckDistance(spotterObj, operatorObj)
     local isSpotterValid = MortarCommon.IsSpotterValid(spotterObj)
     local radioCheck = MortarCommon.CheckRadio(spotterObj:getInventory())
-    local variousChecks = not spotterObj:isDriving() and not spotterObj:HasTrait('ShortSighted') and not spotterObj:isAsleep()
+    local variousChecks = not spotterObj:isDriving() and not spotterObj:HasTrait('ShortSighted') and
+    not spotterObj:isAsleep()
 
 
     local status = distanceCheck and isSpotterValid and radioCheck and variousChecks
@@ -29,8 +30,9 @@ end
 local OperatorCommands = {}
 local MortarUI = require("UI/Mortar_MainPanel")
 
+---Notify a spotter that they have been selected by an operator
+---@param args table spotterID=number
 function OperatorCommands.NotifySelectedSpotter(args)
-    --print("Notify spotter command")
     local operator = getPlayer()
     local spotterID = args.spotterID
 
@@ -43,7 +45,7 @@ function OperatorCommands.ReceiveSpotterUpdate(args)
     local status = args.status
     --print("MortarUI: received updatate from spotter =" .. tostring(status))
     if MortarUI and MortarUI.instance then
-        MortarUI.instance:setIsSpotterReady(args.status)
+        MortarUI.instance:setIsSpotterReady(status)
     end
 end
 
@@ -79,7 +81,7 @@ function CommonCommands.ReceiveBoomSound(args)
     getSoundManager():PlayWorldSound(tostring(MRT_COMMON.SOUNDS[ZombRand(1, 4)]), sq, 0, 5, 5, false)
 end
 
------------
+--------------------------------------------
 
 local function OnServerCommand(module, command, args)
     args = args or {}
@@ -100,162 +102,3 @@ local function OnServerCommand(module, command, args)
 end
 
 Events.OnServerCommand.Add(OnServerCommand)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local ServerCommands = {}
---local MortarHandler = require("Mortar_ClientHandler")
-
-
-
---* Player Actions *--
-
-ServerCommands.DoMortarShot = function(args)
-    -- TODO This doesn't make any fucking sense. We're from the spotter. We don't need to handle it from there
-
-    -- local clientHandlerInstance = MortarHandler:GetInstance()
-    -- clientHandlerInstance:startShooting()
-    local pl = getPlayer()
-    local hitCoords = MortarCommon.GetHitCoords(pl)
-    MortarShotHandler.Fire(args.mortarPos, hitCoords)
-end
-
-----------------------------------
-
-
-ServerCommands.UpdateSpotterStatus = function(args)
-
-end
-
-
-
--------------------
--- Validation
--------------------
-ServerCommands.updateBomberStatus = function(args)
-    local player = getPlayer()
-    local isValid = false
-
-    if MortarCommon.IsBomberValid(player) then
-        if MortarCommon.CheckRadio(player:getInventory()) then
-            isValid = true
-        end
-    end
-
-    local clientHandlerInstance = MortarHandler:GetInstance()
-
-    -- Updates the MortarClientHandler on this side
-    clientHandlerInstance:setIsBomberValid(isValid)
-    clientHandlerInstance:setBomber(player)
-    clientHandlerInstance:setSpotter(getPlayerByOnlineID(args.spotterId))
-    sendClientCommand(player, 'Mortar', 'sendUpdatedBomberStatus', { spotterId = args.spotterId, isValid = isValid })
-end
-
-ServerCommands.updateSpotterStatus = function(args)
-    -- We should resend AGAIN the status to the other player
-    local player = getPlayer()
-    local isValid = false
-
-
-    if MortarCommon.IsSpotterValid(player) then
-        if MortarCommon.CheckRadio(player:getInventory()) then
-            isValid = true
-        end
-    end
-
-
-    local clientHandlerInstance = MortarHandler:GetInstance()
-
-    -- Updates the MortarClientHandler on this side
-    clientHandlerInstance:setIsSpotterValid(isValid)
-    clientHandlerInstance:setBomber(getPlayerByOnlineID(args.bomberId))
-    clientHandlerInstance:setSpotter(player)
-    sendClientCommand(player, 'Mortar', 'sendUpdatedSpotterStatus', { bomberId = args.bomberId, isValid = isValid })
-end
-
-ServerCommands.setUpdatedBomberValidation = function(args)
-    -- This will be run on the spotter client
-    local clientHandlerInstance = MortarHandler:GetInstance()
-    clientHandlerInstance:setIsBomberValid(args.isValid)
-end
-
-ServerCommands.setUpdatedSpotterValidation = function(args)
-    -- This will be run on the bomber client
-    local clientHandlerInstance = MortarHandler:GetInstance()
-    clientHandlerInstance:setIsSpotterValid(args.isValid)
-end
-
-
-----------------
--- Cosmetic stuff
-----------------
-
-ServerCommands.acceptMuzzleFlash = function(args)
-    local pl = getPlayerByOnlineID(args.operatorID)
-    if pl then
-        pl:startMuzzleFlash()
-    end
-end
-
-ServerCommands.receiveBoomSound = function(args)
-    local x = args.x
-    local y = args.y
-    local z = args.z
-
-
-    local sq = getCell():getGridSquare(x, y, z)
-    getSoundManager():PlayWorldSound(tostring(MRT_COMMON.SOUNDS[ZombRand(1, 4)]), sq, 0, 5, 5, false)
-end
-
-----------------------------------------------
--- local function onServerCommand(module, command, args)
---     if module == 'Mortar' then
---         if ServerCommands[command] then
---             args = args or {}
---             ServerCommands[command](args)
---         end
---     end
--- end
-
--- Events.OnServerCommand.Add(onServerCommand)

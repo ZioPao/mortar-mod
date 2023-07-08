@@ -29,6 +29,7 @@ local SpottersViewerPanel = ISCollapsableWindow:derive("SpottersViewerPanel")
 function SpottersViewerPanel.Open(x, y, instance)
     if SpottersViewerPanel.instance then
         SpottersViewerPanel.instance:close()
+        return      -- Force close it if it already exists
     end
 
     local modal = SpottersViewerPanel:new(x, y, 350, 500)

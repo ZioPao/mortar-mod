@@ -99,15 +99,25 @@ end
 function MortarUI:createChildren()
     --ISCollapsableWindow.createChildren(self)
 
-    self.panelInfo = ISRichTextPanel:new(0, 20, self:getWidth(), self:getHeight() / 4)
-    self.panelInfo.autosetheight = false
-    self.panelInfo.background = true
-    self.panelInfo.backgroundColor = { r = 0, g = 0, b = 0, a = 0.5 }
-    self.panelInfo.borderColor = { r = 0.4, g = 0.4, b = 0.4, a = 1 }
-    self.panelInfo.marginTop = 20
-    self.panelInfo:initialise()
-    self.panelInfo:paginate()
-    self:addChild(self.panelInfo)
+    self.panelLeftInfo = ISRichTextPanel:new(0, 20, self:getWidth()/2, self:getHeight() / 4)
+    self.panelLeftInfo.autosetheight = false
+    self.panelLeftInfo.background = true
+    self.panelLeftInfo.backgroundColor = { r = 0, g = 0, b = 0, a = 0.5 }
+    self.panelLeftInfo.borderColor = { r = 0.4, g = 0.4, b = 0.4, a = 1 }
+    self.panelLeftInfo.marginTop = 20
+    self.panelLeftInfo:initialise()
+    self.panelLeftInfo:paginate()
+    self:addChild(self.panelLeftInfo)
+
+    self.panelRightInfo = ISRichTextPanel:new(0, self:getWidth()/2, self:getWidth()/2, self:getHeight() / 4)
+    self.panelRightInfo.autosetheight = false
+    self.panelRightInfo.background = true
+    self.panelRightInfo.backgroundColor = { r = 0, g = 0, b = 0, a = 0.5 }
+    self.panelRightInfo.borderColor = { r = 0.4, g = 0.4, b = 0.4, a = 1 }
+    self.panelRightInfo.marginTop = 20
+    self.panelRightInfo:initialise()
+    self.panelRightInfo:paginate()
+    self:addChild(self.panelRightInfo)
 
     -----------------------
 
@@ -179,12 +189,8 @@ function MortarUI:onClick(btn)
         self.btnReload:setEnable(false)
         self.mortarInstance:reloadRound()
     elseif btn.internal == 'SET_SPOTTER' then
-        if instanceof(self.openedPanel, 'ISCollapsableWindow') then
-            self.openedPanel:close()
-        else
-            self.openedPanel = SpottersViewerPanel.Open(self:getRight(), self:getBottom() - self:getHeight(),
-                self.mortarInstance)
-        end
+        self.openedPanel = SpottersViewerPanel.Open(self:getRight(), self:getBottom() - self:getHeight(),
+        self.mortarInstance)
     elseif btn.internal == 'SWITCH_MODE' then
         if self.mode == MRT_COMMON.SOLO_MODE then
             self.mode = MRT_COMMON.SPOT_MODE
@@ -289,9 +295,10 @@ end
 ---Updated info panel
 ---@param shellsAmount number
 function MortarUI:updateInfoPanel(shellsAmount)
-    local info = ""
 
+    local leftText = ""
 
+    --* LEFT PANEL *--
     if self.mode == MRT_COMMON.SPOT_MODE then
         local spotterUsername = "-------"
         local spotterID = self.mortarInstance:getSpotterID()
@@ -299,30 +306,78 @@ function MortarUI:updateInfoPanel(shellsAmount)
             local spotterPl = getPlayerByOnlineID(spotterID)
             spotterUsername = spotterPl:getUsername()
         end
-
-        local spotterInfo = " <CENTRE> <SIZE:medium> Spotter: %s <LINE> <CENTRE> Spotter Status: %s"
-        spotterInfo = string.format(spotterInfo, spotterUsername, tostring(self:getIsSpotterReady()))
-
-        info = spotterInfo .. " <LINE> "
+        
+        leftText = string.format(" Spotter: %s <LINE> ", spotterUsername)
     end
 
+    leftText = leftText .. "Mode: %s <LINE> "
+    leftText = string.format(leftText, self.mode)
 
-    local shellsInfo = " <CENTRE> <SIZE:medium> Shells Left: %d"
-    shellsInfo = string.format(shellsInfo, shellsAmount)
-    info = info .. shellsInfo
+    leftText = leftText .. "Shells left: %d"
+    leftText = string.format(leftText, shellsAmount)
 
-    local modeInfo = " <CENTRE> <SIZE:medium> Mode: %s"
-    modeInfo = string.format(modeInfo, self.mode)
-    info = info .. " <LINE> " .. modeInfo
+    self.panelLeftInfo:setText(leftText)
+    self.panelLeftInfo.textDirty = true
 
 
-    -- Update info panel
+    --* RIGHT PANEL *--
+
+    local rightText = "<SIZE:large> <CENTRE> "
+
     if self.mortarInstance:getIsMidReloading() then
-        info = "<SIZE:large> <CENTRE> <RED> RELOADING! <LINE> " .. info
+        rightText = rightText .. "<RED> RELOADING!"
+    elseif self.mortarInstance:getIsReloaded() then
+        rightText = rightText .. "<GREEN> MORTAR READY"
     end
 
-    self.panelInfo:setText(info)
-    self.panelInfo.textDirty = true
+
+    if self.mode == MRT_COMMON.SPOT_MODE then
+
+        if self.mortarInstance:getIsSpotterReady() then
+            rightText = rightText .. "<LINE> SPOTTER READY"
+        else
+            rightText = rightText .. "<LINE> SPOTTER NOT READY"
+
+        end
+    end
+
+    self.panelRightInfo:setText(rightText)
+    self.panelRightInfo.textDirty = true
+
+    -- local info = ""
+
+
+    -- if self.mode == MRT_COMMON.SPOT_MODE then
+    --     local spotterUsername = "-------"
+    --     local spotterID = self.mortarInstance:getSpotterID()
+    --     if spotterID ~= -1 then
+    --         local spotterPl = getPlayerByOnlineID(spotterID)
+    --         spotterUsername = spotterPl:getUsername()
+    --     end
+
+    --     local spotterInfo = " <CENTRE> <SIZE:medium> Spotter: %s <LINE> <CENTRE> Spotter Status: %s"
+    --     spotterInfo = string.format(spotterInfo, spotterUsername, tostring(self:getIsSpotterReady()))
+
+    --     info = spotterInfo .. " <LINE> "
+    -- end
+
+
+    -- local shellsInfo = " <CENTRE> <SIZE:medium> Shells Left: %d"
+    -- shellsInfo = string.format(shellsInfo, shellsAmount)
+    -- info = info .. shellsInfo
+
+    -- local modeInfo = " <CENTRE> <SIZE:medium> Mode: %s"
+    -- modeInfo = string.format(modeInfo, self.mode)
+    -- info = info .. " <LINE> " .. modeInfo
+
+
+    -- -- Update info panel
+    -- if self.mortarInstance:getIsMidReloading() then
+    --     info = "<SIZE:large> <CENTRE> <RED> RELOADING! <LINE> " .. info
+    -- end
+
+    -- self.panelInfo:setText(info)
+    -- self.panelInfo.textDirty = true
 end
 
 function MortarUI:update()
