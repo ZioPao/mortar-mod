@@ -23,17 +23,13 @@ local function HandleRemovedMortar(obj)
     end
 end
 
-
-
 local ogISMoveableSpritePropsPickUpMoveable = ISMoveableSpriteProps.pickUpMoveable
 
-function ISMoveableSpriteProps:pickUpMoveable( _character, _square, _createItem, _forceAllow )
-
+function ISMoveableSpriteProps:pickUpMoveable(_character, _square, _createItem, _forceAllow)
     print("Pick Up Moveable")
-    if self.isMoveable and instanceof(_character,"IsoGameCharacter") and instanceof(_square,"IsoGridSquare") then
-        local obj, sprInstance = self:findOnSquare( _square, self.spriteName )
+    if self.isMoveable and instanceof(_character, "IsoGameCharacter") and instanceof(_square, "IsoGridSquare") then
+        local obj, sprInstance = self:findOnSquare(_square, self.spriteName)
         HandleRemovedMortar(obj)
-
     end
 
     ogISMoveableSpritePropsPickUpMoveable(self, _character, _square, _createItem, _forceAllow)

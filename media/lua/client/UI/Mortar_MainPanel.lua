@@ -55,6 +55,24 @@ function MortarUI:new(x, y, width, height, coords)
     return o
 end
 
+function MortarUI:initialise()
+    ISCollapsableWindow.initialise(self)
+    local operator = getPlayer()
+
+
+    if not operator:isOutside() then
+        operator:Say("I don't think using it here would be a good idea...")
+        self:close()
+    end
+
+    if operator:HasTrait("Deaf") then
+        self.mode = MRT_COMMON.SOLO_MODE
+    end
+
+
+
+end
+
 --------------------------------
 
 --* Getters *--
@@ -123,11 +141,18 @@ function MortarUI:createChildren()
 
     yOffset = yOffset + self.btnSetSpotter:getHeight() + 10
 
+
+    local isPlayerDeaf = getPlayer():HasTrait('Deaf')
+
     self.btnSwitchMode = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Switch Mode', self, self.onClick)
     self.btnSwitchMode.internal = "SWITCH_MODE"
     self.btnSwitchMode:initialise()
-    --self.btnSwitchMode:setTooltip("Spot Mode")
-    self.btnSwitchMode:setEnable(true)
+    if isPlayerDeaf then
+        self.btnSwitchMode:setEnable(false)
+        self.btnSwitchMode:setTooltip("You are deaf! You can't use Spot mode")
+    else
+        self.btnSwitchMode:setEnable(true)
+    end
     self:addChild(self.btnSwitchMode)
 
 

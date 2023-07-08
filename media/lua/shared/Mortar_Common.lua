@@ -1,8 +1,4 @@
--- TODO Clean this crap
-
-if MortarCommon == nil then
-    MortarCommon = {}
-end
+MortarCommon = {}
 
 function MortarCommon.GetHitCoords(pl)
     local directions = MRT_COMMON.DIRECTIONS[tostring(pl:getDir())]
@@ -20,6 +16,9 @@ function MortarCommon.CheckDistance(player1, player2)
     return player1:getDistanceSq(player2) < MRT_COMMON.WALKIE_TALKIE_RANGE
 end
 
+---Assemble and returns an ID for the mortar based on its coords
+---@param coords table x,y,z
+---@return string
 function MortarCommon.GetAssembledID(coords)
     return tostring(coords.x) .. tostring(coords.y) .. tostring(coords.z)
 end
@@ -27,6 +26,7 @@ end
 MortarCommon.GetDistance2D = function(x1, y1, x2, y2)
     return math.sqrt(math.abs(x2 - x1) ^ 2 + math.abs(y2 - y1) ^ 2)
 end
+
 MortarCommon.RollChance = function(chance)
     local r = ZombRand(1, 101)
     if r <= chance then
@@ -35,6 +35,7 @@ MortarCommon.RollChance = function(chance)
 
     return false
 end
+
 MortarCommon.IsMortarSprite = function(spriteName)
     for _, v in pairs(MortarCommonVars.tiles) do
         if tostring(spriteName) == v then
@@ -67,17 +68,19 @@ end
 -------------------------------------
 -- Validation checks
 
-
-MortarCommon.CheckRadio = function(player_inventory)
-    local items = player_inventory:getItems()
+---Check if player has an active walkie talkie
+---@param playerInv ItemContainer
+---@return boolean
+MortarCommon.CheckRadio = function(playerInv)
+    local items = playerInv:getItems()
 
     local radio
     for i = 0, items:size() - 1 do
         local item = items:get(i)
-        local item_full_type = item:getFullType()
+        local itemFullType = item:getFullType()
 
         -- not sure why instanceof didn't work, but this should be fine
-        if luautils.stringStarts(item_full_type, "Radio.") then
+        if luautils.stringStarts(itemFullType, "Radio.") then
             radio = item
             break
         end
@@ -85,11 +88,8 @@ MortarCommon.CheckRadio = function(player_inventory)
 
     -- Another problem, to check if a radio is turned on we need to get getDeviceData(), not isActivated
     if radio then
-        local device_data = radio:getDeviceData()
-        if device_data:getIsTurnedOn() then
-            --print("Mortar: Radio is ready to go")
-            return true
-        end
+        local deviceData = radio:getDeviceData()
+        return deviceData:getIsTurnedOn()
     end
     return false
 end

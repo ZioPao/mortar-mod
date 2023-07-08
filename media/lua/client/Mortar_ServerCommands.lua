@@ -16,9 +16,12 @@ function SpotterCommands.SendUpdatedStatus(args)
     local distanceCheck = MortarCommon.CheckDistance(spotterObj, operatorObj)
     local isSpotterValid = MortarCommon.IsSpotterValid(spotterObj)
     local radioCheck = MortarCommon.CheckRadio(spotterObj:getInventory())
+    local variousChecks = not spotterObj:isDriving() and not spotterObj:HasTrait('ShortSighted') and not spotterObj:isAsleep()
 
-    local status = distanceCheck and isSpotterValid and radioCheck
-    sendClientCommand(spotterObj, MRT_COMMON.SERVER_SPOTTER_COMMAND, "RouteSpotterStatusToOperator",{ operatorID = operatorID, status = status })
+
+    local status = distanceCheck and isSpotterValid and radioCheck and variousChecks
+    sendClientCommand(spotterObj, MRT_COMMON.SERVER_SPOTTER_COMMAND, "RouteSpotterStatusToOperator",
+        { operatorID = operatorID, status = status })
 end
 
 --******************************************************--
@@ -75,7 +78,6 @@ function CommonCommands.ReceiveBoomSound(args)
     local sq = getCell():getGridSquare(x, y, z)
     getSoundManager():PlayWorldSound(tostring(MRT_COMMON.SOUNDS[ZombRand(1, 4)]), sq, 0, 5, 5, false)
 end
-
 
 -----------
 

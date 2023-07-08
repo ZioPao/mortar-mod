@@ -13,7 +13,7 @@ end
 local OnUpdateGlobalModData = function(module, command, playerObj, args)
     --print("Mortar: Received command " .. command)
     if module ~= MODULE then return end
-    
+
     if command == 'UpdateInstances' then
         --print("Running update instances")
         if MortarServerData == nil then return end
@@ -21,7 +21,6 @@ local OnUpdateGlobalModData = function(module, command, playerObj, args)
         MortarServerData.GetModData()[args.id] = args.data
         ModData.add(MortarCommonVars.MOD_ID, MortarServerData.GetModData())
         ModData.transmit(MortarCommonVars.MOD_ID)
-
     end
 end
 
