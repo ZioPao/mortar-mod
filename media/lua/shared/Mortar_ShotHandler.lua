@@ -47,7 +47,7 @@ end
 ---Main function which handles shooting from a mortar.
 ---@param hitCoords table x,y,z
 function MortarShotHandler.Fire(hitCoords)
-    local rad = ZombRand(3, MRT_COMMON.rad)
+    local rad = ZombRand(3, MRT_COMMON.RAD)
     local z = MortarCommon.GetHighestZ(hitCoords.x, hitCoords.y)
 
     --self:generateShot(coords.x, coords.y, z, finalRad)

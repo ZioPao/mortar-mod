@@ -37,7 +37,7 @@ MortarCommon.RollChance = function(chance)
 end
 
 MortarCommon.IsMortarSprite = function(spriteName)
-    for _, v in pairs(MRT_COMMON.tiles) do
+    for _, v in pairs(MRT_COMMON.TILES) do
         if tostring(spriteName) == v then
             return true
         end

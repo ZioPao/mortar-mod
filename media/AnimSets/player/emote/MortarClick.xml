@@ -1,8 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <animNode x_extends="default.xml">
-	<m_Name>_MortarClick</m_Name>
+	<m_Name>MortarClick</m_Name>
 	<m_AnimName>MortarClick</m_AnimName>
 	<m_Conditions>
-		<m_StringValue>_MortarClick</m_StringValue>
+		<m_StringValue>MortarClick</m_StringValue>
 	</m_Conditions>
+
+	<m_SpeedScale>0.48</m_SpeedScale>
+	<m_BlendTime>0.20</m_BlendTime>
 </animNode>

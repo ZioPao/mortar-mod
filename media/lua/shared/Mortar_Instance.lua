@@ -1,12 +1,7 @@
 local ShotHandler = require("Mortar_ShotHandler")
---local DataHandler = require("Mortar_ClientData")
-
 local MortarInstance = {}
 
-
--- TODO Time to do it again :)
 -----------------------------------------------------------
-
 
 ---Creates a new instance for a mortar
 ---@param dataTable table Reference of the synced table
@@ -16,24 +11,11 @@ function MortarInstance:new(dataTable)
     setmetatable(o, self)
     self.__index = self
 
-    o.dataTable = dataTable -- reference it
-    o.id = tostring(dataTable.position.x) .. tostring(dataTable.position.y) .. tostring(dataTable.position.z)
+    o.dataTable = dataTable -- reference
+    o.id = MortarCommon.GetAssembledID(dataTable.position)
 
     MortarInstance.current = o
     return o
-end
-
-function MortarInstance.WrapData(data)
-    local instance = MortarInstance:new(data)
-    -- instance.data.isOperatorValid = false
-    -- instance.data.isSpotterValid = false
-
-    -- instance.data.isReloaded = table.isReloaded
-    -- instance.data.isMidReloading = false
-    instance.id = data.id
-
-    MortarInstance.current = instance
-    return instance
 end
 
 --************************--
@@ -93,7 +75,6 @@ end
 -- Actions
 
 function MortarInstance.HandleShotDelay()
-
     local sTime = MortarInstance.current.sTimeShot
     local timeToLand = MortarInstance.current.timeToLand
     local mode = MortarInstance.current.currentMode
@@ -114,11 +95,11 @@ function MortarInstance.HandleShotDelay()
     end
 end
 
-
 function MortarInstance:initializeShot(mode)
     self:setIsReloaded(false)
     MortarDataHandler.SyncData(self.id)
     local pl = getPlayer()
+    pl:playEmote("MortarClick")
 
     if isClient() then
         sendClientCommand(pl, MRT_COMMON.SERVER_COMMON_COMMAND, 'SendMuzzleFlash', { operatorID = pl:getOnlineID() })
@@ -127,7 +108,7 @@ function MortarInstance:initializeShot(mode)
     end
 
     self.sTimeShot = os.time()
-    self.timeToLand = ZombRand(0, 4)        -- Fake delay, it should be based on the distance between spotter and operator but who cares tbh
+    self.timeToLand = ZombRand(0, 4) -- Fake delay, it should be based on the distance between spotter and operator but who cares tbh
     self.currentMode = mode
 
     Events.OnTick.Add(MortarInstance.HandleShotDelay)
@@ -148,14 +129,14 @@ function MortarInstance:initializeSoloShot()
 end
 
 function MortarInstance:initializeSpotShot()
-    print("Mortar: Trying to fire")
+    --print("Mortar: Trying to fire")
 
     local spotterPlayer = getPlayerByOnlineID(self.dataTable.spotterID)
     local operatorPlayer = getPlayerByOnlineID(self.dataTable.operatorID)
 
     -- Check if spotter exists
     if spotterPlayer == nil then
-        print("No spotter")
+        --print("No spotter")
         operatorPlayer:Say("I don't have a spotter right now")
         return
     end
@@ -169,10 +150,12 @@ function MortarInstance.HandleReloading()
     local cTime = os.time()
     --print("Waiting for reload")
     if cTime > MortarInstance.current.sTimeReload + 5 then
-        print("Reloaded!")
+        --print("Reloaded!")
         MortarInstance.current:setIsReloaded(true)
         MortarInstance.current:setIsMidReloading(false)
-        getPlayer():setBlockMovement(false)
+        local player = getPlayer()
+        player:setBlockMovement(false)
+        player:setVariable("EmotePlaying", false) -- Mistake by Umbrella
 
         MortarDataHandler.SyncData(MortarInstance.current.id)
         Events.OnTick.Remove(MortarInstance.HandleReloading)
@@ -194,6 +177,7 @@ function MortarInstance:reloadRound()
 
     operatorPlayer:Say("Reloading...")
     operatorPlayer:setBlockMovement(true)
+    operatorPlayer:playEmote("MortalReload")
 
     self.sTimeReload = os.time()
     self:setIsMidReloading(true) -- Local only.. Could be a problem, but it shouldn't be

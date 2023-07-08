@@ -1,9 +1,6 @@
 local MortarInstance = require("Mortar_Instance")
 
-
--- Server only, client only, common
 MortarDataHandler = {}
-
 MORTAR_DATA_TABLE = {}
 
 

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <animNode x_extends="looped.xml">
-	<m_Name>_mortarReload</m_Name>
+	<m_Name>MortalReload</m_Name>
 	<m_AnimName>mortarReload</m_AnimName>
 	<m_Conditions>
-		<m_StringValue>_mortarReload</m_StringValue>
+		<m_StringValue>MortalReload</m_StringValue>
 	</m_Conditions>
 	
 	<m_deferredBoneAxis>Y</m_deferredBoneAxis>

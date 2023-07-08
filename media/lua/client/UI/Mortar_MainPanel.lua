@@ -409,7 +409,6 @@ function MortarUI:update()
     -- Updates Info Panel
     self:updateInfoPanel(shellsAmount)
 
-
     -- Updates the various buttons
     self:updateSetSpotterButton()
     self:updateShootButton()
