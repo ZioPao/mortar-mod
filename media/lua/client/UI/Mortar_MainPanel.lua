@@ -1,5 +1,5 @@
 --local MortarData = require("Mortar_ClientData")
-local SpottersViewerPanel = require("Mortar_SpottersPanel")
+local SpottersViewerPanel = require("UI/Mortar_SpottersPanel")
 
 local MortarUI = ISCollapsableWindow:derive("MortarUI")
 MortarUI.instance = nil
@@ -126,7 +126,8 @@ function MortarUI:onClick(btn)
         self.btnReload:setEnable(false)
         self.mortarInstance:reloadRound()
     elseif btn.internal == 'SET_SPOTTER' then
-        self.openedPanel = SpottersViewerPanel.Open(self:getRight(), self:getBottom() - self:getHeight())
+        self.openedPanel = SpottersViewerPanel.Open(self:getRight(), self:getBottom() - self:getHeight(),
+            self.mortarInstance)
     elseif btn.internal == 'SWITCH_MODE' then
         if self.mode == 'SOLO' then
             self.mode = 'SPOT'
@@ -153,6 +154,11 @@ function MortarUI:updateShootButton()
             self.btnShoot:setTooltip("You didn't set a spotter")
         else
             self.btnShoot:setEnable(isReadyToShoot)
+            if not isReadyToShoot then
+                self.btnShoot:setTooltip("Spotter not ready or no shell in the mortar")
+            else
+                self.btnShoot:setTooltip(nil)
+            end
         end
     end
 end
@@ -200,22 +206,37 @@ function MortarUI:updateCloseButton()
     else
         self.btnClose:setEnable(true)
     end
-
 end
 
-function MortarUI:updateInfoPanel(pl, shellsAmount)
+---Updated info panel
+---@param shellsAmount number
+function MortarUI:updateInfoPanel(shellsAmount)
+    local info = ""
 
-    local operatorInfo = " <CENTRE> <SIZE:medium> Operator: <SIZE:small> %s"
-    operatorInfo = string.format(operatorInfo, pl:getUsername())
+
+    if self.mode == 'SPOT' then
+        local spotterUsername = "-------"
+        local spotterID = self.mortarInstance:getSpotterID()
+        if spotterID ~= -1 then
+            local spotterPl = getPlayerByOnlineID(spotterID)
+            spotterUsername = spotterPl:getUsername()
+        end
+
+        local spotterInfo = " <CENTRE> <SIZE:medium> Spotter: %s"
+        spotterInfo = string.format(spotterInfo, spotterUsername)
+
+        info = spotterInfo .. " <LINE> "
+    end
+
 
     local shellsInfo = " <CENTRE> <SIZE:medium> Shells Left: %d"
     shellsInfo = string.format(shellsInfo, shellsAmount)
+    info = info .. shellsInfo
 
     local modeInfo = " <CENTRE> <SIZE:medium> Mode: %s"
     modeInfo = string.format(modeInfo, self.mode)
+    info = info .. " <LINE> " .. modeInfo
 
-
-    local info = string.format("%s <LINE> %s <LINE> %s <LINE>", operatorInfo, shellsInfo, modeInfo)
 
     -- Update info panel
     if self.mortarInstance:getIsMidReloading() then
@@ -224,7 +245,6 @@ function MortarUI:updateInfoPanel(pl, shellsAmount)
 
     self.panelInfo:setText(info)
     self.panelInfo.textDirty = true
-
 end
 
 function MortarUI:update()
@@ -254,7 +274,7 @@ function MortarUI:update()
 
 
     -- Updates Info Panel
-    self:updateInfoPanel(pl, shellsAmount)
+    self:updateInfoPanel(shellsAmount)
 
 
     -- Check if player has an active radio, then he can set the spotter

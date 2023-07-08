@@ -26,7 +26,7 @@ local ENTRY_HGT = FONT_HGT_MEDIUM + 2 * 2
 
 local SpottersViewerPanel = ISCollapsableWindow:derive("SpottersViewerPanel")
 
-function SpottersViewerPanel.Open(x, y)
+function SpottersViewerPanel.Open(x, y, instance)
     if SpottersViewerPanel.instance then
         SpottersViewerPanel.instance:close()
     end
@@ -34,7 +34,9 @@ function SpottersViewerPanel.Open(x, y)
     local modal = SpottersViewerPanel:new(x, y, 350, 500)
     modal:initialise()
     modal:addToUIManager()
+    modal:setMortarInstance(instance)
     modal.instance:setKeyboardFocus()
+
 
     return modal
 end
@@ -53,6 +55,10 @@ function SpottersViewerPanel:new(x, y, width, height)
     SpottersViewerPanel.instance = o
 
     return o
+end
+
+function SpottersViewerPanel:setMortarInstance(instance)
+    self.mortarInstance = instance
 end
 
 function SpottersViewerPanel:initialise()
@@ -153,9 +159,7 @@ function SpottersScrollingTable:initList(module)
     for i = 0, module:size() - 1 do
         local pl = module:get(i)
         local username = pl:getUsername()
-
-        -- TCheck if player is in same faction
-        if MortarCommonFunctions.ArePlayersInSameFaction(currPlayer, pl) then
+        if pl ~= currPlayer and MortarCommonFunctions.ArePlayersInSameFaction(currPlayer, pl) then
             self.datas:addItem(username, pl)
         end
     end
