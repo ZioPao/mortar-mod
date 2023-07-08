@@ -104,7 +104,7 @@ function MortarUI:createChildren()
     self.panelLeftInfo.background = true
     self.panelLeftInfo.backgroundColor = { r = 0, g = 0, b = 0, a = 0.5 }
     self.panelLeftInfo.borderColor = { r = 0.4, g = 0.4, b = 0.4, a = 1 }
-    self.panelLeftInfo.marginTop = 20
+    self.panelLeftInfo.marginTop = 10
     self.panelLeftInfo:initialise()
     self.panelLeftInfo:paginate()
     self:addChild(self.panelLeftInfo)
@@ -114,7 +114,7 @@ function MortarUI:createChildren()
     self.panelRightInfo.background = true
     self.panelRightInfo.backgroundColor = { r = 0, g = 0, b = 0, a = 0.5 }
     self.panelRightInfo.borderColor = { r = 0.4, g = 0.4, b = 0.4, a = 1 }
-    self.panelRightInfo.marginTop = 20
+    self.panelRightInfo.marginTop = 10
     self.panelRightInfo:initialise()
     self.panelRightInfo:paginate()
     self:addChild(self.panelRightInfo)
@@ -180,11 +180,7 @@ end
 
 function MortarUI:onClick(btn)
     if btn.internal == 'SHOOT' then
-        if self.mode == MRT_COMMON.SOLO_MODE then
-            self.mortarInstance:initializeSoloShot()
-        else
-            self.mortarInstance:initializeSpotShot()
-        end
+        self.mortarInstance:initializeShot(self.mode)
     elseif btn.internal == 'RELOAD' then
         self.btnReload:setEnable(false)
         self.mortarInstance:reloadRound()
@@ -274,7 +270,6 @@ end
 function MortarUI:updateSpotterStatus()
     local spotterID = self.mortarInstance:getSpotterID()
     if spotterID == -1 then
-        -- TODO Set no spotter
         self:setIsSpotterReady(false)
     else
         -- TODO This should be run every once in a while, not constantly
@@ -296,7 +291,7 @@ end
 ---@param shellsAmount number
 function MortarUI:updateInfoPanel(shellsAmount)
 
-    local leftText = ""
+    local leftText = "<SIZE:medium> "
 
     --* LEFT PANEL *--
     if self.mode == MRT_COMMON.SPOT_MODE then
@@ -306,11 +301,13 @@ function MortarUI:updateInfoPanel(shellsAmount)
             local spotterPl = getPlayerByOnlineID(spotterID)
             spotterUsername = spotterPl:getUsername()
         end
-        
-        leftText = string.format(" Spotter: %s <LINE> ", spotterUsername)
+
+        leftText = leftText .. "Spotter: %s <BR> "
+        leftText = string.format(leftText, spotterUsername)
+
     end
 
-    leftText = leftText .. "Mode: %s <LINE> "
+    leftText = leftText .. "Mode: %s <BR> "
     leftText = string.format(leftText, self.mode)
 
     leftText = leftText .. "Shells left: %d"
@@ -322,22 +319,23 @@ function MortarUI:updateInfoPanel(shellsAmount)
 
     --* RIGHT PANEL *--
 
-    local rightText = "<SIZE:large> "
+    local rightText = "<SIZE:medium> "
 
     if self.mortarInstance:getIsMidReloading() then
-        rightText = rightText .. "<RED> RELOADING!"
+        rightText = rightText .. " <RGB:1,1,0> RELOADING"       --YELLOW
     elseif self.mortarInstance:getIsReloaded() then
-        rightText = rightText .. "<GREEN> MORTAR READY"
+        rightText = rightText .. " <GREEN> MORTAR READY"
+    else
+        rightText = rightText .. " <RED> MORTAR NOT READY"
     end
+    rightText = rightText .. " <BR> "
 
 
     if self.mode == MRT_COMMON.SPOT_MODE then
-
         if self:getIsSpotterReady() then
-            rightText = rightText .. "<BR> <GREEN> SPOTTER READY"
+            rightText = rightText .. "<GREEN> SPOTTER READY"
         else
-            rightText = rightText .. "<BR> <RED> SPOTTER NOT READY"
-
+            rightText = rightText .. "<RED> SPOTTER NOT READY"
         end
     end
 

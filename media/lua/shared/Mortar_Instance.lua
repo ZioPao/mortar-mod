@@ -4,7 +4,7 @@ local ShotHandler = require("Mortar_ShotHandler")
 local MortarInstance = {}
 
 
--- TODO Time to do it again :) 
+-- TODO Time to do it again :)
 -----------------------------------------------------------
 
 
@@ -16,7 +16,7 @@ function MortarInstance:new(dataTable)
     setmetatable(o, self)
     self.__index = self
 
-    o.dataTable = dataTable       -- reference it
+    o.dataTable = dataTable -- reference it
     o.id = tostring(dataTable.position.x) .. tostring(dataTable.position.y) .. tostring(dataTable.position.z)
 
     MortarInstance.current = o
@@ -92,21 +92,58 @@ end
 --************************--
 -- Actions
 
+
+local function DelayShot()
+    local sTime = MortarInstance.current.sTimeShot
+    local timeToLand = MortarInstance.current.timeToLand
+    local mode = MortarInstance.current.currentMode
+
+    print("_____________")
+    print(sTime)
+    print(os.time() + timeToLand)
+
+    if sTime > os.time() + timeToLand then
+        if mode == MRT_COMMON.SOLO_MODE then
+            MortarInstance.current:initializeSoloShot()
+        else
+            MortarInstance.current:initializeSpotShot()
+        end
+
+        MortarInstance.current.sTimeShot = nil
+        MortarInstance.current.timeToLand = nil
+        MortarInstance.current.currentMode = nil
+
+        Events.OnTick.Remove(DelayShot)
+    end
+end
+
+
+function MortarInstance:initializeShot(mode)
+    self:setIsReloaded(false)
+    MortarDataHandler.SyncData(self.id)
+    local pl = getPlayer()
+    sendClientCommand(pl, MRT_COMMON.SERVER_COMMON_COMMAND, 'SendMuzzleFlash', { operatorID = pl:getOnlineID() })
+
+    self.sTimeShot = os.time()
+    self.timeToLand = ZombRand(0, 4)
+    self.currentMode = mode
+
+
+    Events.OnTick.Add(DelayShot)
+end
+
 function MortarInstance:initializeSoloShot()
     local operatorPlayer
 
     if isClient() then
         operatorPlayer = getPlayerByOnlineID(self.dataTable.operatorID)
-        sendClientCommand(operatorPlayer, MortarCommonVars.SERVER_OPERATOR_COMMAND, 'SendShot', { shooterID = self.dataTable.operatorID })
+        sendClientCommand(operatorPlayer, MortarCommonVars.SERVER_OPERATOR_COMMAND, 'SendShot',
+            { shooterID = self.dataTable.operatorID })
     else
         operatorPlayer = getPlayer()
         local hitCoords = MortarCommon.GetHitCoords(operatorPlayer)
         ShotHandler.Fire(hitCoords)
     end
-
-    self:setIsReloaded(false)
-    MortarDataHandler.SyncData(self.id)
-    
 end
 
 function MortarInstance:initializeSpotShot()
@@ -122,10 +159,8 @@ function MortarInstance:initializeSpotShot()
         return
     end
     operatorPlayer:playEmote("_MortarClick")
-    sendClientCommand(operatorPlayer, MRT_COMMON.SERVER_OPERATOR_COMMAND, 'SendShot', { shooterID = self.dataTable.spotterID })
-    self:setIsReloaded(false)
-    MortarDataHandler.SyncData(self.id)
-
+    sendClientCommand(operatorPlayer, MRT_COMMON.SERVER_OPERATOR_COMMAND, 'SendShot',
+        { shooterID = self.dataTable.spotterID })
 end
 
 function MortarInstance.HandleReloading()

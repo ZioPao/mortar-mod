@@ -95,7 +95,7 @@ function SpottersViewerPanel:prerender()
     self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g,
         self.borderColor.b)
 
-    local title = "TEST"
+    local title = "Choose a spotter"
     self:drawText(title, self.width / 2 - (getTextManager():MeasureStringX(UIFont.Medium, title) / 2), z, 1, 1, 1, 1,
         UIFont.Medium)
 end

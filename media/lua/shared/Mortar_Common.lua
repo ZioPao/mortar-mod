@@ -222,8 +222,6 @@ MRT_COMMON = {
 }
 
 
--- TODO Refactor this
-
 if MortarCommonVars == nil then
     MortarCommonVars = {}
 

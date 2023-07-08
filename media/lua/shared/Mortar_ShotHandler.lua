@@ -51,10 +51,7 @@ function MortarShotHandler.Fire(hitCoords)
     local z = MortarCommon.GetHighestZ(hitCoords.x, hitCoords.y)
 
     --self:generateShot(coords.x, coords.y, z, finalRad)
-
     local cell = getWorld():getCell()
-    local pl = getPlayer()
-    sendClientCommand(pl, MRT_COMMON.SERVER_COMMON_COMMAND, 'SendMuzzleFlash', {operatorID = pl:getOnlineID() })
 
     for x = hitCoords.x - rad, hitCoords.x + rad + 1 do
         for y = hitCoords.y - rad, hitCoords.y + rad + 1 do
