@@ -92,17 +92,14 @@ end
 --************************--
 -- Actions
 
+function MortarInstance.HandleShotDelay()
 
-local function DelayShot()
     local sTime = MortarInstance.current.sTimeShot
     local timeToLand = MortarInstance.current.timeToLand
     local mode = MortarInstance.current.currentMode
+    local cTime = os.time()
 
-    print("_____________")
-    print(sTime)
-    print(os.time() + timeToLand)
-
-    if sTime > os.time() + timeToLand then
+    if cTime > sTime + timeToLand then
         if mode == MRT_COMMON.SOLO_MODE then
             MortarInstance.current:initializeSoloShot()
         else
@@ -113,7 +110,7 @@ local function DelayShot()
         MortarInstance.current.timeToLand = nil
         MortarInstance.current.currentMode = nil
 
-        Events.OnTick.Remove(DelayShot)
+        Events.OnTick.Remove(MortarInstance.HandleShotDelay)
     end
 end
 
@@ -122,14 +119,18 @@ function MortarInstance:initializeShot(mode)
     self:setIsReloaded(false)
     MortarDataHandler.SyncData(self.id)
     local pl = getPlayer()
-    sendClientCommand(pl, MRT_COMMON.SERVER_COMMON_COMMAND, 'SendMuzzleFlash', { operatorID = pl:getOnlineID() })
+
+    if isClient() then
+        sendClientCommand(pl, MRT_COMMON.SERVER_COMMON_COMMAND, 'SendMuzzleFlash', { operatorID = pl:getOnlineID() })
+    else
+        pl:startMuzzleFlash()
+    end
 
     self.sTimeShot = os.time()
-    self.timeToLand = ZombRand(0, 4)
+    self.timeToLand = ZombRand(0, 4)        -- Fake delay, it should be based on the distance between spotter and operator but who cares tbh
     self.currentMode = mode
 
-
-    Events.OnTick.Add(DelayShot)
+    Events.OnTick.Add(MortarInstance.HandleShotDelay)
 end
 
 function MortarInstance:initializeSoloShot()

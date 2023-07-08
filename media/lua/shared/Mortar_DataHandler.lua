@@ -85,6 +85,8 @@ function MortarDataHandler.DestroyInstance(id)
     end
 end
 
+Events.OnGameStart.Add(MortarDataHandler.ForceSync)
+
 ---------------------
 local function CopyTable(tableA, tableB)
     if not tableA or not tableB then
