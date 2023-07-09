@@ -61,7 +61,6 @@ function SpottersViewerPanel:new(x, y, width, height)
     return o
 end
 
-
 function SpottersViewerPanel:setMortarInstance(instance)
     self.mortarInstance = instance
 end

@@ -72,7 +72,6 @@ function MortarUI:initialise()
 
     -- Initialize rotation of the mortar when opening the ui
     Events.OnPlayerMove.Add(MortarCommon.RotateSprite)
-
 end
 
 --------------------------------
@@ -101,7 +100,7 @@ end
 function MortarUI:createChildren()
     --ISCollapsableWindow.createChildren(self)
 
-    self.panelLeftInfo = ISRichTextPanel:new(0, 20, self:getWidth()/2, self:getHeight() / 4)
+    self.panelLeftInfo = ISRichTextPanel:new(0, 20, self:getWidth() / 2, self:getHeight() / 4)
     self.panelLeftInfo.autosetheight = false
     self.panelLeftInfo.background = true
     self.panelLeftInfo.backgroundColor = { r = 0, g = 0, b = 0, a = 0.5 }
@@ -111,7 +110,7 @@ function MortarUI:createChildren()
     self.panelLeftInfo:paginate()
     self:addChild(self.panelLeftInfo)
 
-    self.panelRightInfo = ISRichTextPanel:new(self:getWidth()/2, 20, self:getWidth()/2, self:getHeight() / 4)
+    self.panelRightInfo = ISRichTextPanel:new(self:getWidth() / 2, 20, self:getWidth() / 2, self:getHeight() / 4)
     self.panelRightInfo.autosetheight = false
     self.panelRightInfo.background = true
     self.panelRightInfo.backgroundColor = { r = 0, g = 0, b = 0, a = 0.5 }
@@ -188,7 +187,7 @@ function MortarUI:onClick(btn)
         self.mortarInstance:reloadRound()
     elseif btn.internal == 'SET_SPOTTER' then
         self.openedPanel = SpottersViewerPanel.Open(self:getRight(), self:getBottom() - self:getHeight(),
-        self.mortarInstance)
+            self.mortarInstance)
     elseif btn.internal == 'SWITCH_MODE' then
         if self.mode == MRT_COMMON.SOLO_MODE then
             self.mode = MRT_COMMON.SPOT_MODE
@@ -211,7 +210,8 @@ function MortarUI:updateShootButton()
             self.btnShoot:setEnable(false)
             self.btnShoot:setTooltip("You didn't set a spotter")
         else
-            local isReady = self.mortarInstance:getIsReloaded() and self:getIsOperatorReady() and self:getIsSpotterReady()
+            local isReady = self.mortarInstance:getIsReloaded() and self:getIsOperatorReady() and
+            self:getIsSpotterReady()
             self.btnShoot:setEnable(isReady)
             if not isReady then
                 self.btnShoot:setTooltip("Spotter not ready or no shell in the mortar")
@@ -274,7 +274,7 @@ function MortarUI:updateSpotterStatus()
         self:setIsSpotterReady(false)
     else
         -- TODO This should be run every once in a while, not constantly
-        sendClientCommand(getPlayer(), MRT_COMMON.SERVER_OPERATOR_COMMAND, 'AskSpotterStatus', {spotterID = spotterID})
+        sendClientCommand(getPlayer(), MRT_COMMON.SERVER_OPERATOR_COMMAND, 'AskSpotterStatus', { spotterID = spotterID })
     end
 end
 
@@ -291,7 +291,6 @@ end
 ---Updated info panel
 ---@param shellsAmount number
 function MortarUI:updateInfoPanel(shellsAmount)
-
     local leftText = "<SIZE:medium> "
 
     --* LEFT PANEL *--
@@ -305,7 +304,6 @@ function MortarUI:updateInfoPanel(shellsAmount)
 
         leftText = leftText .. "Spotter: %s <BR> "
         leftText = string.format(leftText, spotterUsername)
-
     end
 
     leftText = leftText .. "Mode: %s <BR> "
@@ -323,7 +321,7 @@ function MortarUI:updateInfoPanel(shellsAmount)
     local rightText = "<SIZE:medium> "
 
     if self.mortarInstance:getIsMidReloading() then
-        rightText = rightText .. " <RGB:1,1,0> RELOADING"       --YELLOW
+        rightText = rightText .. " <RGB:1,1,0> RELOADING" --YELLOW
     elseif self.mortarInstance:getIsReloaded() then
         rightText = rightText .. " <GREEN> MORTAR READY"
     else

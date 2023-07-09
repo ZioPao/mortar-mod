@@ -86,7 +86,8 @@ function MortarShotHandler.Fire(hitCoords)
 
     -- Handles audio
     if isClient() then
-        sendClientCommand(getPlayer(), MRT_COMMON.SERVER_COMMON_COMMAND, 'SendBoomSound', {x=hitCoords.x, y=hitCoords.y, z=z})
+        sendClientCommand(getPlayer(), MRT_COMMON.SERVER_COMMON_COMMAND, 'SendBoomSound',
+            { x = hitCoords.x, y = hitCoords.y, z = z })
     else
         local sq = getCell():getGridSquare(hitCoords.x, hitCoords.y, z)
         local choosenSound = tostring(MRT_COMMON.BLAST_SOUNDS[ZombRand(1, 4)])

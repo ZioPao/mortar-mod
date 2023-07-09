@@ -191,7 +191,6 @@ function MortarCommon.RotateSprite(pl)
     local tile = MRT_COMMON.TILES[tostring(pl:getDir())]
     mortarObj:setSpriteFromName(tile)
     mortarObj:transmitUpdatedSprite()
-
 end
 
 function MortarCommon.PlayBoomSound(x, y, z)

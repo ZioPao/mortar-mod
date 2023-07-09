@@ -104,13 +104,14 @@ function MortarInstance:initializeShot(mode)
     local operatorPlayer = getPlayerByOnlineID(self.dataTable.operatorID)
 
     if operatorPlayer == nil then
-        operatorPlayer = getPlayer()        -- TODO Mostly a workaround,figure out why it would return nil
+        operatorPlayer = getPlayer() -- TODO Mostly a workaround,figure out why it would return nil
     end
 
     operatorPlayer:playEmote("MortarClick")
 
     if isClient() then
-        sendClientCommand(operatorPlayer, MRT_COMMON.SERVER_OPERATOR_COMMAND, 'SendMuzzleFlash', { operatorID = self.dataTable.operatorID })
+        sendClientCommand(operatorPlayer, MRT_COMMON.SERVER_OPERATOR_COMMAND, 'SendMuzzleFlash',
+            { operatorID = self.dataTable.operatorID })
         sendClientCommand(operatorPlayer, MRT_COMMON.SERVER_OPERATOR_COMMAND, 'SendThumpSound', {})
     else
         operatorPlayer:startMuzzleFlash()

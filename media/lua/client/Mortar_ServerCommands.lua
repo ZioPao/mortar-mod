@@ -17,7 +17,7 @@ function SpotterCommands.SendUpdatedStatus(args)
     local isSpotterValid = MortarCommon.IsSpotterValid(spotterObj)
     local radioCheck = MortarCommon.CheckRadio(spotterObj:getInventory())
     local variousChecks = not spotterObj:isDriving() and not spotterObj:HasTrait('ShortSighted') and
-    not spotterObj:isAsleep()
+        not spotterObj:isAsleep()
 
 
     local status = distanceCheck and isSpotterValid and radioCheck and variousChecks
@@ -77,14 +77,14 @@ function CommonCommands.ReceiveBoomSound(args)
     local x = args.x
     local y = args.y
     local z = args.z
-    MortarCommon.PlayBoomSound(x,y,z)
+    MortarCommon.PlayBoomSound(x, y, z)
 end
 
 function CommonCommands.ReceiveThumpSound(args)
     local x = args.x
     local y = args.y
     local z = args.z
-    MortarCommon.PlayThumpSound(x,y,z)
+    MortarCommon.PlayThumpSound(x, y, z)
 end
 
 --------------------------------------------

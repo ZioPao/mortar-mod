@@ -11,9 +11,10 @@ function MortarDataHandler.InitializeInstance(coords)
     print("Initialize instance")
     local id = MortarCommon.GetAssembledID(coords)
 
-    local newData = {operatorID = -1, spotterID = -1, position = {x=coords.x, y=coords.y, z=coords.z}}
+    local newData = { operatorID = -1, spotterID = -1, position = { x = coords.x, y = coords.y, z = coords.z } }
     MORTAR_DATA_TABLE[id] = newData
-    local instance MortarInstance:new(MORTAR_DATA_TABLE[id])
+    local instance
+    MortarInstance:new(MORTAR_DATA_TABLE[id])
     if isClient() then
         sendClientCommand(getPlayer(), MRT_COMMON.GLOBAL_MOD_DATA, "UpdateInstances",
             { data = MORTAR_DATA_TABLE[id], id = id })
@@ -21,6 +22,7 @@ function MortarDataHandler.InitializeInstance(coords)
 
     return instance
 end
+
 ---Sync data with client and server. Modification from the client will be sent to the server
 ---@param id any
 function MortarDataHandler.SyncData(id)

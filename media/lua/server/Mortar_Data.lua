@@ -23,13 +23,6 @@ end
 
 Events.OnClientCommand.Add(OnUpdateGlobalModData)
 
-
-
-
-
-
-
-
 -----------------------------
 
 local function OnInitGlobalModData()

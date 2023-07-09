@@ -22,7 +22,7 @@ function OperatorCommands.AskSpotterStatus(operatorObj, args)
     local spotterID = args.spotterID
     local operatorID = operatorObj:getOnlineID()
     local spotterPl = getPlayerByOnlineID(spotterID)
-    sendServerCommand(spotterPl, MRT_COMMON.SPOTTER_COMMAND, 'SendUpdatedStatus', {operatorID = operatorID})
+    sendServerCommand(spotterPl, MRT_COMMON.SPOTTER_COMMAND, 'SendUpdatedStatus', { operatorID = operatorID })
 end
 
 function OperatorCommands.RouteNotificationToSpotter(_, args)
@@ -37,15 +37,14 @@ function OperatorCommands.SendThumpSound(operatorObj, args)
     local x = operatorObj:getX()
     local y = operatorObj:getY()
     local z = operatorObj:getZ()
-    sendServerCommand(MRT_COMMON.COMMON_COMMAND, 'ReceiveThumpSound', { x = x, y = y, z = z})
-
+    sendServerCommand(MRT_COMMON.COMMON_COMMAND, 'ReceiveThumpSound', { x = x, y = y, z = z })
 end
+
 ---Send to every client a muzzle flash, coming from the operator
 ---@param args table contains operatorID
 function OperatorCommands.SendMuzzleFlash(_, args)
     sendServerCommand(MRT_COMMON.COMMON_COMMAND, 'ReceiveMuzzleFlash', { operatorID = args.operatorID })
 end
-
 
 ---Send the shot to the correct player, who may be a spotter or the operator
 ---@param args table Contains shooterID
@@ -64,7 +63,7 @@ local CommonCommands = {}
 ---Explosions on squares
 ---@param args table
 function CommonCommands.SendBoomSound(_, args)
-    sendServerCommand(MRT_COMMON.COMMON_COMMAND, 'ReceiveBoomSound', { x = args.x, y = args.y, z = args.z})
+    sendServerCommand(MRT_COMMON.COMMON_COMMAND, 'ReceiveBoomSound', { x = args.x, y = args.y, z = args.z })
 end
 
 ------------
