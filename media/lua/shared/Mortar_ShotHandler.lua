@@ -47,10 +47,12 @@ end
 ---Main function which handles shooting from a mortar.
 ---@param hitCoords table x,y,z
 function MortarShotHandler.Fire(hitCoords)
+    -- print("Hit coords in Fire")
+    -- print(hitCoords.x)
+    -- print(hitCoords.y)
+    -- print("_________________")
     local rad = ZombRand(3, MRT_COMMON.RAD)
     local z = MortarCommon.GetHighestZ(hitCoords.x, hitCoords.y)
-
-    --self:generateShot(coords.x, coords.y, z, finalRad)
     local cell = getWorld():getCell()
 
     for x = hitCoords.x - rad, hitCoords.x + rad + 1 do

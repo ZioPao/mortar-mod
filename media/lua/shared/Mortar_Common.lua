@@ -1,12 +1,17 @@
 MortarCommon = {}
 local MortarInstance = require("Mortar_Instance")
 
-function MortarCommon.GetHitCoords(pl)
-    local directions = MRT_COMMON.DIRECTIONS[tostring(pl:getDir())]
+---Returns the coordinates necessary to land a shot
+---@param plX number
+---@param plY number
+---@param dir IsoDirections Necessary since we can't fetch it from another player's client
+---@return table hitCoords x,y
+function MortarCommon.GetHitCoords(plX, plY, dir)
+    local directions = MRT_COMMON.DIRECTIONS[tostring(dir)]
     local dist = ZombRand(MRT_COMMON.DIST_MIN, MRT_COMMON.DIST_MAX)
     local hitCoords = {
-        x = math.floor(pl:getX() + (directions[1] * dist)),
-        y = math.floor(pl:getY() + (directions[2] * dist))
+        x = math.floor(plX + (directions[1] * dist)),
+        y = math.floor(plY + (directions[2] * dist))
     }
     return hitCoords
 end

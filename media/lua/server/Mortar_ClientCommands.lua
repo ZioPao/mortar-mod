@@ -1,13 +1,14 @@
 local SpotterCommands = {}
 
----Send the status received from the spotter to the operator
+---Send the status and direction received from the spotter to the operator
 ---@param _ any
----@param args table operatorID=number, status=boolean
-function SpotterCommands.RouteSpotterStatusToOperator(_, args)
+---@param args table operatorID=number, status=boolean, direction=string
+function SpotterCommands.RouteSpotterInfoToOperator(_, args)
     local operatorID = args.operatorID
     local status = args.status
+    local direction = args.direction
     local operatorPl = getPlayerByOnlineID(operatorID)
-    sendServerCommand(operatorPl, MRT_COMMON.OPERATOR_COMMAND, 'ReceiveSpotterUpdate', { status = status })
+    sendServerCommand(operatorPl, MRT_COMMON.OPERATOR_COMMAND, 'ReceiveSpotterUpdate', { status = status, direction = direction })
 end
 
 --******************************************************--
@@ -22,7 +23,7 @@ function OperatorCommands.AskSpotterStatus(operatorObj, args)
     local spotterID = args.spotterID
     local operatorID = operatorObj:getOnlineID()
     local spotterPl = getPlayerByOnlineID(spotterID)
-    sendServerCommand(spotterPl, MRT_COMMON.SPOTTER_COMMAND, 'SendUpdatedStatus', { operatorID = operatorID })
+    sendServerCommand(spotterPl, MRT_COMMON.SPOTTER_COMMAND, 'SendUpdatedInfo', { operatorID = operatorID })
 end
 
 function OperatorCommands.RouteNotificationToSpotter(_, args)
@@ -50,8 +51,13 @@ end
 ---@param args table Contains shooterID
 function OperatorCommands.SendShot(_, args)
     local shooterID = args.shooterID
+    local hitCoords = args.hitCoords
     local shooterPl = getPlayerByOnlineID(shooterID)
-    sendServerCommand(shooterPl, MRT_COMMON.COMMON_COMMAND, 'DoMortarShot', {})
+    -- print("Hit coords in SendShot")
+    -- print(hitCoords.x)
+    -- print(hitCoords.y)
+    -- print("_________________")
+    sendServerCommand(shooterPl, MRT_COMMON.COMMON_COMMAND, 'DoMortarShot', {hitCoords=hitCoords})
 end
 
 --******************************************************--

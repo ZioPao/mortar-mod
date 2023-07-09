@@ -44,6 +44,8 @@ function MortarUI:new(x, y, width, height, coords)
 
     -- Spotter related stuff
     o.isSPotterReady = false
+    o.spotterDirection = ""
+
     o.isOperatorReady = false
 
 
@@ -81,6 +83,10 @@ function MortarUI:getIsSpotterReady()
     return self.isSpotterReady
 end
 
+function MortarUI:getSpotterDirection()
+    return self.spotterDirection
+end
+
 --* Setters *--
 
 function MortarUI:setIsOperatorReady(isOperatorReady)
@@ -89,6 +95,12 @@ end
 
 function MortarUI:setIsSpotterReady(isSpotterReady)
     self.isSpotterReady = isSpotterReady
+end
+
+---Set spotter direction. Workaround since getDir() doesn't work from another player on the spotter
+---@param direction any
+function MortarUI:setSpotterDirection(direction)
+    self.spotterDirection = direction
 end
 
 -------------------------------
@@ -177,7 +189,7 @@ end
 
 function MortarUI:onClick(btn)
     if btn.internal == 'SHOOT' then
-        self.mortarInstance:initializeShot(self.mode)
+        self.mortarInstance:initializeShot(self.mode, self:getSpotterDirection())
     elseif btn.internal == 'RELOAD' then
         self.btnReload:setEnable(false)
         self.mortarInstance:reloadRound()

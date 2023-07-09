@@ -6,9 +6,9 @@ function SpotterCommands.ReceiveNotification(args)
     -- TODO Check if notification is already active.
 end
 
----Send an updated status from the Spotter to the server
----@param args table operatorID=number
-function SpotterCommands.SendUpdatedStatus(args)
+---Send an updated status and direction from the Spotter to the server,
+---@param args table operatorID=number, direction=string
+function SpotterCommands.SendUpdatedInfo(args)
     local spotterObj = getPlayer()
     local operatorID = args.operatorID
     local operatorObj = getPlayerByOnlineID(operatorID)
@@ -21,8 +21,9 @@ function SpotterCommands.SendUpdatedStatus(args)
 
 
     local status = distanceCheck and isSpotterValid and radioCheck and variousChecks
-    sendClientCommand(spotterObj, MRT_COMMON.SERVER_SPOTTER_COMMAND, "RouteSpotterStatusToOperator",
-        { operatorID = operatorID, status = status })
+    local direction = spotterObj:getDir()
+    sendClientCommand(spotterObj, MRT_COMMON.SERVER_SPOTTER_COMMAND, "RouteSpotterInfoToOperator",
+        { operatorID = operatorID, status = status, direction = direction})
 end
 
 --******************************************************--
@@ -40,12 +41,14 @@ function OperatorCommands.NotifySelectedSpotter(args)
 end
 
 ---Set the status of the spotter in MortarUI
----@param args table status=boolean
+---@param args table status=boolean, direction=string
 function OperatorCommands.ReceiveSpotterUpdate(args)
     local status = args.status
+    local direction = args.direction
     --print("MortarUI: received updatate from spotter =" .. tostring(status))
     if MortarUI and MortarUI.instance then
         MortarUI.instance:setIsSpotterReady(status)
+        MortarUI.instance:setSpotterDirection(direction)
     end
 end
 
@@ -55,10 +58,13 @@ local CommonCommands = {}
 local MortarShotHandler = require("Mortar_ShotHandler")
 
 ---Sent to the operator or spotter, depending on the selected mode
----@param _ any
-function CommonCommands.DoMortarShot(_)
-    local pl = getPlayer()
-    local hitCoords = MortarCommon.GetHitCoords(pl)
+---@param args table hitCoords=table
+function CommonCommands.DoMortarShot(args)
+    local hitCoords = args.hitCoords
+    -- print("Hit coords in DoMortarShot")
+    -- print(hitCoords.x)
+    -- print(hitCoords.y)
+    -- print("_________________")
     MortarShotHandler.Fire(hitCoords)
 end
 

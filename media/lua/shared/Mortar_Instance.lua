@@ -1,5 +1,8 @@
-local ShotHandler = require("Mortar_ShotHandler")
+---@class MortarInstance
+---@field id string
+---@field dataTable table
 local MortarInstance = {}
+local ShotHandler = require("Mortar_ShotHandler")
 
 -----------------------------------------------------------
 
@@ -79,18 +82,20 @@ function MortarInstance.HandleShotDelay()
     local sTime = MortarInstance.current.sTimeShot
     local timeToLand = MortarInstance.current.timeToLand
     local mode = MortarInstance.current.currentMode
+    local hitCoords = MortarInstance.current.currentHitCoords
     local cTime = os.time()
 
     if cTime > sTime + timeToLand then
         if mode == MRT_COMMON.SOLO_MODE then
-            MortarInstance.current:initializeSoloShot()
+            MortarInstance.current:initializeSoloShot(hitCoords)
         else
-            MortarInstance.current:initializeSpotShot()
+            MortarInstance.current:initializeSpotShot(hitCoords)
         end
 
         MortarInstance.current.sTimeShot = nil
         MortarInstance.current.timeToLand = nil
         MortarInstance.current.currentMode = nil
+        --MortarInstance.current.currentHitCoords = nil
 
         Events.OnTick.Remove(MortarInstance.HandleShotDelay)
     end
@@ -98,7 +103,8 @@ end
 
 ---Main function to handle shots
 ---@param mode string
-function MortarInstance:initializeShot(mode)
+---@param spotterDirection IsoDirections?
+function MortarInstance:initializeShot(mode, spotterDirection)
     self:setIsReloaded(false)
     MortarDataHandler.SyncData(self.id)
     local operatorPlayer = getPlayerByOnlineID(self.dataTable.operatorID)
@@ -127,26 +133,40 @@ function MortarInstance:initializeShot(mode)
     end
     self.currentMode = mode
 
+    -- Calculate here the hitcoords, it wouldn't make sense to calculate them after the delay
+    if self.currentMode == MRT_COMMON.SOLO_MODE then
+        self.currentHitCoords = MortarCommon.GetHitCoords(operatorPlayer:getX(), operatorPlayer:getY(), operatorPlayer:getDir())
+    elseif spotterDirection ~= nil then
+        local spotterPlayer = getPlayerByOnlineID(self.dataTable.spotterID)
+        self.currentHitCoords = MortarCommon.GetHitCoords(spotterPlayer:getX(), spotterPlayer:getY(), spotterDirection)
+    end
+
+
     Events.OnTick.Add(MortarInstance.HandleShotDelay)
 end
 
 ---Handle a solo shot
-function MortarInstance:initializeSoloShot()
+---@param hitCoords table x,y,z
+function MortarInstance:initializeSoloShot(hitCoords)
     local operatorPlayer
 
+    -- print("Hit coords in initializeSoloShot")
+    -- print(hitCoords.x)
+    -- print(hitCoords.y)
+    -- print("_________________")
     if isClient() then
         operatorPlayer = getPlayerByOnlineID(self.dataTable.operatorID)
         sendClientCommand(operatorPlayer, MRT_COMMON.SERVER_OPERATOR_COMMAND, 'SendShot',
-            { shooterID = self.dataTable.operatorID })
+            { shooterID = self.dataTable.operatorID, hitCoords=hitCoords })
     else
         operatorPlayer = getPlayer()
-        local hitCoords = MortarCommon.GetHitCoords(operatorPlayer)
         ShotHandler.Fire(hitCoords)
     end
 end
 
 ---Handle a spot shot
-function MortarInstance:initializeSpotShot()
+---@param hitCoords table x,y,z
+function MortarInstance:initializeSpotShot(hitCoords)
     --print("Mortar: Trying to fire")
 
     local spotterPlayer = getPlayerByOnlineID(self.dataTable.spotterID)
@@ -160,7 +180,7 @@ function MortarInstance:initializeSpotShot()
     end
     operatorPlayer:playEmote("_MortarClick")
     sendClientCommand(operatorPlayer, MRT_COMMON.SERVER_OPERATOR_COMMAND, 'SendShot',
-        { shooterID = self.dataTable.spotterID })
+        { shooterID = self.dataTable.spotterID, hitCoords=hitCoords})
 end
 
 ---------------------------
