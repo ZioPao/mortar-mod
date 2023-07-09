@@ -1,0 +1,1145 @@
+version = 1
+tileset
+{
+    file = mortar
+    size = 8,8
+    id = 1
+    // mortar_0
+    tile
+    {
+        xy = 0,0
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_1
+    tile
+    {
+        xy = 1,0
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_2
+    tile
+    {
+        xy = 2,0
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_3
+    tile
+    {
+        xy = 3,0
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_4
+    tile
+    {
+        xy = 4,0
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_5
+    tile
+    {
+        xy = 5,0
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_6
+    tile
+    {
+        xy = 6,0
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_7
+    tile
+    {
+        xy = 7,0
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_8
+    tile
+    {
+        xy = 0,1
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_9
+    tile
+    {
+        xy = 1,1
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_10
+    tile
+    {
+        xy = 2,1
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_11
+    tile
+    {
+        xy = 3,1
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_12
+    tile
+    {
+        xy = 4,1
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_13
+    tile
+    {
+        xy = 5,1
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_14
+    tile
+    {
+        xy = 6,1
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_15
+    tile
+    {
+        xy = 7,1
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_16
+    tile
+    {
+        xy = 0,2
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_17
+    tile
+    {
+        xy = 1,2
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_18
+    tile
+    {
+        xy = 2,2
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_19
+    tile
+    {
+        xy = 3,2
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_20
+    tile
+    {
+        xy = 4,2
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_21
+    tile
+    {
+        xy = 5,2
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_22
+    tile
+    {
+        xy = 6,2
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_23
+    tile
+    {
+        xy = 7,2
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_24
+    tile
+    {
+        xy = 0,3
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_25
+    tile
+    {
+        xy = 1,3
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_26
+    tile
+    {
+        xy = 2,3
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_27
+    tile
+    {
+        xy = 3,3
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_28
+    tile
+    {
+        xy = 4,3
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_29
+    tile
+    {
+        xy = 5,3
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_30
+    tile
+    {
+        xy = 6,3
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_31
+    tile
+    {
+        xy = 7,3
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_32
+    tile
+    {
+        xy = 0,4
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_33
+    tile
+    {
+        xy = 1,4
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_34
+    tile
+    {
+        xy = 2,4
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_35
+    tile
+    {
+        xy = 3,4
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_36
+    tile
+    {
+        xy = 4,4
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_37
+    tile
+    {
+        xy = 5,4
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_38
+    tile
+    {
+        xy = 6,4
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_39
+    tile
+    {
+        xy = 7,4
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_40
+    tile
+    {
+        xy = 0,5
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_41
+    tile
+    {
+        xy = 1,5
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_42
+    tile
+    {
+        xy = 2,5
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_43
+    tile
+    {
+        xy = 3,5
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_44
+    tile
+    {
+        xy = 4,5
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_45
+    tile
+    {
+        xy = 5,5
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_46
+    tile
+    {
+        xy = 6,5
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_47
+    tile
+    {
+        xy = 7,5
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_48
+    tile
+    {
+        xy = 0,6
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_49
+    tile
+    {
+        xy = 1,6
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_50
+    tile
+    {
+        xy = 2,6
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_51
+    tile
+    {
+        xy = 3,6
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_52
+    tile
+    {
+        xy = 4,6
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_53
+    tile
+    {
+        xy = 5,6
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_54
+    tile
+    {
+        xy = 6,6
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_55
+    tile
+    {
+        xy = 7,6
+        BlocksPlacement = 
+        FloorOverlay = 
+        IsSurfaceOffset = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        Surface = 1
+        TileOverlay = 
+        exterior = 
+    }
+    // mortar_56
+    tile
+    {
+        xy = 0,7
+        BlocksPlacement = 
+        CanScrap = 
+        CustomName = weapon
+        Facing = N
+        GroupName = Mortar
+        IsMoveAble = 
+        ItemHeight = 30
+        Material = MetalPipe
+        Material2 = MetalScrap
+        PickUpWeight = 100
+        ScrapUseSkill = 
+        exterior = 
+    }
+    // mortar_57
+    tile
+    {
+        xy = 1,7
+        BlocksPlacement = 
+        CanScrap = 
+        CustomName = weapon_
+        Facing = E
+        GroupName = Mortar
+        IsMoveAble = 
+        ItemHeight = 30
+        Material = MetalPipe
+        Material2 = MetalScrap
+        PickUpWeight = 100
+        ScrapUseSkill = 
+        exterior = 
+    }
+    // mortar_58
+    tile
+    {
+        xy = 2,7
+        BlocksPlacement = 
+        CanScrap = 
+        CustomName = weapon
+        Facing = E
+        GroupName = Mortar
+        IsMoveAble = 
+        ItemHeight = 30
+        Material = MetalPipe
+        Material2 = MetalScrap
+        PickUpWeight = 100
+        ScrapUseSkill = 
+        exterior = 
+    }
+    // mortar_59
+    tile
+    {
+        xy = 3,7
+        BlocksPlacement = 
+        CanScrap = 
+        CustomName = weapon_
+        Facing = S
+        GroupName = Mortar
+        IsMoveAble = 
+        ItemHeight = 30
+        Material = MetalPipe
+        Material2 = MetalScrap
+        PickUpWeight = 100
+        ScrapUseSkill = 
+        exterior = 
+    }
+    // mortar_60
+    tile
+    {
+        xy = 4,7
+        BlocksPlacement = 
+        CanScrap = 
+        CustomName = weapon
+        Facing = S
+        GroupName = Mortar
+        IsMoveAble = 
+        ItemHeight = 30
+        Material = MetalPipe
+        Material2 = MetalScrap
+        PickUpWeight = 100
+        ScrapUseSkill = 
+        exterior = 
+    }
+    // mortar_61
+    tile
+    {
+        xy = 5,7
+        BlocksPlacement = 
+        CanScrap = 
+        CustomName = weapon_
+        Facing = W
+        GroupName = Mortar
+        IsMoveAble = 
+        ItemHeight = 30
+        Material = MetalPipe
+        Material2 = MetalScrap
+        PickUpWeight = 100
+        ScrapUseSkill = 
+        exterior = 
+    }
+    // mortar_62
+    tile
+    {
+        xy = 6,7
+        BlocksPlacement = 
+        CanScrap = 
+        CustomName = weapon
+        Facing = W
+        GroupName = Mortar
+        IsMoveAble = 
+        ItemHeight = 30
+        Material = MetalPipe
+        Material2 = MetalScrap
+        PickUpWeight = 100
+        ScrapUseSkill = 
+        exterior = 
+    }
+    // mortar_63
+    tile
+    {
+        xy = 7,7
+        BlocksPlacement = 
+        CanScrap = 
+        CustomName = weapon_
+        Facing = N
+        GroupName = Mortar
+        IsMoveAble = 
+        ItemHeight = 30
+        Material = MetalPipe
+        Material2 = MetalScrap
+        PickUpWeight = 100
+        ScrapUseSkill = 
+        exterior = 
+    }
+}
+tileset
+{
+    file = mortarburst
+    size = 8,8
+    id = 2
+    // mortarburst_0
+    tile
+    {
+        xy = 0,0
+        FloorOverlay = 
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        exterior = 
+        forceFade = 
+        lightB = 60
+        lightG = 130
+        lightR = 240
+        lightswitch = 
+    }
+    // mortarburst_1
+    tile
+    {
+        xy = 1,0
+        FloorOverlay = 
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        exterior = 
+        forceFade = 
+        lightB = 60
+        lightG = 50
+        lightR = 240
+        lightswitch = 
+    }
+    // mortarburst_2
+    tile
+    {
+        xy = 2,0
+        FloorOverlay = 
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        exterior = 
+        forceFade = 
+        lightB = 60
+        lightG = 130
+        lightR = 240
+        lightswitch = 
+    }
+    // mortarburst_3
+    tile
+    {
+        xy = 3,0
+        FloorOverlay = 
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        exterior = 
+        forceFade = 
+        lightB = 60
+        lightG = 50
+        lightR = 240
+        lightswitch = 
+    }
+    // mortarburst_4
+    tile
+    {
+        xy = 4,0
+        FloorOverlay = 
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        exterior = 
+        forceFade = 
+        lightB = 60
+        lightG = 130
+        lightR = 240
+        lightswitch = 
+    }
+    // mortarburst_5
+    tile
+    {
+        xy = 5,0
+        FloorOverlay = 
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        exterior = 
+        forceFade = 
+        lightB = 60
+        lightG = 50
+        lightR = 240
+        lightswitch = 
+    }
+    // mortarburst_6
+    tile
+    {
+        xy = 6,0
+        FloorOverlay = 
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        exterior = 
+        forceFade = 
+        lightB = 60
+        lightG = 130
+        lightR = 240
+        lightswitch = 
+    }
+    // mortarburst_7
+    tile
+    {
+        xy = 7,0
+        FloorOverlay = 
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        exterior = 
+        forceFade = 
+        lightB = 60
+        lightG = 50
+        lightR = 240
+        lightswitch = 
+    }
+    // mortarburst_8
+    tile
+    {
+        xy = 0,1
+        FloorOverlay = 
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        exterior = 
+        forceFade = 
+        lightB = 60
+        lightG = 130
+        lightR = 240
+        lightswitch = 
+    }
+    // mortarburst_9
+    tile
+    {
+        xy = 1,1
+        FloorOverlay = 
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        exterior = 
+        forceFade = 
+        lightB = 60
+        lightG = 50
+        lightR = 240
+        lightswitch = 
+    }
+    // mortarburst_10
+    tile
+    {
+        xy = 2,1
+        FloorOverlay = 
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        exterior = 
+        forceFade = 
+        lightB = 60
+        lightG = 130
+        lightR = 240
+        lightswitch = 
+    }
+    // mortarburst_11
+    tile
+    {
+        xy = 3,1
+        FloorOverlay = 
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        exterior = 
+        forceFade = 
+        lightB = 60
+        lightG = 50
+        lightR = 240
+        lightswitch = 
+    }
+    // mortarburst_12
+    tile
+    {
+        xy = 4,1
+        FloorOverlay = 
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        exterior = 
+        forceFade = 
+        lightB = 60
+        lightG = 130
+        lightR = 240
+        lightswitch = 
+    }
+    // mortarburst_13
+    tile
+    {
+        xy = 5,1
+        FloorOverlay = 
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        exterior = 
+        forceFade = 
+        lightB = 60
+        lightG = 50
+        lightR = 240
+        lightswitch = 
+    }
+    // mortarburst_14
+    tile
+    {
+        xy = 6,1
+        FloorOverlay = 
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        ScrapUseSkill = 
+        ScrapUseTool = 
+        exterior = 
+        forceFade = 
+        lightB = 60
+        lightG = 130
+        lightR = 240
+        lightswitch = 
+    }
+    // mortarburst_15
+    tile
+    {
+        xy = 7,1
+        GroupName = bursts
+        LightRadius = 4
+        PreSeen = 
+        forceFade = 
+        lightB = 60
+        lightG = 130
+        lightR = 240
+        lightswitch = 
+    }
+}

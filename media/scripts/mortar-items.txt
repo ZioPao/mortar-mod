@@ -15,7 +15,7 @@ module Mortar {
 		DisplayCategory = Furniture,
 		Type			= Moveable,
 		Icon			= mortar_ico,
-		Weight		  	= 13.0,
+		Weight		  	= 13,
 		DisplayName		= Mortar,
 		WorldObjectSprite	= mortar_56,
 	}
