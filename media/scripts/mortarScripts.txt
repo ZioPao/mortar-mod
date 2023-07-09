@@ -1,8 +1,22 @@
 module Base {
 
-    sound MortarBlast1 {  category = Improvised, clip { file = media/sound/mortarSFX1.ogg,  }  } 
-    sound MortarBlast2 {  category = Improvised, clip { file = media/sound/mortarSFX2.ogg,  }  } 
-    sound MortarBlast3 {  category = Improvised, clip { file = media/sound/mortarSFX3.ogg,  }  } 
+    sound MortarThump{
+        category = Mortar,
+        clip { file = media/sound/mortarThump.ogg, distanceMax, 100, reverbFactor = 0.1, volume = 1, }
+    }
+
+    sound MortarBlast1 {
+        category = Mortar,
+        clip { file = media/sound/mortarSFX1.ogg, distanceMax = 1000, reverbFactor = 0.1, volume = 2.5, }
+    } 
+    sound MortarBlast2 {  
+        category = Mortar, 
+        clip { file = media/sound/mortarSFX2.ogg, distanceMax = 1000, reverbFactor = 0.1, volume = 2.5, }
+    } 
+    sound MortarBlast3 {  
+        category = Mortar, 
+        clip { file = media/sound/mortarSFX3.ogg, distanceMax = 1000, reverbFactor = 0.1, volume = 2.5, }
+    } 
 
     model Binoculars
     {

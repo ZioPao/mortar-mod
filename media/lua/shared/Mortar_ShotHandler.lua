@@ -83,6 +83,15 @@ function MortarShotHandler.Fire(hitCoords)
             MortarShotHandler.KillEntities(sq)
         end
     end
+
+    -- Handles audio
+    if isClient() then
+        sendClientCommand(getPlayer(), MRT_COMMON.SERVER_COMMON_COMMAND, 'SendBoomSound', {x=hitCoords.x, y=hitCoords.y, z=z})
+    else
+        local sq = getCell():getGridSquare(hitCoords.x, hitCoords.y, z)
+        local choosenSound = tostring(MRT_COMMON.BLAST_SOUNDS[ZombRand(1, 4)])
+        getSoundManager():PlayWorldSound(choosenSound, sq, 0, 100, 5, false)
+    end
 end
 
 return MortarShotHandler

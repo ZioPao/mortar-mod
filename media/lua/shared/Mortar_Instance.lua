@@ -101,13 +101,20 @@ end
 function MortarInstance:initializeShot(mode)
     self:setIsReloaded(false)
     MortarDataHandler.SyncData(self.id)
-    local pl = getPlayer()
-    pl:playEmote("MortarClick")
+    local operatorPlayer = getPlayerByOnlineID(self.dataTable.operatorID)
+
+    if operatorPlayer == nil then
+        operatorPlayer = getPlayer()        -- TODO Mostly a workaround,figure out why it would return nil
+    end
+
+    operatorPlayer:playEmote("MortarClick")
 
     if isClient() then
-        sendClientCommand(pl, MRT_COMMON.SERVER_COMMON_COMMAND, 'SendMuzzleFlash', { operatorID = pl:getOnlineID() })
+        sendClientCommand(operatorPlayer, MRT_COMMON.SERVER_COMMON_COMMAND, 'SendMuzzleFlash', { operatorID = self.dataTable.operatorID })
+        sendClientCommand(operatorPlayer, MRT_COMMON.SERVER_COMMON_COMMAND, 'SendThumpSound', {})
     else
-        pl:startMuzzleFlash()
+        operatorPlayer:startMuzzleFlash()
+        MortarCommon.PlayThumpSound(operatorPlayer:getX(), operatorPlayer:getY(), operatorPlayer:getZ())
     end
 
     self.sTimeShot = os.time()

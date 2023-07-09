@@ -71,14 +71,20 @@ function CommonCommands.ReceiveMuzzleFlash(args)
     end
 end
 
----Start sound from mortar position
+---Start sound from the explosion
 ---@param args table
 function CommonCommands.ReceiveBoomSound(args)
     local x = args.x
     local y = args.y
     local z = args.z
-    local sq = getCell():getGridSquare(x, y, z)
-    getSoundManager():PlayWorldSound(tostring(MRT_COMMON.SOUNDS[ZombRand(1, 4)]), sq, 0, 5, 5, false)
+    MortarCommon.PlayBoomSound(x,y,z)
+end
+
+function CommonCommands.ReceiveThumpSound(args)
+    local x = args.x
+    local y = args.y
+    local z = args.z
+    MortarCommon.PlayThumpSound(x,y,z)
 end
 
 --------------------------------------------

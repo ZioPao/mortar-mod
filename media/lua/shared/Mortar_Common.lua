@@ -147,6 +147,16 @@ MortarCommon.ArePlayersInSameFaction = function(pl1, pl2)
     return false
 end
 
+function MortarCommon.PlayBoomSound(x,y,z)
+    local sq = getCell():getGridSquare(x, y, z)
+    getSoundManager():PlayWorldSound(tostring(MRT_COMMON.BLAST_SOUNDS[ZombRand(1, 4)]), sq, 0, 100, 5, false)
+end
+
+function MortarCommon.PlayThumpSound(x,y,z)
+    local sq = getCell():getGridSquare(x, y, z)
+    getSoundManager():PlayWorldSound(MRT_COMMON.THUMP_SOUND, sq, 0, 15, 5, false)
+end
+
 
 --------------------------------------
 
@@ -199,11 +209,8 @@ MRT_COMMON = {
 
     WALKIE_TALKIE_RANGE = 30000,        -- it's not in sq... not sure why
 
-    SOUNDS = {
-        ['MortarBlast1'] = true,
-        ['MortarBlast2'] = true,
-        ['MortarBlast3'] = true,
-    },
+    BLAST_SOUNDS = { 'MortarBlast1', 'MortarBlast2', 'MortarBlast3'},
+    THUMP_SOUND  = 'MortarThump',
 
 
     SOLO_MODE = 'SOLO',
