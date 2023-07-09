@@ -45,13 +45,13 @@ end
 
 ---Set operator ID
 ---@param operatorID number
-function MortarInstance:setOperator(operatorID)
+function MortarInstance:setOperatorID(operatorID)
     self.dataTable.operatorID = operatorID
 end
 
 --- Set spotter ID
 ---@param spotterID number
-function MortarInstance:setSpotter(spotterID)
+function MortarInstance:setSpotterID(spotterID)
     self.dataTable.spotterID = spotterID
 end
 
@@ -119,7 +119,12 @@ function MortarInstance:initializeShot(mode)
     end
 
     self.sTimeShot = os.time()
-    self.timeToLand = ZombRand(0, 4) -- Fake delay, it should be based on the distance between spotter and operator but who cares tbh
+
+    if SandboxVars.Mortars.FixedShotDelay ~= 0 then
+        self.timeToLand = SandboxVars.Mortars.FixedShotDelay
+    else
+        self.timeToLand = ZombRand(1, 5) -- Fake delay, it should be based on the distance between spotter and operator but who cares tbh
+    end
     self.currentMode = mode
 
     Events.OnTick.Add(MortarInstance.HandleShotDelay)

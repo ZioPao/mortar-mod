@@ -1,9 +1,24 @@
 UI_EN = {
-	UI_ContextMenu_OperateMortar = "Operate Mortar",
-	UI_ContextMenu_StopOperatingMortar = "Stop operating mortar"
-	UI_ContextMenu_SetSpotter = "Set Mortar spotter",
-	UI_ContextMenu_CantOperateMortar = "Can't operate mortar right now",
-	UI_ContextMenu_ShootMortar = "Shoot",
-	UI_ContextMenu_DisassembleMortar = "Disassemble",
-	UI_ContextMenu_Radius = "Max  Blast Radius",
+	UI_ContextMenu_Mort_OperateMortar = "Operate Mortar",
+
+	UI_MortPanel_Shoot = "Shoot",
+	UI_MortPanel_Reload = "Reload",
+	UI_MortPanel_SetSpotter = "Set spotter",
+	UI_MortPanel_SwitchMode = "Switch Mode",
+	UI_MortPanel_Close = "Close",
+
+	UI_MortPanel_Tooltip_Deaf = "You are deaf! You can't use Spot mode.",
+	UI_MortPanel_Tooltip_SetSpotter = "Select a spotter. They must be in your same faction",
+	UI_MortPanel_Tooltip_OperatorNoRadio = "You don't have a radio to comunicate with spotters",
+	UI_MortPanel_Tooltip_NoSpotter = "You didn't set a spotter",
+	UI_MortPanel_Tooltip_NotReady = "Spotter not ready or no shell in the mortar",
+
+	UI_MortPanel_Tooltip_SoloMode = "Solo mode",
+	UI_MortPanel_Tooltip_SpotMode = "Spot mode",
+
+	UI_MortPanel_Tooltip_CurrentlyReloading = "Currently reloading",
+	UI_MortPanel_Tooltip_NoShellsLeft = " <RED> You've got no shells left!",
+	UI_MortPanel_Tooltip_ShellInMortar = " <GREEN> A shell is in the mortar",
+
+
 }

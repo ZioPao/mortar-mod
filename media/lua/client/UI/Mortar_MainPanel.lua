@@ -12,7 +12,6 @@ function MortarUI.Open(coords)
         MortarUI.instance:close()
     end
 
-    -- TODO Should be in the middle of the screen
     local pnl = MortarUI:new(50, 200, 400, 500, coords)
     pnl:initialise()
     pnl:addToUIManager()
@@ -37,11 +36,8 @@ function MortarUI:new(x, y, width, height, coords)
     o.buttonBorderColor = { r = 0.7, g = 0.7, b = 0.7, a = 0.5 }
     o.moveWithMouse = true
 
-
-    -- TODO Instead of a UUID or crap like that, fetch it from the synced table with a combination of the coordinates.
-    -- X .. Y .. Z or something like this.
     o.coords = coords
-    o.id = MortarCommon.GetAssembledID(coords)
+    o.id = MortarCommon.GetAssembledID(coords)    -- X .. Y .. Z 
     o.mode = MRT_COMMON.SPOT_MODE
     o.mortarInstance = MortarDataHandler.GetOrCreateInstance(coords)
 
@@ -128,7 +124,7 @@ function MortarUI:createChildren()
     local btnWidth = self:getWidth() - xPadding * 2
     local btnHeight = 25
 
-    self.btnShoot = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Shoot', self, self.onClick)
+    self.btnShoot = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, getText('UI_MortPanel_Shoot'), self, self.onClick)
     self.btnShoot.internal = "SHOOT"
     self.btnShoot:initialise()
     self.btnShoot:setEnable(false)
@@ -136,7 +132,7 @@ function MortarUI:createChildren()
 
     yOffset = yOffset + self.btnShoot:getHeight() + 10
 
-    self.btnReload = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Reload', self, self.onClick)
+    self.btnReload = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, getText('UI_MortPanel_Reload'), self, self.onClick)
     self.btnReload.internal = "RELOAD"
     self.btnReload:initialise()
     self.btnReload:setEnable(false)
@@ -144,7 +140,7 @@ function MortarUI:createChildren()
 
     yOffset = yOffset + self.btnReload:getHeight() + 10
 
-    self.btnSetSpotter = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Set spotter', self, self.onClick)
+    self.btnSetSpotter = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, getText('UI_MortPanel_SetSpotter'), self, self.onClick)
     self.btnSetSpotter.internal = "SET_SPOTTER"
     self.btnSetSpotter:initialise()
     self.btnSetSpotter:setEnable(true)
@@ -155,19 +151,19 @@ function MortarUI:createChildren()
 
     local isPlayerDeaf = getPlayer():HasTrait('Deaf')
 
-    self.btnSwitchMode = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, 'Switch Mode', self, self.onClick)
+    self.btnSwitchMode = ISButton:new(xPadding, yOffset, btnWidth, btnHeight, getText('UI_MortPanel_SwitchMode'), self, self.onClick)
     self.btnSwitchMode.internal = "SWITCH_MODE"
     self.btnSwitchMode:initialise()
     if isPlayerDeaf then
         self.btnSwitchMode:setEnable(false)
-        self.btnSwitchMode:setTooltip("You are deaf! You can't use Spot mode")
+        self.btnSwitchMode:setTooltip(getText('UI_MortPanel_Tooltip_Deaf'))
     else
         self.btnSwitchMode:setEnable(true)
     end
     self:addChild(self.btnSwitchMode)
 
 
-    self.btnClose = ISButton:new(xPadding, self:getHeight() - btnHeight - 10, btnWidth, btnHeight, 'Close', self,
+    self.btnClose = ISButton:new(xPadding, self:getHeight() - btnHeight - 10, btnWidth, btnHeight, getText('UI_MortPanel_Close'), self,
         self.onClick)
     self.btnClose.internal = "EXIT"
     self.btnClose:initialise()
@@ -208,12 +204,12 @@ function MortarUI:updateShootButton()
 
         if spotterID == -1 then
             self.btnShoot:setEnable(false)
-            self.btnShoot:setTooltip("You didn't set a spotter")
+            self.btnShoot:setTooltip(getText("UI_MortPanel_Tooltip_NoSpotter"))
         else
             local isReady = self.mortarInstance:getIsReloaded() and self:getIsOperatorReady() and self:getIsSpotterReady()
             self.btnShoot:setEnable(isReady)
             if not isReady then
-                self.btnShoot:setTooltip("Spotter not ready or no shell in the mortar")
+                self.btnShoot:setTooltip(getText('UI_MortPanel_Tooltip_NotReady'))
             else
                 self.btnShoot:setTooltip(nil)
             end
@@ -226,14 +222,14 @@ function MortarUI:updateSetSpotterButton()
     if self.mode == MRT_COMMON.SPOT_MODE then
         if self:getIsOperatorReady() then
             self.btnSetSpotter:setEnable(true)
-            self.btnSetSpotter:setTooltip("Select the spotter. They must be in your same faction")
+            self.btnSetSpotter:setTooltip(getText('UI_MortPanel_Tooltip_SetSpotter'))
         else
             self.btnSetSpotter:setEnable(false)
-            self.btnSetSpotter:setTooltip("You don't have a radio to comunicate with spotters")
+            self.btnSetSpotter:setTooltip(getText('UI_MortPanel_Tooltip_OperatorNoRadio'))
         end
     else
         self.btnSetSpotter:setEnable(false)
-        self.btnSetSpotter:setTooltip("Solo mode")
+        self.btnSetSpotter:setTooltip(getText('UI_MortPanel_Tooltip_SoloMode'))
     end
 end
 
@@ -244,16 +240,16 @@ function MortarUI:updateReloadButton(shellsAmount)
 
     if isMidReloading then
         self.btnReload:setEnable(false)
-        self.btnReload:setTooltip("Currently reloading")
+        self.btnReload:setTooltip(getText('UI_MortPanel_Tooltip_CurrentlyReloading'))
     elseif not isReloaded and isShellInInventory then
         self.btnReload:setEnable(true)
-        self.btnReload:setTooltip("You've got %d shells in your inventory.")
+        self.btnReload:setTooltip(nil)
     elseif not isReloaded and not isShellInInventory then
         self.btnReload:setEnable(false)
-        self.btnReload:setTooltip(" <RED> You've got no shells left!")
+        self.btnReload:setTooltip(getText('UI_MortPanel_Tooltip_NoShellsLeft'))
     else
         self.btnReload:setEnable(false)
-        self.btnReload:setTooltip(" <GREEN> Shell is in the mortar")
+        self.btnReload:setTooltip(getText('UI_MortPanel_Tooltip_ShellInMortar'))
     end
 end
 
@@ -298,7 +294,13 @@ function MortarUI:updateInfoPanel(shellsAmount)
         local spotterID = self.mortarInstance:getSpotterID()
         if spotterID ~= -1 then
             local spotterPl = getPlayerByOnlineID(spotterID)
-            spotterUsername = spotterPl:getUsername()
+
+            if spotterPl == nil then
+                self.mortarInstance:setSpotterID(-1)
+            else
+                spotterUsername = spotterPl:getUsername()
+
+            end
         end
 
         leftText = leftText .. "Spotter: %s <BR> "
@@ -340,40 +342,6 @@ function MortarUI:updateInfoPanel(shellsAmount)
     self.panelRightInfo:setText(rightText)
     self.panelRightInfo.textDirty = true
 
-    -- local info = ""
-
-
-    -- if self.mode == MRT_COMMON.SPOT_MODE then
-    --     local spotterUsername = "-------"
-    --     local spotterID = self.mortarInstance:getSpotterID()
-    --     if spotterID ~= -1 then
-    --         local spotterPl = getPlayerByOnlineID(spotterID)
-    --         spotterUsername = spotterPl:getUsername()
-    --     end
-
-    --     local spotterInfo = " <CENTRE> <SIZE:medium> Spotter: %s <LINE> <CENTRE> Spotter Status: %s"
-    --     spotterInfo = string.format(spotterInfo, spotterUsername, tostring(self:getIsSpotterReady()))
-
-    --     info = spotterInfo .. " <LINE> "
-    -- end
-
-
-    -- local shellsInfo = " <CENTRE> <SIZE:medium> Shells Left: %d"
-    -- shellsInfo = string.format(shellsInfo, shellsAmount)
-    -- info = info .. shellsInfo
-
-    -- local modeInfo = " <CENTRE> <SIZE:medium> Mode: %s"
-    -- modeInfo = string.format(modeInfo, self.mode)
-    -- info = info .. " <LINE> " .. modeInfo
-
-
-    -- -- Update info panel
-    -- if self.mortarInstance:getIsMidReloading() then
-    --     info = "<SIZE:large> <CENTRE> <RED> RELOADING! <LINE> " .. info
-    -- end
-
-    -- self.panelInfo:setText(info)
-    -- self.panelInfo.textDirty = true
 end
 
 function MortarUI:update()
@@ -399,7 +367,7 @@ function MortarUI:update()
     local shellsAmount = shells:size()
 
     -- Set operator again
-    self.mortarInstance:setOperator(plID)
+    self.mortarInstance:setOperatorID(plID)
     self:updateOperatorStatus(inv)
 
     -- Update spotter status

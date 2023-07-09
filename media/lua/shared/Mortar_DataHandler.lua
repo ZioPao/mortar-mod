@@ -8,7 +8,7 @@ MORTAR_DATA_TABLE = {}
 ---@param coords table
 ---@return MortarInstance
 function MortarDataHandler.InitializeInstance(coords)
-    print("Initialize instance")
+    --print("Initialize instance")
     local id = MortarCommon.GetAssembledID(coords)
 
     local newData = { operatorID = -1, spotterID = -1, position = { x = coords.x, y = coords.y, z = coords.z } }
@@ -26,7 +26,7 @@ end
 ---Sync data with client and server. Modification from the client will be sent to the server
 ---@param id any
 function MortarDataHandler.SyncData(id)
-    print("Syncing Data for instance " .. tostring(id))
+    --print("Syncing Data for instance " .. tostring(id))
     ModData.request(MRT_COMMON.GLOBAL_MOD_DATA)
     local syncedTable = ModData.get(MRT_COMMON.GLOBAL_MOD_DATA)
     syncedTable[id] = MORTAR_DATA_TABLE[id]
@@ -53,11 +53,11 @@ function MortarDataHandler.GetOrCreateInstance(coords)
     local instance
     if modDataRef[id] then
         local dataTable = modDataRef[id]
-        print("Found instance from Global Mod Data")
+        --print("Found instance from Global Mod Data")
         -- We need to wrap it with MortarInstance
         instance = MortarInstance:new(dataTable)
     else
-        print("Initializing new instance")
+        --print("Initializing new instance")
         instance = MortarDataHandler.InitializeInstance(coords)
     end
 
@@ -100,7 +100,7 @@ local function CopyTable(tableA, tableB)
 end
 
 local function ReceiveGlobalModData(key, data)
-    print("Received global mod data")
+    --print("Received global mod data")
     if key == MRT_COMMON.GLOBAL_MOD_DATA then
         --Creating a deep copy of recieved data and storing it in local store CLIENT_GLOBALMODDATA table
         CopyTable(MORTAR_DATA_TABLE, data)

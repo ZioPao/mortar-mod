@@ -3,7 +3,7 @@ module Mortar {
 	
     item MortarRound
     {
-        Weight	=	0.1,
+        Weight	=	1.2,
         Type	=	Normal,
 		DisplayCategory = Explosives,
         DisplayName	=	Mortar Shell,
@@ -15,9 +15,8 @@ module Mortar {
 		DisplayCategory = Furniture,
 		Type			= Moveable,
 		Icon			= mortar_ico,
-		Weight		  	= 2.0,
+		Weight		  	= 13.0,
 		DisplayName		= Mortar,
 		WorldObjectSprite	= mortar_56,
 	}
-
 }

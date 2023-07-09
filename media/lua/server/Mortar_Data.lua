@@ -30,10 +30,10 @@ local function OnInitGlobalModData()
     if MortarServerData.modData then
         for key, v in pairs(MortarServerData.modData) do
             print("MortarInfo: loading " .. tostring(key))
-            print(v.tileX)
-            print(v.tileY)
-            print(v.tileZ)
-            print(v.isRoundInChamber)
+            --print(v.tileX)
+            --print(v.tileY)
+            --print(v.tileZ)
+            --print(v.isRoundInChamber)
         end
     else
         MortarServerData.modData = {}

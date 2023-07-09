@@ -171,7 +171,7 @@ function SpottersScrollingTable:initList(module)
 end
 
 function SpottersScrollingTable:selectSpotter(pl)
-    self.viewer.mortarInstance:setSpotter(pl:getOnlineID())
+    self.viewer.mortarInstance:setSpotterID(pl:getOnlineID())
 end
 
 function SpottersScrollingTable:update()

@@ -16,7 +16,12 @@ end
 ---@param player2 IsoPlayer
 ---@return boolean
 function MortarCommon.CheckDistance(player1, player2)
-    return player1:getDistanceSq(player2) < MRT_COMMON.WALKIE_TALKIE_RANGE
+
+    local dist = player1:DistTo(player2)
+    --print(dist)
+    --print(SandboxVars.Mortars.WalkieTalkieRange)
+    --print("________________")
+    return dist < SandboxVars.Mortars.WalkieTalkieRange
 end
 
 ---Assemble and returns an ID for the mortar based on its coords
@@ -55,7 +60,7 @@ MortarCommon.GetHighestZ = function(cx, cy)
         local check = getCell():getGridSquare(cx, cy, cz)
 
         if check and check:isSolidFloor() then
-            print(cz); print(check:isSolidFloor())
+            --print(cz); print(check:isSolidFloor())
             return cz
         end
     end
@@ -240,13 +245,14 @@ MRT_COMMON = {
         "mortarburst_13",
         "mortarburst_14"
     },
+    
 
+    -- TODO Make it customizable again
     DIST_MIN            = 12,
     DIST_MAX            = 30,
     DIST_STEPS          = 2,
     RAD                 = 8,
 
-    WALKIE_TALKIE_RANGE = 30000, -- it's not in sq... not sure why
 
     BLAST_SOUNDS        = { 'MortarBlast1', 'MortarBlast2', 'MortarBlast3' },
     THUMP_SOUND         = 'MortarThump',

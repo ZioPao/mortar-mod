@@ -1,34 +1,22 @@
 VERSION = 1,
 
-option Mortar.OperatorRange
-{
-    type = float,
-    min = 1.5,
-    default = 1.5,
-    max = 3,
-
-    page = Mortar,
-    translation = Mortar_OperatorRange
-}
-
-option Mortar.Radius
+option Mortars.WalkieTalkieRange
 {
     type = integer,
-    min = 1,
-    max = 20,
-    default = 8,
+    min = 100,
+    max = 300000,
+    default = 150,
 
-    page = Mortar,
-    translation = Mortar_Radius,
+    page = Mortars,
+    translation = Mortars_WalkieTalkieRange,
 }
-
-option Mortar.Distance
+option Mortars.FixedShotDelay
 {
     type = integer,
-    min = 5,
-    max = 180,
-    default = 100,
+    min = 0,
+    max = 15,
+    default = 0,
 
-    page = Mortar,
-    translation = Mortar_Distance,
+    page = Mortars,
+    translation = Mortars_FixedShotDelay,
 }

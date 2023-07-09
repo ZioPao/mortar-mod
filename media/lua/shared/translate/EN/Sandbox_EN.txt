@@ -1,7 +1,7 @@
 Sandbox_EN = {
-    Sandbox_Mortar = "Mortar Mod",
+    Sandbox_Mortars = "Mortars",
 
-    Sandbox_Mortar_Radius = "Maximum blast radius",
-    Sandbox_Mortar_OperatorRange = "Maximum range to operate the mortar",
-    Sandbox_Mortar_Distance = "Sandbox_Mortar_Distance",
+    Sandbox_Mortars_WalkieTalkieRange = "Maximum distance between operator and spotter",
+    Sandbox_Mortars_FixedShotDelay = "Fixed shot delay",
+    Sandbox_Mortars_FixedShotDelay_tooltip = "The time necessary to land a shot. If it's 0, it'll be random between 1 and 5 seconds",
 }
