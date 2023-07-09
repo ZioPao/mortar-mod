@@ -40,6 +40,13 @@ function OperatorCommands.SendThumpSound(operatorObj, args)
     sendServerCommand(MRT_COMMON.COMMON_COMMAND, 'ReceiveThumpSound', { x = x, y = y, z = z})
 
 end
+---Send to every client a muzzle flash, coming from the operator
+---@param args table contains operatorID
+function OperatorCommands.SendMuzzleFlash(_, args)
+    sendServerCommand(MRT_COMMON.COMMON_COMMAND, 'ReceiveMuzzleFlash', { operatorID = args.operatorID })
+end
+
+
 ---Send the shot to the correct player, who may be a spotter or the operator
 ---@param args table Contains shooterID
 function OperatorCommands.SendShot(_, args)
@@ -53,11 +60,6 @@ end
 
 local CommonCommands = {}
 
----Send to every client a muzzle flash, coming from the operator
----@param args table contains operatorID
-function CommonCommands.SendMuzzleFlash(_, args)
-    sendServerCommand(MRT_COMMON.COMMON_COMMAND, 'ReceiveMuzzleFlash', { operatorID = args.operatorID })
-end
 
 ---Explosions on squares
 ---@param args table

@@ -110,8 +110,8 @@ function MortarInstance:initializeShot(mode)
     operatorPlayer:playEmote("MortarClick")
 
     if isClient() then
-        sendClientCommand(operatorPlayer, MRT_COMMON.SERVER_COMMON_COMMAND, 'SendMuzzleFlash', { operatorID = self.dataTable.operatorID })
-        sendClientCommand(operatorPlayer, MRT_COMMON.SERVER_COMMON_COMMAND, 'SendThumpSound', {})
+        sendClientCommand(operatorPlayer, MRT_COMMON.SERVER_OPERATOR_COMMAND, 'SendMuzzleFlash', { operatorID = self.dataTable.operatorID })
+        sendClientCommand(operatorPlayer, MRT_COMMON.SERVER_OPERATOR_COMMAND, 'SendThumpSound', {})
     else
         operatorPlayer:startMuzzleFlash()
         MortarCommon.PlayThumpSound(operatorPlayer:getX(), operatorPlayer:getY(), operatorPlayer:getZ())

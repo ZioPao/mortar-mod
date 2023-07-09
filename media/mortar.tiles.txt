@@ -738,8 +738,9 @@ tileset
         xy = 0,7
         BlocksPlacement = 
         CanScrap = 
-        CustomName = Mortar Weapon
+        CustomName = weapon
         Facing = N
+        GroupName = Mortar
         IsMoveAble = 
         ItemHeight = 30
         Material = MetalPipe
@@ -753,8 +754,9 @@ tileset
         xy = 1,7
         BlocksPlacement = 
         CanScrap = 
-        CustomName = Mortar Weapon
+        CustomName = weapon_
         Facing = E
+        GroupName = Mortar
         IsMoveAble = 
         ItemHeight = 30
         Material = MetalPipe
@@ -768,8 +770,9 @@ tileset
         xy = 2,7
         BlocksPlacement = 
         CanScrap = 
-        CustomName = Mortar Weapon
+        CustomName = weapon
         Facing = E
+        GroupName = Mortar
         IsMoveAble = 
         ItemHeight = 30
         Material = MetalPipe
@@ -783,8 +786,9 @@ tileset
         xy = 3,7
         BlocksPlacement = 
         CanScrap = 
-        CustomName = Mortar Weapon
+        CustomName = weapon_
         Facing = S
+        GroupName = Mortar
         IsMoveAble = 
         ItemHeight = 30
         Material = MetalPipe
@@ -798,8 +802,9 @@ tileset
         xy = 4,7
         BlocksPlacement = 
         CanScrap = 
-        CustomName = Mortar Weapon
+        CustomName = weapon
         Facing = S
+        GroupName = Mortar
         IsMoveAble = 
         ItemHeight = 30
         Material = MetalPipe
@@ -813,8 +818,9 @@ tileset
         xy = 5,7
         BlocksPlacement = 
         CanScrap = 
-        CustomName = Mortar Weapon
+        CustomName = weapon_
         Facing = W
+        GroupName = Mortar
         IsMoveAble = 
         ItemHeight = 30
         Material = MetalPipe
@@ -828,8 +834,9 @@ tileset
         xy = 6,7
         BlocksPlacement = 
         CanScrap = 
-        CustomName = Mortar Weapon
+        CustomName = weapon
         Facing = W
+        GroupName = Mortar
         IsMoveAble = 
         ItemHeight = 30
         Material = MetalPipe
@@ -843,8 +850,9 @@ tileset
         xy = 7,7
         BlocksPlacement = 
         CanScrap = 
-        CustomName = Mortar Weapon
+        CustomName = weapon_
         Facing = N
+        GroupName = Mortar
         IsMoveAble = 
         ItemHeight = 30
         Material = MetalPipe
