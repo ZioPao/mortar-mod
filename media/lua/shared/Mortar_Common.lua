@@ -92,25 +92,19 @@ end
 ---@return boolean
 MortarCommon.CheckRadio = function(playerInv)
     local items = playerInv:getItems()
+    for i=0, items:size() - 1 do
 
-    local radio
-    for i = 0, items:size() - 1 do
         local item = items:get(i)
-        local itemFullType = item:getFullType()
-
-        -- not sure why instanceof didn't work, but this should be fine
-        if luautils.stringStarts(itemFullType, "Radio.") then
-            radio = item
-            break
+        if item and item.getDeviceData then
+            local deviceData = item:getDeviceData()
+            if deviceData and deviceData:getIsTurnedOn() then
+                return true
+            end
         end
     end
 
-    -- Another problem, to check if a radio is turned on we need to get getDeviceData(), not isActivated
-    if radio then
-        local deviceData = radio:getDeviceData()
-        return deviceData:getIsTurnedOn()
-    end
     return false
+
 end
 
 

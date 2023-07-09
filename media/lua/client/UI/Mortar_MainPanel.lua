@@ -210,8 +210,7 @@ function MortarUI:updateShootButton()
             self.btnShoot:setEnable(false)
             self.btnShoot:setTooltip("You didn't set a spotter")
         else
-            local isReady = self.mortarInstance:getIsReloaded() and self:getIsOperatorReady() and
-            self:getIsSpotterReady()
+            local isReady = self.mortarInstance:getIsReloaded() and self:getIsOperatorReady() and self:getIsSpotterReady()
             self.btnShoot:setEnable(isReady)
             if not isReady then
                 self.btnShoot:setTooltip("Spotter not ready or no shell in the mortar")
