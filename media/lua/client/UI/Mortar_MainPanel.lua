@@ -400,6 +400,9 @@ function MortarUI:update()
         self.openedPanel:setY(self:getBottom() - self:getHeight())
     end
 
+    -- Sync it every loop here, since we want to be able to have multiple mortars deployed
+    MortarDataHandler.SyncData(self.mortarInstance.id)
+
     -- If player goes away from the mortar, close the window
     if MortarCommon.GetDistance2D(pl:getX(), pl:getY(), self.coords.x, self.coords.y) > MRT_COMMON.DIST_STEPS then
         self:close()
