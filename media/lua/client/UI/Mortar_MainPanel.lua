@@ -70,6 +70,8 @@ function MortarUI:initialise()
     end
 
 
+    -- Initialize rotation of the mortar when opening the ui
+    Events.OnPlayerMove.Add(MortarCommon.RotateSprite)
 
 end
 
@@ -435,6 +437,8 @@ function MortarUI:close()
     if self.openedPanel then
         self.openedPanel:close()
     end
+
+    Events.OnPlayerMove.Remove(MortarCommon.RotateSprite)
     self:removeFromUIManager()
     ISCollapsableWindow.close(self)
 end

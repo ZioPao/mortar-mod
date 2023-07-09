@@ -1,10 +1,13 @@
 MortarCommon = {}
+local MortarInstance = require("Mortar_Instance")
 
 function MortarCommon.GetHitCoords(pl)
     local directions = MRT_COMMON.DIRECTIONS[tostring(pl:getDir())]
     local dist = ZombRand(MRT_COMMON.DIST_MIN, MRT_COMMON.DIST_MAX)
-    local hitCoords = { x = math.floor(pl:getX() + (directions[1] * dist)),
-        y = math.floor(pl:getY() + (directions[2] * dist)) }
+    local hitCoords = {
+        x = math.floor(pl:getX() + (directions[1] * dist)),
+        y = math.floor(pl:getY() + (directions[2] * dist))
+    }
     return hitCoords
 end
 
@@ -56,6 +59,22 @@ MortarCommon.GetHighestZ = function(cx, cy)
             return cz
         end
     end
+end
+
+---Find the mortar obj in a square
+---@param sq IsoGridSquare
+---@return IsoObject?
+function MortarCommon.FindMortarObj(sq)
+    local objects = sq:getObjects()
+
+    for i = 0, objects:size() - 1 do
+        local obj = objects:get(i)
+        if MortarCommon.IsMortarSprite(obj:getSprite():getName()) then
+            return obj
+        end
+    end
+
+    return nil
 end
 
 MortarCommon.DestroyTile = function(tile)
@@ -147,22 +166,50 @@ MortarCommon.ArePlayersInSameFaction = function(pl1, pl2)
     return false
 end
 
-function MortarCommon.PlayBoomSound(x,y,z)
+function MortarCommon.RotateSprite(pl)
+    local currentInstance = MortarInstance.current
+
+    local operatorID = currentInstance:getOperatorID()
+    local operatorObj
+    if isClient() then
+        operatorObj = getPlayerByOnlineID(operatorID)
+    else
+        operatorObj = getPlayer()
+    end
+
+    if pl ~= operatorObj then return end
+
+    -- Find current mortar obj
+
+    local mortarPos = currentInstance:getPosition()
+    local sq = getCell():getGridSquare(mortarPos.x, mortarPos.y, mortarPos.z)
+    local mortarObj = MortarCommon.FindMortarObj(sq)
+
+    if mortarObj == nil then return end
+
+
+    local tile = MRT_COMMON.TILES[tostring(pl:getDir())]
+    mortarObj:setSprite(tile)
+    mortarObj:getSprite():setName(tile)
+
+    -- TODO This should be local only at this point
+end
+
+function MortarCommon.PlayBoomSound(x, y, z)
     local sq = getCell():getGridSquare(x, y, z)
     getSoundManager():PlayWorldSound(tostring(MRT_COMMON.BLAST_SOUNDS[ZombRand(1, 4)]), sq, 0, 100, 5, false)
 end
 
-function MortarCommon.PlayThumpSound(x,y,z)
+function MortarCommon.PlayThumpSound(x, y, z)
     local sq = getCell():getGridSquare(x, y, z)
     getSoundManager():PlayWorldSound(MRT_COMMON.THUMP_SOUND, sq, 0, 15, 5, false)
 end
-
 
 --------------------------------------
 
 MRT_COMMON = {
 
-    DIRECTIONS = {
+    DIRECTIONS          = {
         ["N"] = { 0, -1 },
         ["NE"] = { math.sqrt(2) / 2, -math.sqrt(2) / 2 },
         ["E"] = { 1, 0 },
@@ -173,7 +220,7 @@ MRT_COMMON = {
         ["NW"] = { -math.sqrt(2) / 2, -math.sqrt(2) / 2 }
     },
 
-    TILES = {
+    TILES               = {
         ["N"] = "mortar_56",
         ["NE"] = "mortar_57",
         ["E"] = "mortar_58",
@@ -184,7 +231,7 @@ MRT_COMMON = {
         ["NW"] = "mortar_63",
     },
 
-    BURST_TILES = {
+    BURST_TILES         = {
         "mortarburst_0",
         "mortarburst_1",
         "mortarburst_2",
@@ -202,15 +249,15 @@ MRT_COMMON = {
         "mortarburst_14"
     },
 
-    DIST_MIN = 12,
-    DIST_MAX = 30,
-    DIST_STEPS = 2,
-    RAD = 8,
+    DIST_MIN            = 12,
+    DIST_MAX            = 30,
+    DIST_STEPS          = 2,
+    RAD                 = 8,
 
-    WALKIE_TALKIE_RANGE = 30000,        -- it's not in sq... not sure why
+    WALKIE_TALKIE_RANGE = 30000, -- it's not in sq... not sure why
 
-    BLAST_SOUNDS = { 'MortarBlast1', 'MortarBlast2', 'MortarBlast3'},
-    THUMP_SOUND  = 'MortarThump',
+    BLAST_SOUNDS        = { 'MortarBlast1', 'MortarBlast2', 'MortarBlast3' },
+    THUMP_SOUND         = 'MortarThump',
 
 
     SOLO_MODE = 'SOLO',
