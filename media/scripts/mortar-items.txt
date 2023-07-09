@@ -1,0 +1,23 @@
+module Mortar { 
+    imports { Base }
+	
+    item MortarRound
+    {
+        Weight	=	0.1,
+        Type	=	Normal,
+		DisplayCategory = Explosives,
+        DisplayName	=	Mortar Shell,
+        Icon	=	mortarammo_ico,
+    }
+
+	item MortarWeapon
+	{
+		DisplayCategory = Furniture,
+		Type			= Moveable,
+		Icon			= mortar_ico,
+		Weight		  	= 2.0,
+		DisplayName		= Mortar,
+		WorldObjectSprite	= mortar_56,
+	}
+
+}

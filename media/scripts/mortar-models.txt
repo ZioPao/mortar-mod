@@ -1,0 +1,8 @@
+module Base {
+    model Binoculars
+    {
+        mesh = Worlditems/Binoculars,
+        texture = Worlditems/Binoculars,
+        scale = 0.6,
+    }
+}
