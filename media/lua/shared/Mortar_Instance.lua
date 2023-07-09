@@ -196,6 +196,7 @@ function MortarInstance.HandleReloading()
         MortarInstance.current:setIsMidReloading(false)
         local player = getPlayer()
         player:setBlockMovement(false)
+        ---@diagnostic disable-next-line: param-type-mismatch
         player:setVariable("EmotePlaying", false) -- Mistake by Umbrella
 
         MortarDataHandler.SyncData(MortarInstance.current.id)
@@ -218,6 +219,7 @@ function MortarInstance:reloadRound()
 
     operatorPlayer:Say("Reloading...")
     operatorPlayer:setBlockMovement(true)
+    ---@diagnostic disable-next-line: param-type-mismatch
     operatorPlayer:setVariable("EmotePlaying", true) -- Mistake by Umbrella
     operatorPlayer:playEmote("MortalReload")
 
