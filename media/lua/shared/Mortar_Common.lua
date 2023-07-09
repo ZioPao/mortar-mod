@@ -187,12 +187,11 @@ function MortarCommon.RotateSprite(pl)
 
     if mortarObj == nil then return end
 
-
-    local tile = MRT_COMMON.TILES[tostring(pl:getDir())]
-    mortarObj:setSprite(tile)
-    mortarObj:getSprite():setName(tile)
-
     -- TODO This should be local only at this point
+    local tile = MRT_COMMON.TILES[tostring(pl:getDir())]
+    mortarObj:setSpriteFromName(tile)
+    mortarObj:transmitUpdatedSprite()
+
 end
 
 function MortarCommon.PlayBoomSound(x, y, z)
